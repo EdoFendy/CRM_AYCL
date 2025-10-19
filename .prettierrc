@@ -1,8 +1,0 @@
-{
-  "semi": true,
-  "singleQuote": false,
-  "trailingComma": "es5",
-  "tabWidth": 2,
-  "printWidth": 100,
-  "// CRITIC PASS": "Configurazione minimale; TODO valutare override per Markdown e codice NestJS/React specifico."
-}
