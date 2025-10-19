@@ -1,0 +1,10 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "entryFile": "main",
+  "compilerOptions": {
+    "tsConfigPath": "tsconfig.build.json",
+    "plugins": []
+  },
+  "// CRITIC PASS": "Configurazione Nest CLI priva di plugin custom; TODO valutare integrazione swagger e prisma generator per comandi automatizzati."
+}

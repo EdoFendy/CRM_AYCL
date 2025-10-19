@@ -5,7 +5,7 @@
 | T0 | Bootstrap repository | Fondamenta | Config iniziali (.editorconfig, .gitignore, package.json, docs) | Nessuna | File base creati e versionati, placeholder CI | ☑ | Completato in questo commit |
 | T1 | Definizione OpenAPI | Architettura | `spec/openapi.yaml` completo | T0 | Specifica copre moduli core, sicurezza, esempi | ☑ | Completato in questo commit |
 | T2 | Schema database e migrazione iniziale | Backend | `backend/prisma/schema.prisma`, `backend/prisma/migrations/0001_init.sql` | T1 | Schema coerente con requisiti, indici | ☑ | Completato in questo commit |
-| T3 | Bootstrap backend NestJS | Backend | Struttura NestJS, config, common utilities | T2 | App avviabile, lint/test placeholder | ☐ | |
+| T3 | Bootstrap backend NestJS | Backend | Struttura NestJS, config, common utilities | T2 | App avviabile, lint/test placeholder | ☑ | Workspace backend creato, provider globali configurati |
 | T4 | Modulo Auth/Users/Roles | Backend | Controller/service/repo/test | T3 | CRUD con RBAC e audit | ☐ | |
 | T5 | Modulo Companies & Contacts | Backend | CRUD API + test | T4 | Validazioni Zod, RBAC, paginazione | ☐ | |
 | T6 | Modulo Opportunities & Pipeline | Backend | API e logica pipeline | T5 | Stage, SLA, metriche base | ☐ | |

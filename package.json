@@ -8,14 +8,18 @@
     "npm": ">=9.0.0"
   },
   "scripts": {
-    "lint": "echo 'TODO: configure root linting'",
-    "test": "echo 'TODO: configure root testing'",
-    "build": "echo 'TODO: configure root build'",
-    "dev": "echo 'TODO: configure root dev environment'"
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces",
+    "build": "npm run build --workspaces",
+    "dev": "npm run start:dev --workspace @crm-aycl/backend",
+    "dev:backend": "npm run start:dev --workspace @crm-aycl/backend",
+    "build:backend": "npm run build --workspace @crm-aycl/backend",
+    "lint:backend": "npm run lint --workspace @crm-aycl/backend",
+    "test:backend": "npm run test --workspace @crm-aycl/backend"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
     "prettier": "^3.1.0"
   },
-  "// CRITIC PASS": "Script placeholder finché backend/frontend non sono configurati; TODO sostituire con comandi reali e integrare toolchain monorepo."
+  "// CRITIC PASS": "Script monorepo ancora generici e frontend assente; TODO aggiungere workspace frontend e orchestrazione toolchain completa."
 }
