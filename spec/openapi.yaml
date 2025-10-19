@@ -1,0 +1,134 @@
+openapi: 3.1.0
+info:
+  title: CRM AYCL API
+  version: 0.1.0
+servers:
+  - url: https://api.aycl.local
+    description: Ambiente locale di sviluppo
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    ErrorResponse:
+      description: Errore applicativo standard
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [code, message, correlationId]
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+              details:
+                type: object
+                additionalProperties: true
+              correlationId:
+                type: string
+paths:
+  /auth/login:
+    post:
+      summary: Login con code11 e password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code11, password]
+              properties:
+                code11:
+                  type: string
+                  minLength: 11
+                  maxLength: 11
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Token generati
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+                  role:
+                    type: string
+                  userId:
+                    type: string
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+  /auth/refresh:
+    post:
+      summary: Refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Nuovi token
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+  /auth/logout:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Logout sessione corrente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '204':
+          description: Logout completato
+  /users:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Lista utenti
+      responses:
+        '200':
+          description: Elenco utenti paginato
+    post:
+      security:
+        - bearerAuth: []
+      summary: Crea utente
+      responses:
+        '201':
+          description: Utente creato
+  /companies:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Lista aziende
+      responses:
+        '200':
+          description: Elenco aziende
+    post:
+      security:
+        - bearerAuth: []
+      summary: Crea azienda
+      responses:
+        '201':
+          description: Azienda creata
+# TODO: completare tutti gli endpoint nel dettaglio con schemi, parametri e risposte
