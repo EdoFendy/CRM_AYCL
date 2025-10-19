@@ -1,0 +1,577 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  seller
+  reseller
+  customer
+  management
+}
+
+enum OpportunityStage {
+  NEW
+  QUALIFYING
+  DISCOVERY
+  PROPOSAL
+  NEGOTIATION
+  CLOSED_WON
+  CLOSED_LOST
+  ONBOARDING
+}
+
+enum OfferStatus {
+  draft
+  sent
+  accepted
+  declined
+  expired
+  renegotiation
+}
+
+enum ContractStatus {
+  draft
+  sent
+  data_pending
+  ready_for_signature
+  signed
+  cancelled
+  expired
+}
+
+enum SignatureStatus {
+  pending
+  viewed
+  signed
+  declined
+}
+
+enum InvoiceStatus {
+  draft
+  sent
+  paid
+  overdue
+}
+
+enum PaymentStatus {
+  pending
+  succeeded
+  failed
+  refunded
+}
+
+enum TaskStatus {
+  open
+  done
+}
+
+enum TaskPriority {
+  low
+  medium
+  high
+}
+
+enum TicketStatus {
+  open
+  pending
+  solved
+}
+
+enum TicketPriority {
+  low
+  medium
+  high
+}
+
+enum ReportScope {
+  seller
+  line
+  group
+  global
+}
+
+enum ReportStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  permissions Json
+  users       User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  name      String
+  type      String
+  parentId  String?  @db.Uuid
+  parent    Team?    @relation("TeamHierarchy", fields: [parentId], references: [id])
+  children  Team[]   @relation("TeamHierarchy")
+  users     User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id             String     @id @default(cuid())
+  name           String
+  email          String     @unique
+  role           UserRole
+  roleId         String?    @unique
+  resellerId     String?    @db.Uuid
+  code11         String     @unique
+  passwordHash   String
+  mfaEnabled     Boolean    @default(false)
+  status         String     @default("active")
+  teams          Team[]     @relation("TeamMembers", references: [id])
+  ownedCompanies Company[]  @relation("CompanyOwner")
+  ownedContacts  Contact[]  @relation("ContactOwner")
+  ownedOpportunities Opportunity[] @relation("OpportunityOwner")
+  tasks          Task[]     @relation("TaskOwner")
+  activities     Activity[] @relation("ActivityActor")
+  notifications  Notification[]
+  referrals      Referral[]
+
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@index([role])
+}
+
+model Company {
+  id             String        @id @default(cuid())
+  legalName      String
+  website        String?
+  linkedinUrl    String?
+  geoArea        String?
+  industry       String?
+  revenueRange   String?
+  ownerUserId    String?
+  owner          User?         @relation("CompanyOwner", fields: [ownerUserId], references: [id])
+  accountStatus  String        @default("lead")
+  contacts       Contact[]
+  opportunities  Opportunity[]
+  offers         Offer[]
+  contracts      Contract[]
+  invoices       Invoice[]
+  receipts       Receipt[]
+  payments       Payment[]
+  activities     Activity[]
+  tasks          Task[]
+  files          File[]
+  tickets        Ticket[]
+  reports        Report[]
+  checkouts      Checkout[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerUserId])
+  @@index([accountStatus])
+  @@index([legalName])
+}
+
+model Contact {
+  id           String   @id @default(cuid())
+  companyId    String
+  company      Company  @relation(fields: [companyId], references: [id])
+  firstName    String
+  lastName     String
+  email        String
+  phone        String?
+  roleTitle    String?
+  linkedinUrl  String?
+  ownerUserId  String?
+  owner        User?    @relation("ContactOwner", fields: [ownerUserId], references: [id])
+  activities   Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([ownerUserId])
+  @@index([email])
+}
+
+model Opportunity {
+  id                String       @id @default(cuid())
+  companyId         String
+  company           Company      @relation(fields: [companyId], references: [id])
+  title             String
+  value             Decimal      @db.Decimal(16, 2)
+  currency          String
+  stage             OpportunityStage
+  probability       Int
+  ownerUserId       String?
+  owner             User?        @relation("OpportunityOwner", fields: [ownerUserId], references: [id])
+  expectedCloseDate DateTime?
+  source            String?
+  products          Json?
+  nextStep          String?
+  offers            Offer[]
+  activities        Activity[]
+  tasks             Task[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([stage])
+  @@index([ownerUserId])
+  @@index([expectedCloseDate])
+}
+
+model Offer {
+  id             String      @id @default(cuid())
+  opportunityId  String
+  opportunity    Opportunity @relation(fields: [opportunityId], references: [id])
+  version        Int         @default(1)
+  items          Json
+  totalAmount    Decimal     @db.Decimal(16, 2)
+  currency       String
+  status         OfferStatus @default(draft)
+  sentAt         DateTime?
+  acceptedAt     DateTime?
+  contracts      Contract[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([opportunityId])
+  @@index([status])
+}
+
+model Contract {
+  id               String          @id @default(cuid())
+  companyId        String
+  company          Company         @relation(fields: [companyId], references: [id])
+  opportunityId    String?
+  opportunity      Opportunity?    @relation(fields: [opportunityId], references: [id])
+  offerId          String?
+  offer            Offer?          @relation(fields: [offerId], references: [id])
+  templateId       String
+  status           ContractStatus  @default(draft)
+  currentVersionId String?
+  signedAt         DateTime?
+  versions         ContractVersion[]
+  signatures       Signature[]
+  invoices         Invoice[]
+  payments         Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([status])
+}
+
+model ContractVersion {
+  id         String   @id @default(cuid())
+  contractId String
+  contract   Contract @relation(fields: [contractId], references: [id])
+  data       Json
+  pdfUrl     String?
+  checksum   String?
+  createdBy  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([contractId])
+}
+
+model Signature {
+  id           String          @id @default(cuid())
+  contractId   String
+  contract     Contract        @relation(fields: [contractId], references: [id])
+  signerType   String
+  signerName   String
+  signerEmail  String
+  method       String
+  status       SignatureStatus @default(pending)
+  signedAt     DateTime?
+  ip           String?
+  userAgent    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([contractId])
+  @@index([signerEmail])
+}
+
+model Invoice {
+  id         String       @id @default(cuid())
+  companyId  String
+  company    Company      @relation(fields: [companyId], references: [id])
+  contractId String?
+  contract   Contract?    @relation(fields: [contractId], references: [id])
+  number     String
+  issueDate  DateTime
+  dueDate    DateTime
+  total      Decimal      @db.Decimal(16, 2)
+  currency   String
+  status     InvoiceStatus @default(draft)
+  pdfUrl     String?
+  payments   Payment[]
+  receipts   Receipt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([number])
+  @@index([companyId])
+  @@index([status])
+}
+
+model Receipt {
+  id         String    @id @default(cuid())
+  companyId  String
+  company    Company   @relation(fields: [companyId], references: [id])
+  invoiceId  String?
+  invoice    Invoice?  @relation(fields: [invoiceId], references: [id])
+  number     String
+  issueDate  DateTime
+  total      Decimal   @db.Decimal(16, 2)
+  pdfUrl     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([invoiceId])
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  companyId   String
+  company     Company       @relation(fields: [companyId], references: [id])
+  amount      Decimal       @db.Decimal(16, 2)
+  currency    String
+  method      String
+  provider    String
+  chargeId    String?
+  status      PaymentStatus @default(pending)
+  invoiceId   String?
+  invoice     Invoice?      @relation(fields: [invoiceId], references: [id])
+  contractId  String?
+  contract    Contract?     @relation(fields: [contractId], references: [id])
+  referralId  String?
+  referral    Referral?     @relation(fields: [referralId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([status])
+  @@index([invoiceId])
+  @@index([contractId])
+}
+
+model Referral {
+  id                     String     @id @default(cuid())
+  code                   String     @unique
+  ownerUserId            String
+  owner                  User       @relation(fields: [ownerUserId], references: [id])
+  firstTouchAttribution  String?
+  lastTouchAttribution   String?
+  notes                  String?
+  payments               Payment[]
+  checkouts              Checkout[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerUserId])
+}
+
+model Checkout {
+  id         String    @id @default(cuid())
+  companyId  String?
+  company    Company?  @relation(fields: [companyId], references: [id])
+  contactId  String?
+  contact    Contact?  @relation(fields: [contactId], references: [id])
+  referralId String?
+  referral   Referral? @relation(fields: [referralId], references: [id])
+  source     String?
+  sessionId  String?
+  status     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([referralId])
+}
+
+model Activity {
+  id             String    @id @default(cuid())
+  type           String
+  actorUserId    String?
+  actor          User?     @relation("ActivityActor", fields: [actorUserId], references: [id])
+  companyId      String?
+  company        Company?  @relation(fields: [companyId], references: [id])
+  contactId      String?
+  contact        Contact?  @relation(fields: [contactId], references: [id])
+  opportunityId  String?
+  opportunity    Opportunity? @relation(fields: [opportunityId], references: [id])
+  payload        Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([companyId])
+  @@index([opportunityId])
+  @@index([actorUserId])
+  @@index([createdAt])
+}
+
+model Task {
+  id            String     @id @default(cuid())
+  title         String
+  dueDate       DateTime?
+  ownerUserId   String?
+  owner         User?      @relation("TaskOwner", fields: [ownerUserId], references: [id])
+  companyId     String?
+  company       Company?   @relation(fields: [companyId], references: [id])
+  opportunityId String?
+  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id])
+  status        TaskStatus  @default(open)
+  priority      TaskPriority @default(medium)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerUserId])
+  @@index([companyId])
+  @@index([opportunityId])
+  @@index([status])
+}
+
+model File {
+  id            String    @id @default(cuid())
+  ownerUserId   String?
+  owner         User?     @relation(fields: [ownerUserId], references: [id])
+  companyId     String?
+  company       Company?  @relation(fields: [companyId], references: [id])
+  opportunityId String?
+  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id])
+  contractId    String?
+  contract      Contract? @relation(fields: [contractId], references: [id])
+  invoiceId     String?
+  invoice       Invoice?  @relation(fields: [invoiceId], references: [id])
+  name          String
+  mime          String
+  size          Int
+  storageUrl    String
+  tags          String[]   @db.Text[]
+  checksum      String?
+
+  createdAt DateTime @default(now())
+
+  @@index([companyId])
+  @@index([opportunityId])
+  @@index([contractId])
+  @@index([invoiceId])
+}
+
+model Ticket {
+  id                String        @id @default(cuid())
+  requesterCode11   String
+  requesterEmail    String?
+  subject           String
+  body              String
+  status            TicketStatus  @default(open)
+  priority          TicketPriority @default(medium)
+  assigneeUserId    String?
+  assignee          User?         @relation(fields: [assigneeUserId], references: [id])
+  companyId         String?
+  company           Company?      @relation(fields: [companyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([assigneeUserId])
+  @@index([companyId])
+}
+
+model Report {
+  id         String      @id @default(cuid())
+  name       String
+  scope      ReportScope
+  filters    Json
+  status     ReportStatus @default(pending)
+  fileUrl    String?
+  generatedBy String?
+  user       User?        @relation(fields: [generatedBy], references: [id])
+  companyId  String?
+  company    Company?     @relation(fields: [companyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([scope])
+  @@index([status])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  action      String
+  entityType  String
+  entityId    String?
+  changes     Json?
+  ip          String?
+  userAgent   String?
+  correlationId String
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model Notification {
+  id        String  @id @default(cuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+  type      String
+  payload   Json
+  isRead    Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+model Webhook {
+  id         String @id @default(cuid())
+  event      String
+  targetUrl  String
+  secret     String?
+  lastStatus String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([event])
+}
+
+// CRITIC PASS: Necessarie ulteriori ottimizzazioni (es. policy row-level, cifratura campi sensibili) e verifica compatibilità Prisma per array testo; TODO aggiungere viste/materializzate per reportistica.

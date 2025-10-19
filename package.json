@@ -1,0 +1,21 @@
+{
+  "name": "crm-aycl",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["backend", "frontend"],
+  "engines": {
+    "node": ">=18.17.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "lint": "echo 'TODO: configure root linting'",
+    "test": "echo 'TODO: configure root testing'",
+    "build": "echo 'TODO: configure root build'",
+    "dev": "echo 'TODO: configure root dev environment'"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.0"
+  },
+  "// CRITIC PASS": "Script placeholder finché backend/frontend non sono configurati; TODO sostituire con comandi reali e integrare toolchain monorepo."
+}

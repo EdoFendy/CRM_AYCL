@@ -1,0 +1,2409 @@
+openapi: 3.0.3
+info:
+  title: CRM AYCL API
+  version: 0.1.0
+  description: >-
+    API REST per la piattaforma CRM AYCL, con autenticazione JWT e supporto a webhook esterni.
+servers:
+  - url: https://api.allyoucanleads.com
+    description: Ambiente di produzione
+  - url: https://staging-api.allyoucanleads.com
+    description: Ambiente di staging
+  - url: http://localhost:3000
+    description: Ambiente di sviluppo
+security:
+  - bearerAuth: []
+tags:
+  - name: Auth
+  - name: Users
+  - name: Companies
+  - name: Contacts
+  - name: Opportunities
+  - name: Offers
+  - name: Contracts
+  - name: Invoices
+  - name: Payments
+  - name: Files
+  - name: Activities
+  - name: Tasks
+  - name: Tickets
+  - name: Reports
+  - name: Referrals
+  - name: Webhooks
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Effettua login con codice e password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login riuscito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Credenziali non valide
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/mfa/challenge:
+    post:
+      tags: [Auth]
+      summary: Avvia una challenge MFA opzionale
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfaChallengeRequest'
+      responses:
+        '200':
+          description: Challenge inviata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MfaChallengeResponse'
+        '400':
+          description: MFA non abilitata o richiesta errata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/mfa/verify:
+    post:
+      tags: [Auth]
+      summary: Verifica il codice MFA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfaVerifyRequest'
+      responses:
+        '200':
+          description: MFA verificata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Codice non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/request-password-reset:
+    post:
+      tags: [Auth]
+      summary: Richiede il reset password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+      responses:
+        '202':
+          description: Email inviata se utente valido
+        '400':
+          description: Richiesta non valida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/reset-password:
+    post:
+      tags: [Auth]
+      summary: Completa il reset della password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirmRequest'
+      responses:
+        '200':
+          description: Password reimpostata
+        '400':
+          description: Richiesta non valida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /me:
+    get:
+      tags: [Users]
+      summary: Restituisce il profilo corrente
+      responses:
+        '200':
+          description: Profilo utente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+        '401':
+          description: Token non valido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /users:
+    get:
+      tags: [Users]
+      summary: Elenco utenti
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [admin, seller, reseller, customer, management]
+        - name: teamId
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista utenti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+    post:
+      tags: [Users]
+      summary: Crea un nuovo utente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+      responses:
+        '201':
+          description: Utente creato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+  /users/{userId}:
+    get:
+      tags: [Users]
+      summary: Dettaglio utente
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        '200':
+          description: Dettaglio utente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+    patch:
+      tags: [Users]
+      summary: Aggiorna un utente
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: Utente aggiornato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+    delete:
+      tags: [Users]
+      summary: Disattiva un utente
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        '204':
+          description: Utente disattivato
+  /companies:
+    get:
+      tags: [Companies]
+      summary: Lista aziende
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: owner
+          in: query
+          schema:
+            type: string
+            enum: [me, team]
+        - name: industry
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco aziende
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyListResponse'
+    post:
+      tags: [Companies]
+      summary: Crea azienda
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyCreateRequest'
+      responses:
+        '201':
+          description: Azienda creata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+  /companies/{companyId}:
+    get:
+      tags: [Companies]
+      summary: Dettaglio azienda
+      parameters:
+        - $ref: '#/components/parameters/CompanyIdPath'
+      responses:
+        '200':
+          description: Azienda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+    patch:
+      tags: [Companies]
+      summary: Aggiorna azienda
+      parameters:
+        - $ref: '#/components/parameters/CompanyIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyUpdateRequest'
+      responses:
+        '200':
+          description: Azienda aggiornata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+    delete:
+      tags: [Companies]
+      summary: Richiede cancellazione logica azienda
+      parameters:
+        - $ref: '#/components/parameters/CompanyIdPath'
+      responses:
+        '202':
+          description: Richiesta ricevuta (GDPR)
+  /contacts:
+    get:
+      tags: [Contacts]
+      summary: Lista contatti
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: companyId
+          in: query
+          schema:
+            type: string
+        - name: owner
+          in: query
+          schema:
+            type: string
+            enum: [me, team]
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco contatti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactListResponse'
+    post:
+      tags: [Contacts]
+      summary: Crea contatto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactCreateRequest'
+      responses:
+        '201':
+          description: Contatto creato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactResponse'
+  /contacts/{contactId}:
+    get:
+      tags: [Contacts]
+      summary: Dettaglio contatto
+      parameters:
+        - $ref: '#/components/parameters/ContactIdPath'
+      responses:
+        '200':
+          description: Contatto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactResponse'
+    patch:
+      tags: [Contacts]
+      summary: Aggiorna contatto
+      parameters:
+        - $ref: '#/components/parameters/ContactIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactUpdateRequest'
+      responses:
+        '200':
+          description: Contatto aggiornato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactResponse'
+    delete:
+      tags: [Contacts]
+      summary: Anonimizza contatto
+      parameters:
+        - $ref: '#/components/parameters/ContactIdPath'
+      responses:
+        '202':
+          description: Anonimizzazione programmata
+  /opportunities:
+    get:
+      tags: [Opportunities]
+      summary: Lista opportunità
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: stage
+          in: query
+          schema:
+            type: string
+        - name: owner
+          in: query
+          schema:
+            type: string
+            enum: [me, team]
+        - name: forecastMonth
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: companyId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco opportunità
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpportunityListResponse'
+    post:
+      tags: [Opportunities]
+      summary: Crea opportunità
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpportunityCreateRequest'
+      responses:
+        '201':
+          description: Opportunità creata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpportunityResponse'
+  /opportunities/{opportunityId}:
+    get:
+      tags: [Opportunities]
+      summary: Dettaglio opportunità
+      parameters:
+        - $ref: '#/components/parameters/OpportunityIdPath'
+      responses:
+        '200':
+          description: Opportunità
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpportunityResponse'
+    patch:
+      tags: [Opportunities]
+      summary: Aggiorna opportunità
+      parameters:
+        - $ref: '#/components/parameters/OpportunityIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpportunityUpdateRequest'
+      responses:
+        '200':
+          description: Opportunità aggiornata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpportunityResponse'
+    post:
+      tags: [Opportunities]
+      operationId: advanceOpportunityStage
+      summary: Avanza lo stadio di un'opportunità
+      parameters:
+        - $ref: '#/components/parameters/OpportunityIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpportunityStageChangeRequest'
+      responses:
+        '200':
+          description: Opportunità aggiornata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpportunityResponse'
+  /offers:
+    get:
+      tags: [Offers]
+      summary: Elenco offerte
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: opportunityId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco offerte
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferListResponse'
+    post:
+      tags: [Offers]
+      summary: Crea offerta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfferCreateRequest'
+      responses:
+        '201':
+          description: Offerta creata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferResponse'
+  /offers/{offerId}:
+    get:
+      tags: [Offers]
+      summary: Dettaglio offerta
+      parameters:
+        - $ref: '#/components/parameters/OfferIdPath'
+      responses:
+        '200':
+          description: Offerta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferResponse'
+    patch:
+      tags: [Offers]
+      summary: Aggiorna offerta
+      parameters:
+        - $ref: '#/components/parameters/OfferIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfferUpdateRequest'
+      responses:
+        '200':
+          description: Offerta aggiornata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferResponse'
+  /offers/{offerId}/send:
+    post:
+      tags: [Offers]
+      summary: Invia offerta al cliente
+      parameters:
+        - $ref: '#/components/parameters/OfferIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfferSendRequest'
+      responses:
+        '202':
+          description: Offerta in invio
+    
+  /contracts:
+    get:
+      tags: [Contracts]
+      summary: Elenco contratti
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: companyId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco contratti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractListResponse'
+    post:
+      tags: [Contracts]
+      summary: Crea contratto da template
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractCreateRequest'
+      responses:
+        '201':
+          description: Contratto creato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+  /contracts/{contractId}:
+    get:
+      tags: [Contracts]
+      summary: Dettaglio contratto
+      parameters:
+        - $ref: '#/components/parameters/ContractIdPath'
+      responses:
+        '200':
+          description: Contratto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+    patch:
+      tags: [Contracts]
+      summary: Aggiorna stato contratto
+      parameters:
+        - $ref: '#/components/parameters/ContractIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractUpdateRequest'
+      responses:
+        '200':
+          description: Contratto aggiornato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractResponse'
+  /contracts/{contractId}/request-signature:
+    post:
+      tags: [Contracts]
+      summary: Avvia il flusso di firma elettronica
+      parameters:
+        - $ref: '#/components/parameters/ContractIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractSignatureRequest'
+      responses:
+        '202':
+          description: Firma avviata
+  /contracts/{contractId}/versions:
+    get:
+      tags: [Contracts]
+      summary: Elenco versioni contratto
+      parameters:
+        - $ref: '#/components/parameters/ContractIdPath'
+      responses:
+        '200':
+          description: Lista versioni
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractVersionListResponse'
+    post:
+      tags: [Contracts]
+      summary: Crea nuova versione contratto
+      parameters:
+        - $ref: '#/components/parameters/ContractIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractVersionCreateRequest'
+      responses:
+        '201':
+          description: Versione creata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractVersionResponse'
+  /contracts/{contractId}/signatures:
+    get:
+      tags: [Contracts]
+      summary: Elenco stati firma
+      parameters:
+        - $ref: '#/components/parameters/ContractIdPath'
+      responses:
+        '200':
+          description: Stati firma
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignatureListResponse'
+  /invoices:
+    get:
+      tags: [Invoices]
+      summary: Elenco fatture
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: companyId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco fatture
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceListResponse'
+    post:
+      tags: [Invoices]
+      summary: Crea fattura
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceCreateRequest'
+      responses:
+        '201':
+          description: Fattura creata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceResponse'
+  /payments:
+    get:
+      tags: [Payments]
+      summary: Elenco pagamenti
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: method
+          in: query
+          schema:
+            type: string
+        - name: companyId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco pagamenti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentListResponse'
+  /payments/webhook:
+    post:
+      tags: [Payments]
+      summary: Webhook Stripe
+      security:
+        - stripeWebhook: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Payload Stripe (vedi documentazione ufficiale)
+      responses:
+        '200':
+          description: Webhook gestito
+  /files:
+    post:
+      tags: [Files]
+      summary: Carica file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      responses:
+        '201':
+          description: File caricato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileResponse'
+  /activities:
+    get:
+      tags: [Activities]
+      summary: Timeline attività
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: companyId
+          in: query
+          schema:
+            type: string
+        - name: opportunityId
+          in: query
+          schema:
+            type: string
+        - name: type
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Timeline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityListResponse'
+  /tasks:
+    get:
+      tags: [Tasks]
+      summary: Lista task
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: owner
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+    post:
+      tags: [Tasks]
+      summary: Crea task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreateRequest'
+      responses:
+        '201':
+          description: Task creato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+  /tickets:
+    get:
+      tags: [Tickets]
+      summary: Elenco ticket supporto
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: priority
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketListResponse'
+    post:
+      tags: [Tickets]
+      summary: Crea ticket (public endpoint)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketCreateRequest'
+      responses:
+        '201':
+          description: Ticket creato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponse'
+  /reports:
+    get:
+      tags: [Reports]
+      summary: Elenco report generati
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: scope
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportListResponse'
+    post:
+      tags: [Reports]
+      summary: Genera report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportCreateRequest'
+      responses:
+        '202':
+          description: Generazione in coda
+  /referrals:
+    get:
+      tags: [Referrals]
+      summary: Elenco referral
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: owner
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco referral
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferralListResponse'
+    post:
+      tags: [Referrals]
+      summary: Crea referral code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReferralCreateRequest'
+      responses:
+        '201':
+          description: Referral creato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferralResponse'
+  /checkouts:
+    get:
+      tags: [Referrals]
+      summary: Elenco sessioni checkout
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: referralId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elenco checkout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutListResponse'
+  /webhooks/outgoing:
+    get:
+      tags: [Webhooks]
+      summary: Elenco webhook configurati
+      responses:
+        '200':
+          description: Elenco webhook
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookListResponse'
+    post:
+      tags: [Webhooks]
+      summary: Registra webhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookCreateRequest'
+      responses:
+        '201':
+          description: Webhook creato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResponse'
+  /webhooks/outgoing/{webhookId}:
+    delete:
+      tags: [Webhooks]
+      summary: Rimuove webhook
+      parameters:
+        - $ref: '#/components/parameters/WebhookIdPath'
+      responses:
+        '204':
+          description: Webhook rimosso
+  /webhooks/events/contract.signed:
+    post:
+      tags: [Webhooks]
+      summary: Esempio payload webhook contract.signed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractSignedWebhook'
+      responses:
+        '200':
+          description: Ricezione simulata
+  /webhooks/events/invoice.paid:
+    post:
+      tags: [Webhooks]
+      summary: Esempio payload webhook invoice.paid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoicePaidWebhook'
+      responses:
+        '200':
+          description: Ricezione simulata
+  /webhooks/events/offer.accepted:
+    post:
+      tags: [Webhooks]
+      summary: Esempio payload webhook offer.accepted
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfferAcceptedWebhook'
+      responses:
+        '200':
+          description: Ricezione simulata
+  /webhooks/events/ticket.created:
+    post:
+      tags: [Webhooks]
+      summary: Esempio payload webhook ticket.created
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketCreatedWebhook'
+      responses:
+        '200':
+          description: Ricezione simulata
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    stripeWebhook:
+      type: apiKey
+      in: header
+      name: Stripe-Signature
+  parameters:
+    CursorParam:
+      name: cursor
+      in: query
+      schema:
+        type: string
+      required: false
+      description: Cursor base64 per la paginazione a cursore
+    LimitParam:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+      required: false
+      description: Numero massimo di elementi per pagina
+    UserIdPath:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+    CompanyIdPath:
+      name: companyId
+      in: path
+      required: true
+      schema:
+        type: string
+    ContactIdPath:
+      name: contactId
+      in: path
+      required: true
+      schema:
+        type: string
+    OpportunityIdPath:
+      name: opportunityId
+      in: path
+      required: true
+      schema:
+        type: string
+    OfferIdPath:
+      name: offerId
+      in: path
+      required: true
+      schema:
+        type: string
+    ContractIdPath:
+      name: contractId
+      in: path
+      required: true
+      schema:
+        type: string
+    WebhookIdPath:
+      name: webhookId
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    CursorPagination:
+      type: object
+      properties:
+        nextCursor:
+          type: string
+          nullable: true
+        previousCursor:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      required: [code, message, correlationId]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          nullable: true
+          additionalProperties: true
+        correlationId:
+          type: string
+    LoginRequest:
+      type: object
+      required: [code11, password]
+      properties:
+        code11:
+          type: string
+          minLength: 11
+          maxLength: 11
+        password:
+          type: string
+          format: password
+    LoginResponse:
+      type: object
+      required: [accessToken, refreshToken, expiresIn, user]
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: integer
+          description: Expiry in seconds
+        user:
+          $ref: '#/components/schemas/CurrentUser'
+    MfaChallengeRequest:
+      type: object
+      required: [code11]
+      properties:
+        code11:
+          type: string
+          minLength: 11
+          maxLength: 11
+    MfaChallengeResponse:
+      type: object
+      required: [challengeId, channel]
+      properties:
+        challengeId:
+          type: string
+        channel:
+          type: string
+          enum: [sms, email, app]
+    MfaVerifyRequest:
+      type: object
+      required: [challengeId, otp]
+      properties:
+        challengeId:
+          type: string
+        otp:
+          type: string
+          minLength: 6
+          maxLength: 6
+    PasswordResetRequest:
+      type: object
+      required: [code11]
+      properties:
+        code11:
+          type: string
+          minLength: 11
+          maxLength: 11
+    PasswordResetConfirmRequest:
+      type: object
+      required: [token, password]
+      properties:
+        token:
+          type: string
+        password:
+          type: string
+          format: password
+    CurrentUser:
+      type: object
+      required: [id, name, email, role, permissions, locales]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [admin, seller, reseller, customer, management]
+        permissions:
+          type: array
+          items:
+            type: string
+        locales:
+          type: array
+          items:
+            type: string
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamSummary'
+    TeamSummary:
+      type: object
+      required: [id, name, type]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [seller, reseller]
+    UserCreateRequest:
+      type: object
+      required: [name, email, role, code11]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [admin, seller, reseller, customer, management]
+        code11:
+          type: string
+          minLength: 11
+          maxLength: 11
+        teamIds:
+          type: array
+          items:
+            type: string
+        resellerId:
+          type: string
+          nullable: true
+    UserUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+        status:
+          type: string
+          enum: [active, suspended]
+    UserResponse:
+      allOf:
+        - $ref: '#/components/schemas/CurrentUser'
+        - type: object
+          properties:
+            status:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+    UserListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    CompanyCreateRequest:
+      type: object
+      required: [legalName]
+      properties:
+        legalName:
+          type: string
+        website:
+          type: string
+          format: uri
+          nullable: true
+        linkedinUrl:
+          type: string
+          format: uri
+          nullable: true
+        geoArea:
+          type: string
+        industry:
+          type: string
+        revenueRange:
+          type: string
+        ownerUserId:
+          type: string
+        accountStatus:
+          type: string
+          enum: [lead, customer, churned]
+    CompanyUpdateRequest:
+      type: object
+      properties:
+        legalName:
+          type: string
+        website:
+          type: string
+          format: uri
+        linkedinUrl:
+          type: string
+          format: uri
+        geoArea:
+          type: string
+        industry:
+          type: string
+        revenueRange:
+          type: string
+        ownerUserId:
+          type: string
+        accountStatus:
+          type: string
+    CompanyResponse:
+      type: object
+      required: [id, legalName, ownerUserId, createdAt]
+      properties:
+        id:
+          type: string
+        legalName:
+          type: string
+        website:
+          type: string
+          nullable: true
+        linkedinUrl:
+          type: string
+          nullable: true
+        geoArea:
+          type: string
+          nullable: true
+        industry:
+          type: string
+          nullable: true
+        revenueRange:
+          type: string
+          nullable: true
+        ownerUserId:
+          type: string
+        accountStatus:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    CompanyListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    ContactCreateRequest:
+      type: object
+      required: [companyId, firstName, lastName, email]
+      properties:
+        companyId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          nullable: true
+        roleTitle:
+          type: string
+          nullable: true
+        linkedinUrl:
+          type: string
+          nullable: true
+        ownerUserId:
+          type: string
+    ContactUpdateRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        roleTitle:
+          type: string
+        linkedinUrl:
+          type: string
+        ownerUserId:
+          type: string
+    ContactResponse:
+      type: object
+      required: [id, companyId, firstName, lastName, email, createdAt]
+      properties:
+        id:
+          type: string
+        companyId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        ownerUserId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    ContactListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    OpportunityCreateRequest:
+      type: object
+      required: [companyId, title, value, currency, stage, ownerUserId]
+      properties:
+        companyId:
+          type: string
+        title:
+          type: string
+        value:
+          type: number
+          format: float
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+        stage:
+          type: string
+        probability:
+          type: integer
+          minimum: 0
+          maximum: 100
+        ownerUserId:
+          type: string
+        expectedCloseDate:
+          type: string
+          format: date
+          nullable: true
+        source:
+          type: string
+        products:
+          type: array
+          items:
+            type: string
+        nextStep:
+          type: string
+          nullable: true
+    OpportunityUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        value:
+          type: number
+        currency:
+          type: string
+        probability:
+          type: integer
+        ownerUserId:
+          type: string
+        expectedCloseDate:
+          type: string
+          format: date
+        nextStep:
+          type: string
+        notes:
+          type: string
+    OpportunityResponse:
+      type: object
+      required: [id, companyId, title, stage, value, currency, ownerUserId, createdAt]
+      properties:
+        id:
+          type: string
+        companyId:
+          type: string
+        title:
+          type: string
+        stage:
+          type: string
+        value:
+          type: number
+        currency:
+          type: string
+        ownerUserId:
+          type: string
+        probability:
+          type: integer
+        expectedCloseDate:
+          type: string
+          format: date
+          nullable: true
+        source:
+          type: string
+        nextStep:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    OpportunityListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpportunityResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    OpportunityStageChangeRequest:
+      type: object
+      required: [stage, requiredTaskCompleted]
+      properties:
+        stage:
+          type: string
+        requiredTaskCompleted:
+          type: boolean
+        notes:
+          type: string
+          nullable: true
+    OfferItem:
+      type: object
+      required: [name, quantity, unitPrice]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        quantity:
+          type: number
+          minimum: 0
+        unitPrice:
+          type: number
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+    OfferCreateRequest:
+      type: object
+      required: [opportunityId, items]
+      properties:
+        opportunityId:
+          type: string
+        version:
+          type: integer
+          default: 1
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfferItem'
+        notes:
+          type: string
+          nullable: true
+    OfferUpdateRequest:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfferItem'
+        status:
+          type: string
+          enum: [draft, sent, accepted, declined, expired, renegotiation]
+    OfferResponse:
+      type: object
+      required: [id, opportunityId, version, status, totalAmount, currency]
+      properties:
+        id:
+          type: string
+        opportunityId:
+          type: string
+        version:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfferItem'
+        totalAmount:
+          type: number
+        currency:
+          type: string
+        status:
+          type: string
+        sentAt:
+          type: string
+          format: date-time
+          nullable: true
+        acceptedAt:
+          type: string
+          format: date-time
+          nullable: true
+    OfferListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfferResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    OfferSendRequest:
+      type: object
+      required: [recipient]
+      properties:
+        recipient:
+          type: string
+          format: email
+        message:
+          type: string
+          nullable: true
+    ContractCreateRequest:
+      type: object
+      required: [companyId, templateId]
+      properties:
+        companyId:
+          type: string
+        opportunityId:
+          type: string
+          nullable: true
+        offerId:
+          type: string
+          nullable: true
+        templateId:
+          type: string
+        data:
+          type: object
+          description: Variabili di merge per il template
+        signers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractSigner'
+    ContractSigner:
+      type: object
+      required: [name, email, type]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        type:
+          type: string
+          enum: [customer, aycl]
+        method:
+          type: string
+          enum: [otp, sms, manual]
+    ContractUpdateRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [draft, sent, data_pending, ready_for_signature, signed, cancelled, expired]
+    ContractResponse:
+      type: object
+      required: [id, companyId, status]
+      properties:
+        id:
+          type: string
+        companyId:
+          type: string
+        opportunityId:
+          type: string
+          nullable: true
+        offerId:
+          type: string
+          nullable: true
+        templateId:
+          type: string
+        status:
+          type: string
+        currentVersionId:
+          type: string
+        signedAt:
+          type: string
+          format: date-time
+          nullable: true
+    ContractListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    ContractSignatureRequest:
+      type: object
+      required: [channel]
+      properties:
+        channel:
+          type: string
+          enum: [email, sms]
+        customMessage:
+          type: string
+          nullable: true
+    ContractVersionCreateRequest:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+        createdBy:
+          type: string
+    ContractVersionResponse:
+      type: object
+      required: [id, contractId, createdAt]
+      properties:
+        id:
+          type: string
+        contractId:
+          type: string
+        data:
+          type: object
+        pdfUrl:
+          type: string
+          format: uri
+        checksum:
+          type: string
+        createdBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    ContractVersionListResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractVersionResponse'
+    SignatureResponse:
+      type: object
+      required: [id, contractId, signerName, signerEmail, status]
+      properties:
+        id:
+          type: string
+        contractId:
+          type: string
+        signerType:
+          type: string
+        signerName:
+          type: string
+        signerEmail:
+          type: string
+          format: email
+        method:
+          type: string
+        status:
+          type: string
+          enum: [pending, viewed, signed, declined]
+        signedAt:
+          type: string
+          format: date-time
+          nullable: true
+    SignatureListResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignatureResponse'
+    InvoiceCreateRequest:
+      type: object
+      required: [companyId, number, issueDate, dueDate, total, currency]
+      properties:
+        companyId:
+          type: string
+        contractId:
+          type: string
+          nullable: true
+        number:
+          type: string
+        issueDate:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        total:
+          type: number
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [draft, sent, paid, overdue]
+    InvoiceResponse:
+      type: object
+      required: [id, number, status]
+      properties:
+        id:
+          type: string
+        companyId:
+          type: string
+        contractId:
+          type: string
+          nullable: true
+        number:
+          type: string
+        issueDate:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        total:
+          type: number
+        currency:
+          type: string
+        status:
+          type: string
+        pdfUrl:
+          type: string
+          format: uri
+          nullable: true
+    InvoiceListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    PaymentResponse:
+      type: object
+      required: [id, amount, currency, status]
+      properties:
+        id:
+          type: string
+        companyId:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        method:
+          type: string
+        provider:
+          type: string
+        chargeId:
+          type: string
+        status:
+          type: string
+        invoiceId:
+          type: string
+          nullable: true
+        contractId:
+          type: string
+          nullable: true
+        referralId:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    PaymentListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    FileUploadRequest:
+      type: object
+      required: [file]
+      properties:
+        file:
+          type: string
+          format: binary
+        companyId:
+          type: string
+          nullable: true
+        opportunityId:
+          type: string
+          nullable: true
+        contractId:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+    FileResponse:
+      type: object
+      required: [id, name, storageUrl]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        mime:
+          type: string
+        size:
+          type: integer
+        storageUrl:
+          type: string
+        checksum:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    ActivityResponse:
+      type: object
+      required: [id, type, actorUserId, createdAt]
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        actorUserId:
+          type: string
+        companyId:
+          type: string
+          nullable: true
+        contactId:
+          type: string
+          nullable: true
+        opportunityId:
+          type: string
+          nullable: true
+        payload:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+    ActivityListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    TaskCreateRequest:
+      type: object
+      required: [title, ownerUserId]
+      properties:
+        title:
+          type: string
+        dueDate:
+          type: string
+          format: date-time
+          nullable: true
+        ownerUserId:
+          type: string
+        companyId:
+          type: string
+          nullable: true
+        opportunityId:
+          type: string
+          nullable: true
+        priority:
+          type: string
+          enum: [low, medium, high]
+    TaskResponse:
+      type: object
+      required: [id, title, status]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+          enum: [open, done]
+        ownerUserId:
+          type: string
+        dueDate:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    TaskListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    TicketCreateRequest:
+      type: object
+      required: [requesterCode11, subject, description]
+      properties:
+        requesterCode11:
+          type: string
+          minLength: 11
+          maxLength: 11
+        requesterEmail:
+          type: string
+          format: email
+          nullable: true
+        subject:
+          type: string
+        description:
+          type: string
+        priority:
+          type: string
+          enum: [low, medium, high]
+          default: medium
+    TicketResponse:
+      type: object
+      required: [id, status]
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [open, pending, solved]
+        priority:
+          type: string
+        subject:
+          type: string
+        description:
+          type: string
+        assigneeUserId:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    TicketListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TicketResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    ReportCreateRequest:
+      type: object
+      required: [name, scope, filters]
+      properties:
+        name:
+          type: string
+        scope:
+          type: string
+          enum: [seller, line, group, global]
+        filters:
+          type: object
+        format:
+          type: string
+          enum: [csv, xlsx, pdf]
+        schedule:
+          type: object
+          nullable: true
+          description: Configurazione scheduler opzionale
+    ReportResponse:
+      type: object
+      required: [id, name, scope, status]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        scope:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, completed, failed]
+        fileUrl:
+          type: string
+          format: uri
+          nullable: true
+        generatedBy:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    ReportListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    ReferralCreateRequest:
+      type: object
+      required: [ownerUserId]
+      properties:
+        ownerUserId:
+          type: string
+        notes:
+          type: string
+          nullable: true
+    ReferralResponse:
+      type: object
+      required: [id, code, ownerUserId]
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        ownerUserId:
+          type: string
+        firstTouchAttribution:
+          type: string
+          nullable: true
+        lastTouchAttribution:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    ReferralListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReferralResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    CheckoutResponse:
+      type: object
+      required: [id, status]
+      properties:
+        id:
+          type: string
+        companyId:
+          type: string
+          nullable: true
+        contactId:
+          type: string
+          nullable: true
+        referralId:
+          type: string
+          nullable: true
+        source:
+          type: string
+        sessionId:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    CheckoutListResponse:
+      type: object
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckoutResponse'
+        page:
+          $ref: '#/components/schemas/CursorPagination'
+    WebhookCreateRequest:
+      type: object
+      required: [event, targetUrl]
+      properties:
+        event:
+          type: string
+          enum: [contract.signed, invoice.paid, offer.accepted, ticket.created]
+        targetUrl:
+          type: string
+          format: uri
+        secret:
+          type: string
+          nullable: true
+    WebhookResponse:
+      type: object
+      required: [id, event, targetUrl]
+      properties:
+        id:
+          type: string
+        event:
+          type: string
+        targetUrl:
+          type: string
+          format: uri
+        secret:
+          type: string
+          nullable: true
+        lastStatus:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    WebhookListResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookResponse'
+    ContractSignedWebhook:
+      type: object
+      required: [event, data]
+      properties:
+        event:
+          type: string
+          enum: [contract.signed]
+        data:
+          type: object
+          required: [contractId, companyId, signedAt]
+          properties:
+            contractId:
+              type: string
+            companyId:
+              type: string
+            signedAt:
+              type: string
+              format: date-time
+            currentVersionId:
+              type: string
+            signatures:
+              type: array
+              items:
+                $ref: '#/components/schemas/SignatureResponse'
+    InvoicePaidWebhook:
+      type: object
+      required: [event, data]
+      properties:
+        event:
+          type: string
+          enum: [invoice.paid]
+        data:
+          type: object
+          required: [invoiceId, paymentId, paidAt]
+          properties:
+            invoiceId:
+              type: string
+            paymentId:
+              type: string
+            paidAt:
+              type: string
+              format: date-time
+            amount:
+              type: number
+            currency:
+              type: string
+            referralId:
+              type: string
+              nullable: true
+    OfferAcceptedWebhook:
+      type: object
+      required: [event, data]
+      properties:
+        event:
+          type: string
+          enum: [offer.accepted]
+        data:
+          type: object
+          required: [offerId, opportunityId, acceptedAt]
+          properties:
+            offerId:
+              type: string
+            opportunityId:
+              type: string
+            acceptedAt:
+              type: string
+              format: date-time
+            totalAmount:
+              type: number
+            currency:
+              type: string
+    TicketCreatedWebhook:
+      type: object
+      required: [event, data]
+      properties:
+        event:
+          type: string
+          enum: [ticket.created]
+        data:
+          type: object
+          required: [ticketId, subject, createdAt]
+          properties:
+            ticketId:
+              type: string
+            subject:
+              type: string
+            priority:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+            requesterCode11:
+              type: string
+              minLength: 11
+              maxLength: 11
+
+# // CRITIC PASS: Necessario dettagliare endpoint mancanti (es. notifications, audit log) e aggiungere esempi di response completi; TODO validare schema con generatore OpenAPI.
