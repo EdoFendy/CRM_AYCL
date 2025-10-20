@@ -40,7 +40,7 @@ export async function listTasks(query: Record<string, unknown>) {
   const sql = `SELECT ${SELECT} FROM tasks ${where} ORDER BY due_date NULLS LAST LIMIT $${params.length + 1}`;
   params.push(limit + 1);
   const { rows } = await pool.query(sql, params);
-  return { items: rows.slice(0, limit), nextCursor: rows.length > limit ? cursor ?? null : null };
+  return { data: rows.slice(0, limit), nextCursor: rows.length > limit ? cursor ?? null : null };
 }
 
 export async function createTask(input: TaskInput, actorId: string) {

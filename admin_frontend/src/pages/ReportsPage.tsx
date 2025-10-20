@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useAuth } from '@context/AuthContext';
-import { useI18n } from '@i18n/I18nContext';
-import { apiClient } from '@utils/apiClient';
-import { DataTable } from '@components/data/DataTable';
+import { useAuth } from '../context/AuthContext';
+import { useI18n } from '../i18n/I18nContext';
+import { apiClient } from '../utils/apiClient';
+import { DataTable } from '../components/data/DataTable';
+import { StatusBadge } from '../components/ui/StatusBadge';
 
 interface ReportJob {
   id: string;
@@ -64,8 +65,8 @@ export default function ReportsPage() {
         columns={[
           { id: 'id', header: t('labels.id'), cell: (report: ReportJob) => report.id },
           { id: 'scope', header: t('labels.scope'), cell: (report: ReportJob) => report.scope },
-          { id: 'format', header: t('labels.format'), cell: (report: ReportJob) => report.format.toUpperCase() },
-          { id: 'status', header: t('labels.status'), cell: (report: ReportJob) => report.status },
+          { id: 'format', header: t('labels.format'), cell: (report: ReportJob) => report.format?.toUpperCase() || '—' },
+          { id: 'status', header: t('labels.status'), cell: (report: ReportJob) => <StatusBadge status={report.status} /> },
           {
             id: 'download',
             header: t('labels.download'),

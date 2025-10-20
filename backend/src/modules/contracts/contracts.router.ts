@@ -7,6 +7,7 @@ import {
   createDataEntryLink,
   getContract,
   getContractPdf,
+  listContracts,
   listContractVersions,
   recordSignature,
   transitionContract,
@@ -17,6 +18,11 @@ import { HttpError } from '../../middlewares/errorHandler.js';
 export const contractsRouter = Router();
 
 contractsRouter.use(requireAuth);
+
+contractsRouter.get('/', async (req, res) => {
+  const contracts = await listContracts(req.query);
+  res.json(contracts);
+});
 
 contractsRouter.post('/', async (req, res) => {
   const schema = z.object({

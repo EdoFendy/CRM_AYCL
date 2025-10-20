@@ -9,6 +9,24 @@ import { HttpError } from '../../middlewares/errorHandler.js';
 
 export const paymentsRouter = Router();
 
+paymentsRouter.get('/', requireAuth, async (req, res) => {
+  const filters: string[] = [];
+  const params: unknown[] = [];
+  
+  if (req.query.status) {
+    params.push(req.query.status);
+    filters.push(`status = $${params.length}`);
+  }
+  if (req.query.provider) {
+    params.push(req.query.provider);
+    filters.push(`provider = $${params.length}`);
+  }
+  
+  const whereClause = filters.length > 0 ? `WHERE ${filters.join(' AND ')}` : '';
+  const { rows } = await pool.query(`SELECT * FROM payments ${whereClause} ORDER BY created_at DESC LIMIT 100`, params);
+  res.json({ data: rows });
+});
+
 paymentsRouter.post('/checkout', requireAuth, async (req, res) => {
   const schema = z.object({ invoice_id: z.string().uuid().optional(), contract_id: z.string().uuid().optional(), amount: z.number(), currency: z.string().length(3).optional(), provider: z.string().optional() });
   const payload = schema.parse(req.body);

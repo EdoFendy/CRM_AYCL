@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { pool } from '../../db/pool.js';
 import { HttpError } from '../../middlewares/errorHandler.js';
 import { recordAuditLog } from '../../services/auditService.js';
+import { buildPaginationResponse, parseCursorPagination } from '../../utils/pagination.js';
 
 const SELECT = `id, company_id, opportunity_id, offer_id, template_id, status, signed_at, external_reference, created_at, updated_at`;
 
@@ -11,6 +12,29 @@ interface ContractInput {
   offer_id?: string | null;
   template_id?: string | null;
   status?: string;
+}
+
+export async function listContracts(query: Record<string, unknown>) {
+  const { limit, cursor } = parseCursorPagination(query);
+  const filters: string[] = [];
+  const params: unknown[] = [];
+
+  if (query.company_id) {
+    params.push(query.company_id);
+    filters.push(`company_id = $${params.length}`);
+  }
+  if (query.status) {
+    params.push(query.status);
+    filters.push(`status = $${params.length}`);
+  }
+
+  const whereClause = filters.length > 0 ? `WHERE ${filters.join(' AND ')}` : '';
+  params.push(limit! + 1);
+  const { rows } = await pool.query(
+    `SELECT ${SELECT} FROM contracts ${whereClause} ORDER BY created_at DESC LIMIT $${params.length}`,
+    params
+  );
+  return buildPaginationResponse(rows, limit!);
 }
 
 export async function createContract(input: ContractInput, actorId: string) {

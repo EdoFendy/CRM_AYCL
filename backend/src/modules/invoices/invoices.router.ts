@@ -11,7 +11,7 @@ invoicesRouter.use(requireAuth);
 
 invoicesRouter.get('/', async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM invoices ORDER BY created_at DESC LIMIT 100');
-  res.json(rows);
+  res.json({ data: rows });
 });
 
 invoicesRouter.post('/', async (req, res) => {

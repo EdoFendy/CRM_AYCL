@@ -10,7 +10,7 @@ receiptsRouter.use(requireAuth);
 
 receiptsRouter.get('/', async (_req, res) => {
   const { rows } = await pool.query('SELECT * FROM receipts ORDER BY created_at DESC LIMIT 100');
-  res.json(rows);
+  res.json({ data: rows });
 });
 
 receiptsRouter.post('/', async (req, res) => {

@@ -8,6 +8,13 @@ export const reportsRouter = Router();
 
 reportsRouter.use(requireAuth);
 
+reportsRouter.get('/', async (req, res) => {
+  const { rows } = await pool.query(
+    'SELECT id, scope, status, file_url, created_at, created_by FROM reports ORDER BY created_at DESC LIMIT 100'
+  );
+  res.json({ data: rows });
+});
+
 reportsRouter.post('/export', async (req, res) => {
   const schema = z.object({ scope: z.string(), filters: z.record(z.any()).default({}), format: z.enum(['csv', 'xlsx', 'pdf']).default('csv') });
   const payload = schema.parse(req.body);

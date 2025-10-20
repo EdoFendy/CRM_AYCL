@@ -39,10 +39,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
     try {
-      const me = await apiClient('me', { token });
+      const me = await apiClient<AuthUser>('auth/me', { token });
       setUser(me);
     } catch (error) {
-      console.error('Failed to fetch /me', error);
+      console.error('Failed to fetch /auth/me', error);
       notify('errors.sessionExpired');
       setToken(null);
       setUser(null);
@@ -57,12 +57,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(
     async ({ code11, password }: { code11: string; password: string }) => {
-      const { token: nextToken } = await apiClient('auth/login', {
+      const { accessToken } = await apiClient<{ accessToken: string; refreshToken: string; role: string; userId: string }>('auth/login', {
         method: 'POST',
         body: { code11, password },
       });
-      setToken(nextToken);
-      localStorage.setItem(TOKEN_KEY, nextToken);
+      setToken(accessToken);
+      localStorage.setItem(TOKEN_KEY, accessToken);
       await loadProfile();
       navigate('/dashboard');
     },

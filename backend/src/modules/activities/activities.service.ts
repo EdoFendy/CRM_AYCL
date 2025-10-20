@@ -53,7 +53,7 @@ export async function listActivities(query: Record<string, unknown>) {
   const sql = `SELECT ${SELECT} FROM activities ${where} ORDER BY occurred_at DESC LIMIT $${params.length + 1}`;
   params.push(limit + 1);
   const { rows } = await pool.query(sql, params);
-  return { items: rows.slice(0, limit), nextCursor: rows.length > limit ? cursor ?? null : null };
+  return { data: rows.slice(0, limit), nextCursor: rows.length > limit ? cursor ?? null : null };
 }
 
 export async function createActivity(input: ActivityInput, actorId: string) {

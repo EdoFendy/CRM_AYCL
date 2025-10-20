@@ -21,7 +21,7 @@ filesRouter.get('/', async (req, res) => {
   });
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   const { rows } = await pool.query(`SELECT id, name, mime, size, storage_url, tags, created_by, created_at FROM files ${where} ORDER BY created_at DESC`, params);
-  res.json(rows);
+  res.json({ data: rows });
 });
 
 filesRouter.post('/', async (req, res) => {

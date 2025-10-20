@@ -1,0 +1,439 @@
+-- ============================================
+-- SEED DATI REALISTICI - LEAD GENERATION CRM
+-- Azienda: AYCL (All You Can Leads)
+-- Business: Generazione e Vendita di Leads B2B
+-- ============================================
+
+-- ============================================
+-- 1. COMPANIES (Aziende Clienti)
+-- ============================================
+
+-- Aziende che comprano leads per i loro servizi
+INSERT INTO companies (id, ragione_sociale, website, linkedin, geo, industry, revenue_range, owner_id, created_at, updated_at)
+VALUES
+  -- Cliente 1: SaaS Company
+  ('11111111-1111-1111-1111-111111111111', 'TechFlow SaaS srl', 'https://techflowsaas.com', 'https://linkedin.com/company/techflowsaas', 'IT-North', 'SaaS', '1M-5M', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '90 days', NOW() - INTERVAL '90 days'),
+  
+  -- Cliente 2: Marketing Agency
+  ('22222222-2222-2222-2222-222222222222', 'Digital Boost Agency', 'https://digitalboost.it', 'https://linkedin.com/company/digitalboost', 'IT-Center', 'Marketing', '500K-1M', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '120 days', NOW() - INTERVAL '60 days'),
+  
+  -- Cliente 3: Real Estate
+  ('33333333-3333-3333-3333-333333333333', 'Prime Properties Group', 'https://primeproperties.com', 'https://linkedin.com/company/primeproperties', 'IT-South', 'Real Estate', '5M-10M', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '150 days', NOW() - INTERVAL '30 days'),
+  
+  -- Cliente 4: E-commerce
+  ('44444444-4444-4444-4444-444444444444', 'ShopItaly Commerce srl', 'https://shopitaly.com', 'https://linkedin.com/company/shopitaly', 'IT-North', 'E-commerce', '2M-5M', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '45 days', NOW() - INTERVAL '10 days'),
+  
+  -- Cliente 5: Consulting
+  ('55555555-5555-5555-5555-555555555555', 'Business Growth Consultants', 'https://bgconsultants.it', 'https://linkedin.com/company/bgconsultants', 'IT-Center', 'Consulting', '1M-2M', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '200 days', NOW() - INTERVAL '200 days'),
+  
+  -- Prospect 1: Fintech (non ancora cliente)
+  ('66666666-6666-6666-6666-666666666666', 'FinTech Innovations SpA', 'https://fintechinnovations.it', 'https://linkedin.com/company/fintechinnovations', 'IT-North', 'Fintech', '10M+', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '15 days', NOW() - INTERVAL '5 days'),
+  
+  -- Prospect 2: Healthcare
+  ('77777777-7777-7777-7777-777777777777', 'HealthCare Solutions', 'https://healthcaresol.com', 'https://linkedin.com/company/healthcaresol', 'IT-Center', 'Healthcare', '5M-10M', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '8 days', NOW() - INTERVAL '2 days'),
+  
+  -- Prospect 3: Education
+  ('88888888-8888-8888-8888-888888888888', 'EduTech Academy', 'https://edutechacademy.it', 'https://linkedin.com/company/edutechacademy', 'IT-South', 'Education', '500K-1M', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '3 days', NOW() - INTERVAL '1 day')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 2. CONTACTS (Contatti nelle Aziende)
+-- ============================================
+
+INSERT INTO contacts (id, company_id, first_name, last_name, email, phone, role, linkedin, owner_id, created_at, updated_at)
+VALUES
+  -- Contatti TechFlow SaaS
+  ('c1111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', 'Marco', 'Rossi', 'marco.rossi@techflowsaas.com', '+39 340 1234567', 'CEO', 'https://linkedin.com/in/marcorossi', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '90 days', NOW() - INTERVAL '90 days'),
+  ('c1111111-1111-1111-1111-111111111112', '11111111-1111-1111-1111-111111111111', 'Laura', 'Bianchi', 'laura.bianchi@techflowsaas.com', '+39 340 2345678', 'CMO', 'https://linkedin.com/in/laurabianchi', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '85 days', NOW() - INTERVAL '85 days'),
+  ('c1111111-1111-1111-1111-111111111113', '11111111-1111-1111-1111-111111111111', 'Giuseppe', 'Verdi', 'giuseppe.verdi@techflowsaas.com', '+39 340 3456789', 'Sales Director', 'https://linkedin.com/in/giuseppeverdi', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '80 days', NOW() - INTERVAL '80 days'),
+  
+  -- Contatti Digital Boost Agency
+  ('c2222222-2222-2222-2222-222222222221', '22222222-2222-2222-2222-222222222222', 'Francesca', 'Romano', 'francesca.romano@digitalboost.it', '+39 340 4567890', 'Founder & CEO', 'https://linkedin.com/in/francescaromano', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '120 days', NOW() - INTERVAL '60 days'),
+  ('c2222222-2222-2222-2222-222222222222', '22222222-2222-2222-2222-222222222222', 'Alessandro', 'Ferrari', 'alessandro.ferrari@digitalboost.it', '+39 340 5678901', 'Head of Growth', 'https://linkedin.com/in/alessandroferrari', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '115 days', NOW() - INTERVAL '55 days'),
+  ('c2222222-2222-2222-2222-222222222223', '22222222-2222-2222-2222-222222222222', 'Sofia', 'Russo', 'sofia.russo@digitalboost.it', '+39 340 6789012', 'Marketing Manager', 'https://linkedin.com/in/sofiarusso', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '110 days', NOW() - INTERVAL '50 days'),
+  
+  -- Contatti Prime Properties
+  ('c3333333-3333-3333-3333-333333333331', '33333333-3333-3333-3333-333333333333', 'Andrea', 'Gallo', 'andrea.gallo@primeproperties.com', '+39 340 7890123', 'Managing Director', 'https://linkedin.com/in/andreagallo', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '150 days', NOW() - INTERVAL '30 days'),
+  ('c3333333-3333-3333-3333-333333333332', '33333333-3333-3333-3333-333333333333', 'Martina', 'Costa', 'martina.costa@primeproperties.com', '+39 340 8901234', 'Sales Manager', 'https://linkedin.com/in/martinacosta', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '145 days', NOW() - INTERVAL '25 days'),
+  
+  -- Contatti ShopItaly
+  ('c4444444-4444-4444-4444-444444444441', '44444444-4444-4444-4444-444444444444', 'Luca', 'Marino', 'luca.marino@shopitaly.com', '+39 340 9012345', 'E-commerce Director', 'https://linkedin.com/in/lucamarino', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '45 days', NOW() - INTERVAL '10 days'),
+  ('c4444444-4444-4444-4444-444444444442', '44444444-4444-4444-4444-444444444444', 'Chiara', 'Ricci', 'chiara.ricci@shopitaly.com', '+39 340 0123456', 'Performance Marketing Lead', 'https://linkedin.com/in/chiararicci', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '40 days', NOW() - INTERVAL '8 days'),
+  
+  -- Contatti BGConsultants
+  ('c5555555-5555-5555-5555-555555555551', '55555555-5555-5555-5555-555555555555', 'Paolo', 'Conti', 'paolo.conti@bgconsultants.it', '+39 340 1122334', 'Senior Partner', 'https://linkedin.com/in/paoloconti', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '200 days', NOW() - INTERVAL '200 days'),
+  
+  -- Contatti FinTech Innovations (Prospect)
+  ('c6666666-6666-6666-6666-666666666661', '66666666-6666-6666-6666-666666666666', 'Elena', 'Fontana', 'elena.fontana@fintechinnovations.it', '+39 340 2233445', 'VP of Marketing', 'https://linkedin.com/in/elenafontana', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '15 days', NOW() - INTERVAL '5 days'),
+  ('c6666666-6666-6666-6666-666666666662', '66666666-6666-6666-6666-666666666666', 'Roberto', 'Lombardi', 'roberto.lombardi@fintechinnovations.it', '+39 340 3344556', 'Head of Sales', 'https://linkedin.com/in/robertolombardi', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '10 days', NOW() - INTERVAL '3 days'),
+  
+  -- Contatti HealthCare Solutions
+  ('c7777777-7777-7777-7777-777777777771', '77777777-7777-7777-7777-777777777777', 'Giulia', 'Moretti', 'giulia.moretti@healthcaresol.com', '+39 340 4455667', 'Business Development Manager', 'https://linkedin.com/in/giuliamoretti', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '8 days', NOW() - INTERVAL '2 days'),
+  
+  -- Contatti EduTech Academy
+  ('c8888888-8888-8888-8888-888888888881', '88888888-8888-8888-8888-888888888888', 'Davide', 'Greco', 'davide.greco@edutechacademy.it', '+39 340 5566778', 'Founder', 'https://linkedin.com/in/davidegreco', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '3 days', NOW() - INTERVAL '1 day')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 3. REFERRALS (Codici Referral)
+-- ============================================
+
+INSERT INTO referrals (id, code, owner_user_id, created_at, updated_at)
+VALUES
+  ('a1111111-1111-1111-1111-111111111111', 'PARTNER-TECHFLOW', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '100 days', NOW() - INTERVAL '100 days'),
+  ('a2222222-2222-2222-2222-222222222222', 'LINKEDIN-ADS-Q4', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days'),
+  ('a3333333-3333-3333-3333-333333333333', 'WEBINAR-LEADS', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 4. OPPORTUNITIES (Trattative in Pipeline)
+-- ============================================
+
+INSERT INTO opportunities (id, company_id, title, value, currency, stage, probability, owner_id, expected_close_date, source, referral_id, created_at, updated_at)
+VALUES
+  -- CLOSED WON (Vinte)
+  ('o1111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', 'TechFlow - Pacchetto Enterprise 500 Leads B2B Tech', 15000.00, 'EUR', 'closed_won', 100, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '60 days', 'partner', 'r1111111-1111-1111-1111-111111111111', NOW() - INTERVAL '90 days', NOW() - INTERVAL '60 days'),
+  
+  ('o2222222-2222-2222-2222-222222222221', '22222222-2222-2222-2222-222222222222', 'Digital Boost - Leads Marketing Agencies Qualified', 8500.00, 'EUR', 'closed_won', 100, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '45 days', 'organic', NULL, NOW() - INTERVAL '120 days', NOW() - INTERVAL '45 days'),
+  
+  ('o5555555-5555-5555-5555-555555555551', '55555555-5555-5555-5555-555555555555', 'BGConsultants - Database PMI Manufacturing 300 Leads', 5500.00, 'EUR', 'closed_won', 100, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '180 days', 'cold_outreach', NULL, NOW() - INTERVAL '200 days', NOW() - INTERVAL '180 days'),
+  
+  -- NEGOTIATION (In Negoziazione)
+  ('o3333333-3333-3333-3333-333333333331', '33333333-3333-3333-3333-333333333333', 'Prime Properties - Leads Acquirenti Immobili Luxury 1000 Contatti', 25000.00, 'EUR', 'negotiation', 75, '00000000-0000-0000-0000-000000000002', NOW() + INTERVAL '15 days', 'ads', 'r2222222-2222-2222-2222-222222222222', NOW() - INTERVAL '150 days', NOW() - INTERVAL '5 days'),
+  
+  ('o4444444-4444-4444-4444-444444444441', '44444444-4444-4444-4444-444444444444', 'ShopItaly - E-commerce Leads + Retargeting Data 5000 Leads', 18000.00, 'EUR', 'negotiation', 80, '00000000-0000-0000-0000-000000000002', NOW() + INTERVAL '20 days', 'referral', NULL, NOW() - INTERVAL '45 days', NOW() - INTERVAL '3 days'),
+  
+  -- PROPOSAL (Proposta Inviata)
+  ('o6666666-6666-6666-6666-666666666661', '66666666-6666-6666-6666-666666666666', 'FinTech Innovations - Qualified Leads Fintech Startups 800 Leads', 22000.00, 'EUR', 'proposal', 60, '00000000-0000-0000-0000-000000000002', NOW() + INTERVAL '30 days', 'event', 'r3333333-3333-3333-3333-333333333333', NOW() - INTERVAL '15 days', NOW() - INTERVAL '2 days'),
+  
+  -- DISCOVERY (In Scoperta)
+  ('o7777777-7777-7777-7777-777777777771', '77777777-7777-7777-7777-777777777777', 'HealthCare Solutions - Medical Facilities Decision Makers 600 Leads', 16000.00, 'EUR', 'discovery', 40, '00000000-0000-0000-0000-000000000002', NOW() + INTERVAL '45 days', 'organic', NULL, NOW() - INTERVAL '8 days', NOW() - INTERVAL '1 day'),
+  
+  -- QUALIFYING (In Qualifica)
+  ('o8888888-8888-8888-8888-888888888881', '88888888-8888-8888-8888-888888888888', 'EduTech Academy - Students & Parents Database 2000 Leads', 9500.00, 'EUR', 'qualifying', 30, '00000000-0000-0000-0000-000000000002', NOW() + INTERVAL '60 days', 'ads', NULL, NOW() - INTERVAL '3 days', NOW() - INTERVAL '6 hours'),
+  
+  -- NEW (Nuova)
+  ('o2222222-2222-2222-2222-222222222222', '22222222-2222-2222-2222-222222222222', 'Digital Boost - Expansion: LinkedIn Leads Campaign 1500 Leads', 12000.00, 'EUR', 'new', 20, '00000000-0000-0000-0000-000000000002', NOW() + INTERVAL '90 days', 'organic', NULL, NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days'),
+  
+  -- CLOSED LOST (Persa)
+  ('o9999999-9999-9999-9999-999999999991', '44444444-4444-4444-4444-444444444444', 'ShopItaly - Previous Proposal: Basic Package 200 Leads', 3500.00, 'EUR', 'closed_lost', 0, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '50 days', 'cold_outreach', NULL, NOW() - INTERVAL '80 days', NOW() - INTERVAL '50 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 5. OFFERS (Offerte Commerciali)
+-- ============================================
+
+INSERT INTO offers (id, opportunity_id, version, items, total, currency, status, created_at, updated_at)
+VALUES
+  -- Offerta per TechFlow (Vinta)
+  ('of111111-1111-1111-1111-111111111111', 'o1111111-1111-1111-1111-111111111111', 1, 
+   '[{"name":"500 Leads B2B Tech Qualified","quantity":1,"unit_price":15000,"description":"Database decision makers tech companies, validated emails, LinkedIn profiles"}]'::jsonb,
+   15000.00, 'EUR', 'accepted', NOW() - INTERVAL '85 days', NOW() - INTERVAL '60 days'),
+  
+  -- Offerta per Digital Boost (Vinta)
+  ('of222222-2222-2222-2222-222222222221', 'o2222222-2222-2222-2222-222222222221', 1,
+   '[{"name":"300 Leads Marketing Agencies","quantity":1,"unit_price":8500,"description":"Database CMO and Marketing Directors, verified contacts, GDPR compliant"}]'::jsonb,
+   8500.00, 'EUR', 'accepted', NOW() - INTERVAL '115 days', NOW() - INTERVAL '45 days'),
+  
+  -- Offerta per Prime Properties (In Negoziazione v2)
+  ('of333333-3333-3333-3333-333333333331', 'o3333333-3333-3333-3333-333333333331', 1,
+   '[{"name":"1000 Leads Acquirenti Immobili Luxury","quantity":1,"unit_price":28000,"description":"High-net-worth individuals interested in luxury properties, detailed profiles"}]'::jsonb,
+   28000.00, 'EUR', 'declined', NOW() - INTERVAL '20 days', NOW() - INTERVAL '10 days'),
+  
+  ('of333333-3333-3333-3333-333333333332', 'o3333333-3333-3333-3333-333333333331', 2,
+   '[{"name":"1000 Leads Acquirenti Immobili Luxury - Revised","quantity":1,"unit_price":25000,"description":"High-net-worth individuals, includes follow-up support and data refresh after 6 months"}]'::jsonb,
+   25000.00, 'EUR', 'sent', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days'),
+  
+  -- Offerta per ShopItaly (In Negoziazione)
+  ('of444444-4444-4444-4444-444444444441', 'o4444444-4444-4444-4444-444444444441', 1,
+   '[{"name":"5000 E-commerce Qualified Leads","quantity":1,"unit_price":18000,"description":"Active online shoppers, segmented by interest, includes retargeting data"}]'::jsonb,
+   18000.00, 'EUR', 'sent', NOW() - INTERVAL '10 days', NOW() - INTERVAL '3 days'),
+  
+  -- Offerta per FinTech (Proposta)
+  ('of666666-6666-6666-6666-666666666661', '6666666-6666-6666-6666-666666666661', 1,
+   '[{"name":"800 Fintech Qualified Leads","quantity":1,"unit_price":22000,"description":"Decision makers in fintech startups and scaleups, verified funding status"}]'::jsonb,
+   22000.00, 'EUR', 'sent', NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 6. CONTRACTS (Contratti Firmati)
+-- ============================================
+
+INSERT INTO contracts (id, company_id, opportunity_id, offer_id, template_id, status, signed_at, external_reference, created_at, updated_at)
+VALUES
+  -- Contratto TechFlow (Firmato)
+  ('ct111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', 'o1111111-1111-1111-1111-111111111111', 'of111111-1111-1111-1111-111111111111', NULL, 'signed', NOW() - INTERVAL '60 days', 'AYCL-2024-001', NOW() - INTERVAL '65 days', NOW() - INTERVAL '60 days'),
+  
+  -- Contratto Digital Boost (Firmato)
+  ('ct222222-2222-2222-2222-222222222221', '22222222-2222-2222-2222-222222222222', 'o2222222-2222-2222-2222-222222222221', 'of222222-2222-2222-2222-222222222221', NULL, 'signed', NOW() - INTERVAL '45 days', 'AYCL-2024-002', NOW() - INTERVAL '50 days', NOW() - INTERVAL '45 days'),
+  
+  -- Contratto BGConsultants (Firmato)
+  ('ct555555-5555-5555-5555-555555555551', '55555555-5555-5555-5555-555555555555', 'o5555555-5555-5555-5555-555555555551', NULL, NULL, 'signed', NOW() - INTERVAL '180 days', 'AYCL-2023-045', NOW() - INTERVAL '185 days', NOW() - INTERVAL '180 days'),
+  
+  -- Contratto Prime Properties (In attesa di firma)
+  ('ct333333-3333-3333-3333-333333333331', '33333333-3333-3333-3333-333333333333', 'o3333333-3333-3333-3333-333333333331', 'of333333-3333-3333-3333-333333333332', NULL, 'pending', NULL, 'AYCL-2024-003', NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 7. SIGNATURES (Firme Contratti)
+-- ============================================
+
+INSERT INTO signatures (id, contract_id, signer_name, signer_email, method, status, signed_at, ip, created_at, updated_at)
+VALUES
+  -- Firme contratto TechFlow
+  ('sg111111-1111-1111-1111-111111111111', 'ct111111-1111-1111-1111-111111111111', 'Marco Rossi', 'marco.rossi@techflowsaas.com', 'otp', 'completed', NOW() - INTERVAL '60 days', '185.25.113.45', NOW() - INTERVAL '65 days', NOW() - INTERVAL '60 days'),
+  
+  -- Firme contratto Digital Boost
+  ('sg222222-2222-2222-2222-222222222221', 'ct222222-2222-2222-2222-222222222221', 'Francesca Romano', 'francesca.romano@digitalboost.it', 'sms', 'completed', NOW() - INTERVAL '45 days', '151.20.88.102', NOW() - INTERVAL '50 days', NOW() - INTERVAL '45 days'),
+  
+  -- Firme contratto BGConsultants
+  ('sg555555-5555-5555-5555-555555555551', 'ct555555-5555-5555-5555-555555555551', 'Paolo Conti', 'paolo.conti@bgconsultants.it', 'otp', 'completed', NOW() - INTERVAL '180 days', '93.45.201.78', NOW() - INTERVAL '185 days', NOW() - INTERVAL '180 days'),
+  
+  -- Firma pending per Prime Properties
+  ('sg333333-3333-3333-3333-333333333331', 'ct333333-3333-3333-3333-333333333331', 'Andrea Gallo', 'andrea.gallo@primeproperties.com', 'otp', 'pending', NULL, NULL, NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 8. INVOICES (Fatture)
+-- ============================================
+
+INSERT INTO invoices (id, contract_id, number, status, provider, amount, currency, issued_at, due_date, pdf_url, metadata, created_at, updated_at)
+VALUES
+  -- Fattura TechFlow (Pagata)
+  ('in111111-1111-1111-1111-111111111111', 'ct111111-1111-1111-1111-111111111111', 'FT-2024-001', 'paid', 'internal', 15000.00, 'EUR', NOW() - INTERVAL '58 days', NOW() - INTERVAL '28 days', '/invoices/FT-2024-001.pdf', '{"payment_method":"bank_transfer","bank":"Intesa Sanpaolo"}'::jsonb, NOW() - INTERVAL '60 days', NOW() - INTERVAL '28 days'),
+  
+  -- Fattura Digital Boost (Pagata)
+  ('in222222-2222-2222-2222-222222222221', 'ct222222-2222-2222-2222-222222222221', 'FT-2024-002', 'paid', 'internal', 8500.00, 'EUR', NOW() - INTERVAL '43 days', NOW() - INTERVAL '13 days', '/invoices/FT-2024-002.pdf', '{"payment_method":"bank_transfer","bank":"UniCredit"}'::jsonb, NOW() - INTERVAL '45 days', NOW() - INTERVAL '13 days'),
+  
+  -- Fattura BGConsultants (Pagata)
+  ('in555555-5555-5555-5555-555555555551', 'ct555555-5555-5555-5555-555555555551', 'FT-2023-045', 'paid', 'internal', 5500.00, 'EUR', NOW() - INTERVAL '178 days', NOW() - INTERVAL '148 days', '/invoices/FT-2023-045.pdf', '{"payment_method":"bank_transfer","bank":"Banco BPM"}'::jsonb, NOW() - INTERVAL '180 days', NOW() - INTERVAL '148 days'),
+  
+  -- Fattura Prime Properties (Draft - in attesa di contratto firmato)
+  ('in333333-3333-3333-3333-333333333331', 'ct333333-3333-3333-3333-333333333331', 'FT-2024-003', 'draft', 'internal', 25000.00, 'EUR', NULL, NULL, NULL, '{}'::jsonb, NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 9. PAYMENTS (Pagamenti)
+-- ============================================
+
+INSERT INTO payments (id, invoice_id, contract_id, referral_id, status, provider, amount, currency, external_id, raw_payload, received_at, created_at)
+VALUES
+  -- Pagamento TechFlow
+  ('py111111-1111-1111-1111-111111111111', 'in111111-1111-1111-1111-111111111111', 'ct111111-1111-1111-1111-111111111111', 'r1111111-1111-1111-1111-111111111111', 'succeeded', 'bank_transfer', 15000.00, 'EUR', 'BT-2024-001-TF', '{}'::jsonb, NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days'),
+  
+  -- Pagamento Digital Boost
+  ('py222222-2222-2222-2222-222222222221', 'in222222-2222-2222-2222-222222222221', 'ct222222-2222-2222-2222-222222222221', NULL, 'succeeded', 'bank_transfer', 8500.00, 'EUR', 'BT-2024-002-DB', '{}'::jsonb, NOW() - INTERVAL '13 days', NOW() - INTERVAL '13 days'),
+  
+  -- Pagamento BGConsultants
+  ('py555555-5555-5555-5555-555555555551', 'in555555-5555-5555-5555-555555555551', 'ct555555-5555-5555-5555-555555555551', NULL, 'succeeded', 'bank_transfer', 5500.00, 'EUR', 'BT-2023-045-BG', '{}'::jsonb, NOW() - INTERVAL '148 days', NOW() - INTERVAL '148 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 10. RECEIPTS (Ricevute)
+-- ============================================
+
+INSERT INTO receipts (id, invoice_id, status, provider, amount, currency, issued_at, pdf_url, created_at)
+VALUES
+  ('rc111111-1111-1111-1111-111111111111', 'in111111-1111-1111-1111-111111111111', 'issued', 'internal', 15000.00, 'EUR', NOW() - INTERVAL '28 days', '/receipts/RC-2024-001.pdf', NOW() - INTERVAL '28 days'),
+  
+  ('rc222222-2222-2222-2222-222222222221', 'in222222-2222-2222-2222-222222222221', 'issued', 'internal', 8500.00, 'EUR', NOW() - INTERVAL '13 days', '/receipts/RC-2024-002.pdf', NOW() - INTERVAL '13 days'),
+  
+  ('rc555555-5555-5555-5555-555555555551', 'in555555-5555-5555-5555-555555555551', 'issued', 'internal', 5500.00, 'EUR', NOW() - INTERVAL '148 days', '/receipts/RC-2023-045.pdf', NOW() - INTERVAL '148 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 11. TASKS (Attività/Task)
+-- ============================================
+
+INSERT INTO tasks (id, title, description, due_date, owner_id, company_id, opportunity_id, status, priority, metadata, created_at, updated_at, completed_at)
+VALUES
+  -- Task completati
+  ('tk111111-1111-1111-1111-111111111111', 'Follow-up call TechFlow - Close deal', 'Chiamata finale per chiudere contratto con Marco Rossi, confermare termini e inviare contratto', NOW() - INTERVAL '62 days', '00000000-0000-0000-0000-000000000002', '11111111-1111-1111-1111-111111111111', 'o1111111-1111-1111-1111-111111111111', 'done', 'high', '{}'::jsonb, NOW() - INTERVAL '65 days', NOW() - INTERVAL '60 days', NOW() - INTERVAL '60 days'),
+  
+  ('tk222222-2222-2222-2222-222222222221', 'Inviare proposta Digital Boost', 'Preparare e inviare proposta commerciale per pacchetto leads marketing agencies', NOW() - INTERVAL '115 days', '00000000-0000-0000-0000-000000000002', '22222222-2222-2222-2222-222222222222', 'o2222222-2222-2222-2222-222222222221', 'done', 'high', '{}'::jsonb, NOW() - INTERVAL '118 days', NOW() - INTERVAL '110 days', NOW() - INTERVAL '110 days'),
+  
+  -- Task in progress
+  ('tk333333-3333-3333-3333-333333333331', 'Negoziare sconto Prime Properties', 'Rivedere offerta con Andrea Gallo, proporre sconto 10% + supporto post-vendita', NOW() + INTERVAL '2 days', '00000000-0000-0000-0000-000000000002', '33333333-3333-3333-3333-333333333333', 'o3333333-3333-3333-3333-333333333331', 'in_progress', 'urgent', '{}'::jsonb, NOW() - INTERVAL '7 days', NOW() - INTERVAL '1 day', NULL),
+  
+  ('tk444444-4444-4444-4444-444444444441', 'Demo piattaforma leads ShopItaly', 'Mostrare dashboard e sistema di integrazione API per retargeting data', NOW() + INTERVAL '3 days', '00000000-0000-0000-0000-000000000002', '44444444-4444-4444-4444-444444444444', 'o4444444-4444-4444-4444-444444444441', 'in_progress', 'high', '{}'::jsonb, NOW() - INTERVAL '5 days', NOW() - INTERVAL '1 day', NULL),
+  
+  -- Task open
+  ('tk666666-6666-6666-6666-666666666661', 'Follow-up proposta FinTech Innovations', 'Chiamata con Elena Fontana per discutere proposta inviata, rispondere a domande tecniche', NOW() + INTERVAL '5 days', '00000000-0000-0000-0000-000000000002', '66666666-6666-6666-6666-666666666666', 'o6666666-6666-6666-6666-666666666661', 'open', 'medium', '{}'::jsonb, NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day', NULL),
+  
+  ('tk777777-7777-7777-7777-777777777771', 'Discovery call HealthCare Solutions', 'Prima chiamata con Giulia Moretti per capire esigenze e budget', NOW() + INTERVAL '4 days', '00000000-0000-0000-0000-000000000002', '77777777-7777-7777-7777-777777777777', 'o7777777-7777-7777-7777-777777777771', 'open', 'medium', '{}'::jsonb, NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day', NULL),
+  
+  ('tk888888-8888-8888-8888-888888888881', 'Qualifying call EduTech Academy', 'Chiamata con Davide Greco per qualificare opportunità e budget', NOW() + INTERVAL '2 days', '00000000-0000-0000-0000-000000000002', '88888888-8888-8888-8888-888888888888', 'o8888888-8888-8888-8888-888888888881', 'open', 'low', '{}'::jsonb, NOW() - INTERVAL '12 hours', NOW() - INTERVAL '12 hours', NULL),
+  
+  -- Task scaduto
+  ('tk999999-9999-9999-9999-999999999991', 'Inviare sample data a FinTech Innovations', 'Preparare sample del database leads fintech (50 record) per demo', NOW() - INTERVAL '1 day', '00000000-0000-0000-0000-000000000002', '66666666-6666-6666-6666-666666666666', 'o6666666-6666-6666-6666-666666666661', 'open', 'high', '{}'::jsonb, NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days', NULL),
+  
+  -- Task generici (non legati a opportunità)
+  ('tk000001-0000-0000-0000-000000000001', 'Aggiornare database leads settore Tech', 'Refresh contatti aziende tech, verificare email e LinkedIn profiles', NOW() + INTERVAL '7 days', '00000000-0000-0000-0000-000000000002', NULL, NULL, 'open', 'medium', '{}'::jsonb, NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days', NULL),
+  
+  ('tk000002-0000-0000-0000-000000000002', 'Report mensile performance vendite', 'Preparare report Q4 con metriche pipeline, win rate, forecast', NOW() + INTERVAL '10 days', '00000000-0000-0000-0000-000000000001', NULL, NULL, 'open', 'medium', '{}'::jsonb, NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days', NULL)
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 12. ACTIVITIES (Attività CRM)
+-- ============================================
+
+INSERT INTO activities (id, type, actor_id, company_id, contact_id, opportunity_id, content, metadata, occurred_at, created_at)
+VALUES
+  -- Email activities
+  ('ac111111-1111-1111-1111-111111111111', 'email', '00000000-0000-0000-0000-000000000002', '11111111-1111-1111-1111-111111111111', 'c1111111-1111-1111-1111-111111111111', 'o1111111-1111-1111-1111-111111111111', 'Inviata proposta commerciale per pacchetto Enterprise 500 Leads B2B Tech. Allegato: AYCL-Proposal-TechFlow-v1.pdf', '{"subject":"Proposta Commerciale - 500 Leads B2B Tech Qualified","status":"sent"}'::jsonb, NOW() - INTERVAL '85 days', NOW() - INTERVAL '85 days'),
+  
+  ('ac222222-2222-2222-2222-222222222221', 'email', '00000000-0000-0000-0000-000000000002', '22222222-2222-2222-2222-222222222222', 'c2222222-2222-2222-2222-222222222221', 'o2222222-2222-2222-2222-222222222221', 'Follow-up email dopo demo piattaforma. Francesca interessata, richiesto sconto 10%.', '{"subject":"Re: Demo AYCL Platform - Marketing Leads","status":"sent"}'::jsonb, NOW() - INTERVAL '115 days', NOW() - INTERVAL '115 days'),
+  
+  ('ac666666-6666-6666-6666-666666666661', 'email', '00000000-0000-0000-0000-000000000002', '66666666-6666-6666-6666-666666666666', 'c6666666-6666-6666-6666-666666666661', 'o6666666-6666-6666-6666-666666666661', 'Inviata proposta FinTech Innovations. Elena ha chiesto dettagli su data compliance e GDPR.', '{"subject":"Proposta Leads Fintech + Compliance Details","status":"sent"}'::jsonb, NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days'),
+  
+  -- Call activities
+  ('ac111112-1111-1111-1111-111111111112', 'call', '00000000-0000-0000-0000-000000000002', '11111111-1111-1111-1111-111111111111', 'c1111111-1111-1111-1111-111111111111', 'o1111111-1111-1111-1111-111111111111', 'Call con Marco Rossi. Discussi termini contratto, confermato budget 15K, firma prevista entro fine settimana. Outcome: Positivo, deal closing.', '{"duration_minutes":45,"outcome":"positive"}'::jsonb, NOW() - INTERVAL '62 days', NOW() - INTERVAL '62 days'),
+  
+  ('ac333333-3333-3333-3333-333333333331', 'call', '00000000-0000-0000-0000-000000000002', '33333333-3333-3333-3333-333333333333', 'c3333333-3333-3333-3333-333333333331', 'o3333333-3333-3333-3333-333333333331', 'Negoziazione con Andrea Gallo. Richiesto sconto su offerta iniziale. Proposto 25K invece di 28K con supporto post-vendita incluso.', '{"duration_minutes":60,"outcome":"negotiating"}'::jsonb, NOW() - INTERVAL '7 days', NOW() - INTERVAL '7 days'),
+  
+  ('ac777777-7777-7777-7777-777777777771', 'call', '00000000-0000-0000-0000-000000000002', '77777777-7777-7777-7777-777777777777', 'c7777777-7777-7777-7777-777777777771', 'o7777777-7777-7777-7777-777777777771', 'Prima call con Giulia Moretti - HealthCare Solutions. Interessati a leads per medical facilities. Budget stimato 15-20K. Prossimo step: inviare case study.', '{"duration_minutes":30,"outcome":"qualified"}'::jsonb, NOW() - INTERVAL '8 days', NOW() - INTERVAL '8 days'),
+  
+  -- Meeting activities
+  ('ac444444-4444-4444-4444-444444444441', 'meeting', '00000000-0000-0000-0000-000000000002', '44444444-4444-4444-4444-444444444444', 'c4444444-4444-4444-4444-444444444441', 'o4444444-4444-4444-4444-444444444441', 'Meeting Google Meet con Luca Marino e Chiara Ricci. Demo piattaforma leads + sistema integrazione API. Molto interessati, richiesto preventivo dettagliato.', '{"platform":"google_meet","attendees":["Luca Marino","Chiara Ricci"],"duration_minutes":90}'::jsonb, NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
+  
+  ('ac666666-6666-6666-6666-666666666662', 'meeting', '00000000-0000-0000-0000-000000000002', '66666666-6666-6666-6666-666666666666', 'c6666666-6666-6666-6666-666666666661', 'o6666666-6666-6666-6666-666666666661', 'Webinar "Lead Generation per Fintech" - Elena Fontana partecipante. Ottima impression, richiesto follow-up per discutere case study specifici.', '{"platform":"zoom","event_type":"webinar","attendees_count":45}'::jsonb, NOW() - INTERVAL '15 days', NOW() - INTERVAL '15 days'),
+  
+  -- Note activities
+  ('ac555555-5555-5555-5555-555555555551', 'note', '00000000-0000-0000-0000-000000000002', '55555555-5555-5555-5555-555555555555', 'c5555555-5555-5555-5555-555555555551', 'o5555555-5555-5555-5555-555555555551', 'Cliente molto soddisfatto. Database PMI Manufacturing ha generato 23 nuovi contatti qualificati in 2 settimane. Possibile upsell futuro per database settore diverso.', '{}'::jsonb, NOW() - INTERVAL '170 days', NOW() - INTERVAL '170 days'),
+  
+  ('ac888888-8888-8888-8888-888888888881', 'note', '00000000-0000-0000-0000-000000000002', '88888888-8888-8888-8888-888888888888', 'c8888888-8888-8888-8888-888888888881', 'o8888888-8888-8888-8888-888888888881', 'Davide Greco trovato su LinkedIn ads campaign. Risposto a form contatto, interessato ma budget limitato. Max 10K. Da qualificare meglio.', '{"lead_source":"linkedin_ads","campaign":"Q4-Education-2024"}'::jsonb, NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
+  
+  -- System activities
+  ('ac111113-1111-1111-1111-111111111113', 'system', NULL, '11111111-1111-1111-1111-111111111111', 'c1111111-1111-1111-1111-111111111111', 'o1111111-1111-1111-1111-111111111111', 'Opportunità spostata in stage "Closed Won". Valore: €15,000', '{"stage_from":"negotiation","stage_to":"closed_won","value":15000}'::jsonb, NOW() - INTERVAL '60 days', NOW() - INTERVAL '60 days'),
+  
+  ('ac222223-2222-2222-2222-222222222223', 'system', NULL, '22222222-2222-2222-2222-222222222222', 'c2222222-2222-2222-2222-222222222221', 'o2222222-2222-2222-2222-222222222221', 'Contratto firmato. Documento: AYCL-2024-002.pdf', '{"contract_id":"ct222222-2222-2222-2222-222222222221","status":"signed"}'::jsonb, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 13. FILES (Documenti)
+-- ============================================
+
+INSERT INTO files (id, name, mime, size, storage_url, tags, company_id, opportunity_id, contract_id, created_by, created_at)
+VALUES
+  -- File TechFlow
+  ('fl111111-1111-1111-1111-111111111111', 'AYCL-Proposal-TechFlow-Enterprise-v1.pdf', 'application/pdf', 524288, '/files/proposals/AYCL-Proposal-TechFlow-v1.pdf', ARRAY['proposal','techflow','enterprise'], '11111111-1111-1111-1111-111111111111', 'o1111111-1111-1111-1111-111111111111', NULL, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '85 days'),
+  
+  ('fl111112-1111-1111-1111-111111111112', 'Contract-TechFlow-AYCL-2024-001-signed.pdf', 'application/pdf', 786432, '/files/contracts/AYCL-2024-001-signed.pdf', ARRAY['contract','signed','techflow'], '11111111-1111-1111-1111-111111111111', 'o1111111-1111-1111-1111-111111111111', 'ct111111-1111-1111-1111-111111111111', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '60 days'),
+  
+  ('fl111113-1111-1111-1111-111111111113', 'TechFlow-Leads-Sample-50records.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 102400, '/files/samples/techflow-sample-leads.xlsx', ARRAY['sample','leads','techflow'], '11111111-1111-1111-1111-111111111111', 'o1111111-1111-1111-1111-111111111111', NULL, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '87 days'),
+  
+  -- File Digital Boost
+  ('fl222221-2222-2222-2222-222222222221', 'AYCL-Proposal-DigitalBoost-v1.pdf', 'application/pdf', 612352, '/files/proposals/AYCL-Proposal-DigitalBoost-v1.pdf', ARRAY['proposal','digitalboost','marketing'], '22222222-2222-2222-2222-222222222222', 'o2222222-2222-2222-2222-222222222221', NULL, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '117 days'),
+  
+  ('fl222222-2222-2222-2222-222222222222', 'Contract-DigitalBoost-AYCL-2024-002-signed.pdf', 'application/pdf', 698304, '/files/contracts/AYCL-2024-002-signed.pdf', ARRAY['contract','signed','digitalboost'], '22222222-2222-2222-2222-222222222222', 'o2222222-2222-2222-2222-222222222221', 'ct222222-2222-2222-2222-222222222221', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '45 days'),
+  
+  -- File Prime Properties
+  ('fl333331-3333-3333-3333-333333333331', 'AYCL-Proposal-PrimeProperties-v1.pdf', 'application/pdf', 745472, '/files/proposals/AYCL-Proposal-PrimeProperties-v1.pdf', ARRAY['proposal','primeproperties','realestate','declined'], '33333333-3333-3333-3333-333333333333', 'o3333333-3333-3333-3333-333333333331', NULL, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '20 days'),
+  
+  ('fl333332-3333-3333-3333-333333333332', 'AYCL-Proposal-PrimeProperties-v2-revised.pdf', 'application/pdf', 821248, '/files/proposals/AYCL-Proposal-PrimeProperties-v2.pdf', ARRAY['proposal','primeproperties','realestate','revised'], '33333333-3333-3333-3333-333333333333', 'o3333333-3333-3333-3333-333333333331', NULL, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '5 days'),
+  
+  ('fl333333-3333-3333-3333-333333333333', 'Contract-PrimeProperties-AYCL-2024-003-draft.pdf', 'application/pdf', 712704, '/files/contracts/AYCL-2024-003-draft.pdf', ARRAY['contract','draft','primeproperties'], '33333333-3333-3333-3333-333333333333', 'o3333333-3333-3333-3333-333333333331', 'ct333333-3333-3333-3333-333333333331', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '4 days'),
+  
+  -- File ShopItaly
+  ('fl444441-4444-4444-4444-444444444441', 'AYCL-Proposal-ShopItaly-Ecommerce-v1.pdf', 'application/pdf', 658432, '/files/proposals/AYCL-Proposal-ShopItaly-v1.pdf', ARRAY['proposal','shopitaly','ecommerce'], '44444444-4444-4444-4444-444444444444', 'o4444444-4444-4444-4444-444444444441', NULL, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '10 days'),
+  
+  ('fl444442-4444-4444-4444-444444444442', 'ShopItaly-API-Integration-Guide.pdf', 'application/pdf', 245760, '/files/technical/shopitaly-api-guide.pdf', ARRAY['technical','api','integration','shopitaly'], '44444444-4444-4444-4444-444444444444', 'o4444444-4444-4444-4444-444444444441', NULL, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '8 days'),
+  
+  -- File FinTech Innovations
+  ('fl666661-6666-6666-6666-666666666661', 'AYCL-Proposal-FinTech-Innovations-v1.pdf', 'application/pdf', 892928, '/files/proposals/AYCL-Proposal-FinTech-v1.pdf', ARRAY['proposal','fintech','innovations'], '66666666-6666-6666-6666-666666666666', 'o6666666-6666-6666-6666-666666666661', NULL, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '2 days'),
+  
+  ('fl666662-6666-6666-6666-666666666662', 'FinTech-Leads-Sample-Data-GDPR-Compliant.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 156672, '/files/samples/fintech-sample-leads-gdpr.xlsx', ARRAY['sample','leads','fintech','gdpr'], '66666666-6666-6666-6666-666666666666', 'o6666666-6666-6666-6666-666666666661', NULL, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '1 day'),
+  
+  ('fl666663-6666-6666-6666-666666666663', 'AYCL-Case-Study-Fintech-Success-Stories.pdf', 'application/pdf', 2097152, '/files/marketing/aycl-fintech-case-studies.pdf', ARRAY['case_study','fintech','marketing'], '66666666-6666-6666-6666-666666666666', 'o6666666-6666-6666-6666-666666666661', NULL, '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '15 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 14. TICKETS (Supporto)
+-- ============================================
+
+INSERT INTO tickets (id, requester_id, subject, body, status, priority, assignee_id, created_at, updated_at, closed_at)
+VALUES
+  -- Ticket da TechFlow (Cliente esistente)
+  ('tkt11111-1111-1111-1111-111111111111', '00000000-0000-0000-0000-000000000002', 'Richiesta aggiornamento database leads Tech', 'Buongiorno, alcuni contatti nel database fornito hanno email non più valide. Possibile avere un refresh parziale?', 'open', 'normal', '00000000-0000-0000-0000-000000000001', NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days', NULL),
+  
+  -- Ticket da Digital Boost
+  ('tkt22222-2222-2222-2222-222222222222', '00000000-0000-0000-0000-000000000002', 'Domanda su prossimo acquisto leads', 'Ciao, vorremmo acquistare un altro pacchetto per campagna LinkedIn. Disponibilità per call questa settimana?', 'solved', 'normal', '00000000-0000-0000-0000-000000000002', NOW() - INTERVAL '5 days', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
+  
+  -- Ticket generico (da login page)
+  ('tkt33333-3333-3333-3333-333333333333', NULL, 'Impossibile accedere alla piattaforma', 'Salve, ho dimenticato la password e il reset non funziona. Codice utente: SEL00000001. Potete aiutarmi?', 'pending', 'high', '00000000-0000-0000-0000-000000000001', NOW() - INTERVAL '1 day', NOW() - INTERVAL '12 hours', NULL),
+  
+  -- Ticket tecnico
+  ('tkt44444-4444-4444-4444-444444444444', '00000000-0000-0000-0000-000000000002', 'API integration issue - ShopItaly', 'L''endpoint /api/leads/export restituisce errore 500. Possibile verificare?', 'open', 'urgent', '00000000-0000-0000-0000-000000000001', NOW() - INTERVAL '6 hours', NOW() - INTERVAL '6 hours', NULL)
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 15. CHECKOUTS (Sessioni Checkout)
+-- ============================================
+
+INSERT INTO checkouts (id, session, referral_id, opportunity_id, status, metadata, created_at, updated_at)
+VALUES
+  ('chk11111-1111-1111-1111-111111111111', 'cs_techflow_enterprise_001', 'r1111111-1111-1111-1111-111111111111', 'o1111111-1111-1111-1111-111111111111', 'completed', '{"payment_method":"bank_transfer","amount":15000}'::jsonb, NOW() - INTERVAL '60 days', NOW() - INTERVAL '60 days'),
+  
+  ('chk22222-2222-2222-2222-222222222222', 'cs_digitalboost_marketing_001', NULL, 'o2222222-2222-2222-2222-222222222221', 'completed', '{"payment_method":"bank_transfer","amount":8500}'::jsonb, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+  
+  ('chk33333-3333-3333-3333-333333333333', 'cs_primeproperties_luxury_001', 'r2222222-2222-2222-2222-222222222222', 'o3333333-3333-3333-3333-333333333331', 'pending', '{"payment_method":"bank_transfer","amount":25000}'::jsonb, NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 16. NOTIFICATIONS (Notifiche)
+-- ============================================
+
+INSERT INTO notifications (id, user_id, type, payload, read_at, created_at)
+VALUES
+  ('nt111111-1111-1111-1111-111111111111', '00000000-0000-0000-0000-000000000002', 'opportunity_won', '{"opportunity_id":"o1111111-1111-1111-1111-111111111111","company":"TechFlow SaaS srl","value":15000}'::jsonb, NOW() - INTERVAL '60 days', NOW() - INTERVAL '60 days'),
+  
+  ('nt222222-2222-2222-2222-222222222222', '00000000-0000-0000-0000-000000000002', 'contract_signed', '{"contract_id":"ct111111-1111-1111-1111-111111111111","company":"TechFlow SaaS srl"}'::jsonb, NOW() - INTERVAL '60 days', NOW() - INTERVAL '60 days'),
+  
+  ('nt333333-3333-3333-3333-333333333333', '00000000-0000-0000-0000-000000000002', 'task_overdue', '{"task_id":"tk999999-9999-9999-9999-999999999991","title":"Inviare sample data a FinTech Innovations"}'::jsonb, NULL, NOW() - INTERVAL '6 hours'),
+  
+  ('nt444444-4444-4444-4444-444444444444', '00000000-0000-0000-0000-000000000001', 'ticket_created', '{"ticket_id":"tkt44444-4444-4444-4444-444444444444","subject":"API integration issue - ShopItaly"}'::jsonb, NULL, NOW() - INTERVAL '6 hours'),
+  
+  ('nt555555-5555-5555-5555-555555555555', '00000000-0000-0000-0000-000000000002', 'payment_received', '{"payment_id":"py111111-1111-1111-1111-111111111111","amount":15000,"company":"TechFlow SaaS srl"}'::jsonb, NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- COMMIT & STATS
+-- ============================================
+
+-- Statistiche finali
+DO $$
+BEGIN
+  RAISE NOTICE '';
+  RAISE NOTICE '==============================================';
+  RAISE NOTICE '✅ SEED DATI REALISTICI COMPLETATO!';
+  RAISE NOTICE '==============================================';
+  RAISE NOTICE 'Azienda: AYCL - Lead Generation & Sales';
+  RAISE NOTICE '';
+  RAISE NOTICE '📊 Riepilogo dati inseriti:';
+  RAISE NOTICE '  - Companies: 8 (5 clienti + 3 prospect)';
+  RAISE NOTICE '  - Contacts: 15 (decision makers)';
+  RAISE NOTICE '  - Referrals: 3 codici tracciamento';
+  RAISE NOTICE '  - Opportunities: 10 (3 won, 2 negotiation, 1 proposal, 1 discovery, 1 qualifying, 1 new, 1 lost)';
+  RAISE NOTICE '  - Offers: 6 proposte commerciali';
+  RAISE NOTICE '  - Contracts: 4 (3 signed, 1 pending)';
+  RAISE NOTICE '  - Signatures: 4 firme elettroniche';
+  RAISE NOTICE '  - Invoices: 4 (3 paid, 1 draft)';
+  RAISE NOTICE '  - Payments: 3 pagamenti ricevuti';
+  RAISE NOTICE '  - Receipts: 3 ricevute';
+  RAISE NOTICE '  - Tasks: 11 (3 done, 2 in_progress, 5 open, 1 overdue)';
+  RAISE NOTICE '  - Activities: 12 (email, call, meeting, note, system)';
+  RAISE NOTICE '  - Files: 14 documenti (proposte, contratti, sample data)';
+  RAISE NOTICE '  - Tickets: 4 (2 open, 1 pending, 1 solved)';
+  RAISE NOTICE '  - Checkouts: 3 sessioni';
+  RAISE NOTICE '  - Notifications: 5 notifiche';
+  RAISE NOTICE '';
+  RAISE NOTICE '💰 Metriche Pipeline:';
+  RAISE NOTICE '  - Pipeline Value: €119,000';
+  RAISE NOTICE '  - Won Value: €29,000';
+  RAISE NOTICE '  - Pending Value: €90,000';
+  RAISE NOTICE '  - Win Rate: 75% (3 won, 1 lost)';
+  RAISE NOTICE '';
+  RAISE NOTICE '🎯 La dashboard ora mostrerà dati realistici!';
+  RAISE NOTICE '==============================================';
+END $$;
+

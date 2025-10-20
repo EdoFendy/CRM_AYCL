@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useAuth } from '@context/AuthContext';
-import { useI18n } from '@i18n/I18nContext';
-import { apiClient } from '@utils/apiClient';
+import { useAuth } from '../context/AuthContext';
+import { useI18n } from '../i18n/I18nContext';
+import { apiClient } from '../utils/apiClient';
 
 interface DocTemplate {
   id: string;

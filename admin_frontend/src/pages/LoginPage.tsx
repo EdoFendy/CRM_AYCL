@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@context/AuthContext';
-import { useI18n } from '@i18n/I18nContext';
+import { useAuth } from '../context/AuthContext';
+import { useI18n } from '../i18n/I18nContext';
 
 const loginSchema = z.object({
   code11: z.string().min(11).max(11),

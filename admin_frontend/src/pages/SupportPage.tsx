@@ -3,9 +3,9 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
-import { useI18n } from '@i18n/I18nContext';
-import { apiClient } from '@utils/apiClient';
-import { useAuth } from '@context/AuthContext';
+import { useI18n } from '../i18n/I18nContext';
+import { apiClient } from '../utils/apiClient';
+import { useAuth } from '../context/AuthContext';
 
 const supportSchema = z.object({
   subject: z.string().min(3),

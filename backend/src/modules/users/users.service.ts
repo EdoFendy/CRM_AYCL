@@ -29,7 +29,7 @@ export async function listUsers(query: Record<string, unknown>) {
   const { rows } = await pool.query(sql, params);
 
   return {
-    items: rows.slice(0, limit),
+    data: rows.slice(0, limit),
     nextCursor: rows.length > limit ? cursor ?? null : null
   };
 }

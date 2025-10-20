@@ -10,7 +10,7 @@ checkoutsRouter.use(requireAuth);
 
 checkoutsRouter.get('/', async (_req, res) => {
   const { rows } = await pool.query('SELECT * FROM checkouts ORDER BY created_at DESC LIMIT 100');
-  res.json(rows);
+  res.json({ data: rows });
 });
 
 checkoutsRouter.post('/', async (req, res) => {

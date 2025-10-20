@@ -1,6 +1,7 @@
 import { Application, Router } from 'express';
 import { authRouter } from '../modules/auth/auth.router.js';
 import { usersRouter } from '../modules/users/users.router.js';
+import { teamsRouter } from '../modules/teams/teams.router.js';
 import { companiesRouter } from '../modules/companies/companies.router.js';
 import { contactsRouter } from '../modules/contacts/contacts.router.js';
 import { opportunitiesRouter } from '../modules/opportunities/opportunities.router.js';
@@ -32,6 +33,7 @@ export function registerRoutes(app: Application) {
 
   router.use('/auth', authRouter);
   router.use('/users', usersRouter);
+  router.use('/teams', teamsRouter);
   router.use('/companies', companiesRouter);
   router.use('/contacts', contactsRouter);
   router.use('/opportunities', opportunitiesRouter);

@@ -33,16 +33,31 @@ export default function App() {
             <Route path="/dashboard" element={routes.dashboard} />
             <Route path="/portfolio" element={routes.portfolioList} />
             <Route path="/portfolio/:companyId" element={routes.portfolioDetail} />
+            <Route path="/opportunities" element={routes.opportunities} />
+            <Route path="/contacts" element={routes.contacts} />
+            <Route path="/contacts/:contactId" element={routes.contactDetail} />
+            <Route path="/tasks" element={routes.tasks} />
+            <Route path="/activities" element={routes.activities} />
             <Route path="/sellers" element={routes.sellers} />
             <Route path="/resellers" element={routes.resellers} />
+            <Route path="/teams" element={routes.teams} />
+            <Route path="/offers" element={routes.offers} />
             <Route path="/aycl-kit" element={routes.ayclKit} />
             <Route path="/start-kit" element={routes.startKit} />
             <Route path="/users" element={routes.users} />
+            <Route path="/roles" element={routes.roles} />
             <Route path="/reports" element={routes.reports} />
             <Route path="/tickets" element={routes.tickets} />
             <Route path="/payments" element={routes.payments} />
             <Route path="/contracts" element={routes.contracts} />
             <Route path="/invoices" element={routes.invoices} />
+            <Route path="/receipts" element={routes.receipts} />
+            <Route path="/checkouts" element={routes.checkouts} />
+            <Route path="/signatures" element={routes.signatures} />
+            <Route path="/files" element={routes.files} />
+            <Route path="/referrals" element={routes.referrals} />
+            <Route path="/notifications" element={routes.notifications} />
+            <Route path="/webhooks" element={routes.webhooks} />
             <Route path="/audit" element={routes.audit} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Route>

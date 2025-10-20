@@ -27,10 +27,17 @@ export async function listContacts(query: Record<string, unknown>) {
   params.push(limit + 1);
   const { rows } = await pool.query(sql, params);
 
+  const data = rows.slice(0, limit);
+  const hasNextPage = rows.length > limit;
   return {
-    items: rows.slice(0, limit),
-    nextCursor: rows.length > limit ? cursor ?? null : null
-  };
+    data,
+    pageInfo: {
+      nextCursor: hasNextPage ? (cursor ?? null) : null,
+      prevCursor: null,
+      hasNextPage,
+      hasPreviousPage: Boolean(cursor),
+    },
+  } as const;
 }
 
 interface ContactInput {

@@ -42,7 +42,7 @@ usersRouter.post('/', requireRoles(['admin']), async (req, res) => {
 
 usersRouter.get('/roles/list', requireRoles(['admin']), async (_req, res) => {
   const roles = await listRoles();
-  res.json(roles);
+  res.json({ data: roles });
 });
 
 usersRouter.post('/roles', requireRoles(['admin']), async (req, res) => {
@@ -59,7 +59,7 @@ usersRouter.post('/roles', requireRoles(['admin']), async (req, res) => {
 usersRouter.get('/teams/list', async (req, res) => {
   const type = req.query.type as string | undefined;
   const teams = await listTeams(type);
-  res.json(teams);
+  res.json({ data: teams });
 });
 
 usersRouter.post('/teams', requireRoles(['admin']), async (req, res) => {

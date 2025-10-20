@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@context/AuthContext';
-import { useI18n } from '@i18n/I18nContext';
-import { apiClient } from '@utils/apiClient';
-import { DataTable } from '@components/data/DataTable';
-import { FiltersToolbar } from '@components/forms/FiltersToolbar';
-import { usePersistentFilters } from '@hooks/usePersistentFilters';
+import { useAuth } from '../context/AuthContext';
+import { useI18n } from '../i18n/I18nContext';
+import { apiClient } from '../utils/apiClient';
+import { DataTable } from '../components/data/DataTable';
+import { FiltersToolbar } from '../components/forms/FiltersToolbar';
+import { usePersistentFilters } from '../hooks/usePersistentFilters';
 
 interface AuditRow {
   id: string;

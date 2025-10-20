@@ -20,7 +20,7 @@ const baseSchema = z.object({
 
 ticketsRouter.get('/', async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM tickets ORDER BY created_at DESC LIMIT 100');
-  res.json(rows);
+  res.json({ data: rows });
 });
 
 ticketsRouter.post('/', async (req, res) => {

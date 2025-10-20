@@ -1,21 +1,26 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@context/AuthContext';
-import { useCursorPagination } from '@hooks/useCursorPagination';
-import { usePersistentFilters } from '@hooks/usePersistentFilters';
-import { useI18n } from '@i18n/I18nContext';
-import { apiClient, PaginatedResponse } from '@utils/apiClient';
-import { DataTable } from '@components/data/DataTable';
-import { FiltersToolbar } from '@components/forms/FiltersToolbar';
-import { PaginationControls } from '@components/navigation/PaginationControls';
+import { useAuth } from '../context/AuthContext';
+import { useCursorPagination } from '../hooks/useCursorPagination';
+import { usePersistentFilters } from '../hooks/usePersistentFilters';
+import { useI18n } from '../i18n/I18nContext';
+import { apiClient, PaginatedResponse } from '../utils/apiClient';
+import { DataTable } from '../components/data/DataTable';
+import { FiltersToolbar } from '../components/forms/FiltersToolbar';
+import { PaginationControls } from '../components/navigation/PaginationControls';
 
 interface CompanyRow {
   id: string;
   ragione_sociale: string;
-  industry: string;
-  geo: string;
-  owner: string;
+  website?: string | null;
+  linkedin?: string | null;
+  industry: string | null;
+  geo: string | null;
+  revenue_range?: string | null;
+  owner_id?: string | null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export default function PortfolioListPage() {
@@ -108,7 +113,7 @@ export default function PortfolioListPage() {
           },
           { id: 'industry', header: t('filters.industry'), cell: (company) => company.industry || '—' },
           { id: 'geo', header: t('filters.geo'), cell: (company) => company.geo || '—' },
-          { id: 'owner', header: t('filters.owner'), cell: (company) => company.owner || '—' },
+          { id: 'owner', header: t('filters.owner'), cell: (company) => company.owner_id || '—' },
         ]}
         emptyState={<span>{t('tables.empty')}</span>}
       />

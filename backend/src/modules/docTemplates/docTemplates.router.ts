@@ -11,7 +11,7 @@ docTemplatesRouter.use(requireAuth);
 
 docTemplatesRouter.get('/', async (_req, res) => {
   const { rows } = await pool.query('SELECT id, name, type, description, metadata, created_by, created_at, updated_at FROM doc_templates ORDER BY created_at DESC');
-  res.json(rows);
+  res.json({ data: rows });
 });
 
 docTemplatesRouter.post('/', async (req, res) => {

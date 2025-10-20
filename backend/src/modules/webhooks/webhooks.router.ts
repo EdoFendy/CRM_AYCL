@@ -10,7 +10,7 @@ webhooksRouter.use(requireAuth);
 
 webhooksRouter.get('/', async (_req, res) => {
   const { rows } = await pool.query('SELECT * FROM webhooks ORDER BY created_at DESC');
-  res.json(rows);
+  res.json({ data: rows });
 });
 
 webhooksRouter.post('/', async (req, res) => {

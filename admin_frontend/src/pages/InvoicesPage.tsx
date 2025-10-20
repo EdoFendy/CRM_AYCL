@@ -1,10 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@context/AuthContext';
-import { useI18n } from '@i18n/I18nContext';
-import { apiClient } from '@utils/apiClient';
-import { DataTable } from '@components/data/DataTable';
-import { FiltersToolbar } from '@components/forms/FiltersToolbar';
-import { usePersistentFilters } from '@hooks/usePersistentFilters';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '../context/AuthContext';
+import { useI18n } from '../i18n/I18nContext';
+import { apiClient } from '../utils/apiClient';
+import { DataTable } from '../components/data/DataTable';
+import { FiltersToolbar } from '../components/forms/FiltersToolbar';
+import { usePersistentFilters } from '../hooks/usePersistentFilters';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 
 interface InvoiceRow {
   id: string;
@@ -18,7 +20,11 @@ interface InvoiceRow {
 export default function InvoicesPage() {
   const { token } = useAuth();
   const { t } = useI18n();
+  const queryClient = useQueryClient();
   const { filters, setFilters, resetFilters } = usePersistentFilters({ status: '', company_id: '' });
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [workflowInvoice, setWorkflowInvoice] = useState<InvoiceRow | null>(null);
+  const [workflowAction, setWorkflowAction] = useState<'send' | 'paid' | null>(null);
 
   const invoicesQuery = useQuery({
     queryKey: ['invoices', filters],
@@ -28,6 +34,35 @@ export default function InvoicesPage() {
         searchParams: filters,
       }),
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) =>
+      apiClient(`invoices/${id}`, { method: 'DELETE', token }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['invoices'] });
+      setDeletingId(null);
+    },
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
+      apiClient(`invoices/${id}`, {
+        method: 'PATCH',
+        token,
+        body: { status },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['invoices'] });
+      setWorkflowInvoice(null);
+      setWorkflowAction(null);
+    },
+  });
+
+  const handleWorkflowAction = () => {
+    if (!workflowInvoice || !workflowAction) return;
+    const statusMap = { send: 'sent', paid: 'paid' };
+    updateStatusMutation.mutate({ id: workflowInvoice.id, status: statusMap[workflowAction] });
+  };
 
   return (
     <section className="space-y-6">
@@ -77,8 +112,67 @@ export default function InvoicesPage() {
                 <span>{t('portfolio.detail.missingInvoicesApi')}</span>
               ),
           },
+          {
+            id: 'actions',
+            header: 'Actions',
+            cell: (invoice: InvoiceRow) => (
+              <div className="flex gap-2 flex-wrap">
+                {invoice.status === 'draft' && (
+                  <button
+                    onClick={() => {
+                      setWorkflowInvoice(invoice);
+                      setWorkflowAction('send');
+                    }}
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    Send
+                  </button>
+                )}
+                {invoice.status === 'sent' && (
+                  <button
+                    onClick={() => {
+                      setWorkflowInvoice(invoice);
+                      setWorkflowAction('paid');
+                    }}
+                    className="text-sm text-green-600 hover:underline"
+                  >
+                    Mark Paid
+                  </button>
+                )}
+                <button
+                  onClick={() => setDeletingId(invoice.id)}
+                  className="text-sm text-red-600 hover:underline"
+                >
+                  Delete
+                </button>
+              </div>
+            ),
+          },
         ]}
         emptyState={<span>{t('tables.empty')}</span>}
+      />
+
+      <ConfirmDialog
+        isOpen={workflowInvoice !== null && workflowAction !== null}
+        onClose={() => {
+          setWorkflowInvoice(null);
+          setWorkflowAction(null);
+        }}
+        onConfirm={handleWorkflowAction}
+        title={`${workflowAction === 'send' ? 'Send' : 'Mark as Paid'} Invoice`}
+        message={`Are you sure you want to ${workflowAction === 'send' ? 'send' : 'mark as paid'} this invoice?`}
+        confirmVariant="primary"
+        isLoading={updateStatusMutation.isPending}
+      />
+
+      <ConfirmDialog
+        isOpen={deletingId !== null}
+        onClose={() => setDeletingId(null)}
+        onConfirm={() => deletingId && deleteMutation.mutate(deletingId)}
+        title="Delete Invoice"
+        message="Are you sure you want to delete this invoice?"
+        confirmVariant="danger"
+        isLoading={deleteMutation.isPending}
       />
     </section>
   );

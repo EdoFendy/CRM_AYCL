@@ -9,7 +9,7 @@ notificationsRouter.use(requireAuth);
 
 notificationsRouter.get('/', async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 50', [req.user!.id]);
-  res.json(rows);
+  res.json({ data: rows });
 });
 
 notificationsRouter.patch('/', async (req, res) => {

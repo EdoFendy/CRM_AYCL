@@ -10,7 +10,7 @@ referralsRouter.use(requireAuth);
 
 referralsRouter.get('/', async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM referrals ORDER BY created_at DESC');
-  res.json(rows);
+  res.json({ data: rows });
 });
 
 referralsRouter.post('/', async (req, res) => {
@@ -33,5 +33,5 @@ referralsRouter.get('/stats', async (_req, res) => {
      FROM referrals
      GROUP BY owner_user_id`
   );
-  res.json(rows);
+  res.json({ data: rows });
 });
