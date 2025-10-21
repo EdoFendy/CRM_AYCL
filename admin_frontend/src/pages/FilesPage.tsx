@@ -178,14 +178,25 @@ export default function FilesPage() {
             header: 'Actions',
             cell: (file) => (
               <div className="flex gap-2">
-                <a
-                  href={file.storage_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline"
-                >
-                  Download
-                </a>
+                {file.storage_url && file.storage_url.startsWith('http') ? (
+                  <a
+                    href={file.storage_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary hover:underline"
+                  >
+                    Download
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => {
+                      alert('File salvato localmente. URL storage: ' + file.storage_url + '\nPer il download completo, configurare storage cloud (S3).');
+                    }}
+                    className="text-sm text-primary hover:underline"
+                  >
+                    Download
+                  </button>
+                )}
                 <button
                   onClick={() => setDeletingId(file.id)}
                   className="text-sm text-red-600 hover:underline"

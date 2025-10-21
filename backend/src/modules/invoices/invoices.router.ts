@@ -4,6 +4,7 @@ import { requireAuth } from '../../middlewares/auth.js';
 import { pool } from '../../db/pool.js';
 import { recordAuditLog } from '../../services/auditService.js';
 import { HttpError } from '../../middlewares/errorHandler.js';
+import { generatePDF } from '../../services/pdfService.js';
 
 export const invoicesRouter = Router();
 
@@ -12,6 +13,47 @@ invoicesRouter.use(requireAuth);
 invoicesRouter.get('/', async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM invoices ORDER BY created_at DESC LIMIT 100');
   res.json({ data: rows });
+});
+
+invoicesRouter.get('/:id', async (req, res) => {
+  const { rows } = await pool.query('SELECT * FROM invoices WHERE id = $1', [req.params.id]);
+  if (rows.length === 0) {
+    throw new HttpError(404, 'NOT_FOUND', 'Fattura non trovata');
+  }
+  res.json(rows[0]);
+});
+
+invoicesRouter.get('/:id/pdf', async (req, res) => {
+  const { rows } = await pool.query(
+    `SELECT number, issued_at as date, customer_data, line_items,
+            subtotal, tax_rate, tax_amount, amount as total, currency, notes, due_date
+     FROM invoices WHERE id = $1`,
+    [req.params.id]
+  );
+  
+  if (rows.length === 0) {
+    return res.status(404).json({ error: 'Fattura non trovata' });
+  }
+  
+  const invoice = rows[0];
+  
+  // Se non ha customer_data strutturato, creare un fallback
+  const customerData = invoice.customer_data || { name: 'Cliente non specificato' };
+  const lineItems = invoice.line_items || [];
+  
+  generatePDF(res, 'invoice', {
+    number: invoice.number || 'N/A',
+    date: invoice.date || new Date().toISOString(),
+    customer: customerData,
+    lines: lineItems,
+    subtotal: parseFloat(invoice.subtotal || invoice.total || 0),
+    taxRate: parseFloat(invoice.tax_rate || 0),
+    taxAmount: parseFloat(invoice.tax_amount || 0),
+    total: parseFloat(invoice.total),
+    currency: invoice.currency || 'EUR',
+    notes: invoice.notes,
+    dueDate: invoice.due_date
+  });
 });
 
 invoicesRouter.post('/', async (req, res) => {

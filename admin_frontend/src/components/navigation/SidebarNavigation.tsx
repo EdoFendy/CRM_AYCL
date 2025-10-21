@@ -60,6 +60,7 @@ export function SidebarNavigation() {
         title: 'Finance',
         items: [
           { to: '/contracts', label: t('nav.contracts') },
+          { to: '/quotes', label: 'Preventivi' },
           { to: '/invoices', label: t('nav.invoices') },
           { to: '/payments', label: t('nav.payments') },
           { to: '/receipts', label: 'Receipts' },

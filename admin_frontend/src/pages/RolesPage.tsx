@@ -23,7 +23,7 @@ export default function RolesPage() {
     queryFn: async () => {
       setError(null);
       try {
-        return await apiClient<{ data: RoleRow[] }>('auth/roles/list', { token });
+        return await apiClient<{ data: RoleRow[] }>('users/roles/list', { token });
       } catch (err: any) {
         setError(err.message);
         throw err;

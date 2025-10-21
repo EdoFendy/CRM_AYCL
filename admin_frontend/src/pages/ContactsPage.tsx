@@ -114,7 +114,7 @@ export default function ContactsPage() {
         token,
         searchParams: { limit: 1000 },
       });
-      return response.data || [];
+      return response;
     },
   });
 
@@ -126,7 +126,7 @@ export default function ContactsPage() {
         token,
         searchParams: { limit: 1000 },
       });
-      return response.data || [];
+      return response;
     },
   });
 
@@ -246,8 +246,8 @@ export default function ContactsPage() {
 
   const allRows = contactsQuery.data?.data ?? [];
   const pageInfo = contactsQuery.data?.pageInfo;
-  const companies = companiesQuery.data ?? [];
-  const users = usersQuery.data ?? [];
+  const companies = companiesQuery.data?.data ?? [];
+  const users = usersQuery.data?.data ?? [];
 
   // Apply sub-navbar filtering
   const rows = useMemo(() => {
@@ -277,6 +277,8 @@ export default function ContactsPage() {
   }, [allRows, filters.filterType]);
 
   const getCompanyName = (companyId: string) => {
+    if (!companyId) return 'Unknown';
+    if (!companies || companies.length === 0) return 'Loading...';
     const company = companies.find((c) => c.id === companyId);
     return company?.ragione_sociale || 'Unknown';
   };

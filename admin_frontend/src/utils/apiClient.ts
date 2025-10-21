@@ -1,4 +1,5 @@
 import ky, { Options } from 'ky';
+// Force TypeScript refresh - interface updated
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
@@ -8,6 +9,7 @@ interface ApiClientOptions {
   searchParams?: Record<string, string | number | boolean | undefined>;
   token?: string | null;
   headers?: Record<string, string>;
+  isFormData?: boolean;
 }
 
 export interface PaginatedResponse<T> {
@@ -32,13 +34,13 @@ const client = ky.create({
 });
 
 export async function apiClient<T = any>(endpoint: string, options: ApiClientOptions = {}): Promise<T> {
-  const { method = 'GET', body, searchParams, token, headers } = options;
+  const { method = 'GET', body, searchParams, token, headers, isFormData } = options;
 
   const requestOptions: Options = {
     method,
     searchParams,
     headers: {
-      'Content-Type': 'application/json',
+      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       ...(headers ?? {}),
     },
   };
@@ -48,7 +50,11 @@ export async function apiClient<T = any>(endpoint: string, options: ApiClientOpt
   }
 
   if (body) {
-    requestOptions.json = body;
+    if (isFormData) {
+      requestOptions.body = body;
+    } else {
+      requestOptions.json = body;
+    }
   }
 
   try {

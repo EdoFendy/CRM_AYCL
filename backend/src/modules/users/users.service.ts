@@ -4,12 +4,14 @@ import { recordAuditLog } from '../../services/auditService.js';
 import { parseCursorPagination } from '../../utils/pagination.js';
 import bcrypt from 'bcryptjs';
 
-const DEFAULT_SELECT = 'id, code11, email, role, status, full_name, team_id, reseller_team_id, created_at, updated_at';
+const DEFAULT_SELECT = 'id, code11, email, role, status, full_name, team_id, reseller_team_id, created_at, updated_at, last_login_at';
 
 export async function listUsers(query: Record<string, unknown>) {
   const { limit, cursor } = parseCursorPagination(query);
   const status = query.status as string | undefined;
   const role = query.role as string | undefined;
+  const team_id = query.team_id as string | undefined;
+  const reseller_team_id = query.reseller_team_id as string | undefined;
 
   const params: unknown[] = [];
   const where: string[] = [];
@@ -21,6 +23,14 @@ export async function listUsers(query: Record<string, unknown>) {
   if (role) {
     params.push(role);
     where.push(`role = $${params.length}`);
+  }
+  if (team_id) {
+    params.push(team_id);
+    where.push(`team_id = $${params.length}`);
+  }
+  if (reseller_team_id) {
+    params.push(reseller_team_id);
+    where.push(`reseller_team_id = $${params.length}`);
   }
 
   // TODO implement cursor-based pagination
@@ -149,7 +159,7 @@ export async function createRole(name: string, description: string | undefined, 
 
 export async function listTeams(type?: string) {
   const { rows } = await pool.query(
-    `SELECT id, name, type, parent_team_id, metadata FROM teams ${type ? 'WHERE type = $1' : ''} ORDER BY created_at DESC`,
+    `SELECT id, name, type, parent_team_id, metadata, created_at, updated_at FROM teams ${type ? 'WHERE type = $1' : ''} ORDER BY created_at DESC`,
     type ? [type] : []
   );
   return rows;
@@ -157,8 +167,74 @@ export async function listTeams(type?: string) {
 
 export async function createTeam(name: string, type: string, parentTeamId?: string | null) {
   const { rows } = await pool.query(
-    'INSERT INTO teams (name, type, parent_team_id) VALUES ($1, $2, $3) RETURNING id, name, type, parent_team_id',
+    'INSERT INTO teams (name, type, parent_team_id) VALUES ($1, $2, $3) RETURNING id, name, type, parent_team_id, metadata, created_at, updated_at',
     [name, type, parentTeamId ?? null]
   );
+  return rows[0];
+}
+
+export async function getTeam(id: string) {
+  const { rows } = await pool.query(
+    'SELECT id, name, type, parent_team_id, metadata, created_at, updated_at FROM teams WHERE id = $1',
+    [id]
+  );
+  if (rows.length === 0) {
+    throw new Error('Team not found');
+  }
+  return rows[0];
+}
+
+export async function updateTeam(id: string, input: { name?: string; type?: string; parent_team_id?: string | null }) {
+  const fields = [];
+  const values = [];
+  let paramIndex = 1;
+
+  if (input.name !== undefined) {
+    fields.push(`name = $${paramIndex++}`);
+    values.push(input.name);
+  }
+  if (input.type !== undefined) {
+    fields.push(`type = $${paramIndex++}`);
+    values.push(input.type);
+  }
+  if (input.parent_team_id !== undefined) {
+    fields.push(`parent_team_id = $${paramIndex++}`);
+    values.push(input.parent_team_id);
+  }
+
+  if (fields.length === 0) {
+    throw new Error('No fields to update');
+  }
+
+  fields.push(`updated_at = NOW()`);
+  values.push(id);
+
+  const { rows } = await pool.query(
+    `UPDATE teams SET ${fields.join(', ')} WHERE id = $${paramIndex} RETURNING id, name, type, parent_team_id, metadata, created_at, updated_at`,
+    values
+  );
+
+  if (rows.length === 0) {
+    throw new Error('Team not found');
+  }
+
+  return rows[0];
+}
+
+export async function deleteTeam(id: string) {
+  // First, unassign all users from this team
+  await pool.query('UPDATE users SET team_id = NULL WHERE team_id = $1', [id]);
+  await pool.query('UPDATE users SET reseller_team_id = NULL WHERE reseller_team_id = $1', [id]);
+  
+  // Then delete the team
+  const { rows } = await pool.query(
+    'DELETE FROM teams WHERE id = $1 RETURNING id',
+    [id]
+  );
+
+  if (rows.length === 0) {
+    throw new Error('Team not found');
+  }
+
   return rows[0];
 }

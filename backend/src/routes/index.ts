@@ -23,6 +23,11 @@ import { reportsRouter } from '../modules/reports/reports.router.js';
 import { notificationsRouter } from '../modules/notifications/notifications.router.js';
 import { webhooksRouter } from '../modules/webhooks/webhooks.router.js';
 import { publicContractsRouter } from '../modules/publicContracts/publicContracts.router.js';
+import { publicPaymentsRouter } from '../modules/publicPayments/publicPayments.router.js';
+import { docPackFilesRouter } from '../modules/docPackFiles/docPackFiles.router.js';
+import { woocommerceRouter } from '../modules/woocommerce/woocommerce.router.js';
+import { quotesRouter } from '../modules/quotes/quotes.router.js';
+import { vatValidationRouter } from '../modules/vatValidation/vatValidation.router.js';
 
 export function registerRoutes(app: Application) {
   const router = Router();
@@ -44,8 +49,10 @@ export function registerRoutes(app: Application) {
   router.use('/signatures', signaturesRouter);
   router.use('/doc-templates', docTemplatesRouter);
   router.use('/docs', docsRouter);
+  router.use('/doc-files', docPackFilesRouter);
   router.use('/files', filesRouter);
   router.use('/payments', paymentsRouter);
+  router.use('/quotes', quotesRouter);
   router.use('/invoices', invoicesRouter);
   router.use('/receipts', receiptsRouter);
   router.use('/referrals', referralsRouter);
@@ -54,7 +61,11 @@ export function registerRoutes(app: Application) {
   router.use('/reports', reportsRouter);
   router.use('/notifications', notificationsRouter);
   router.use('/webhooks', webhooksRouter);
+  router.use('/woocommerce', woocommerceRouter);
+  router.use('/vat-validation', vatValidationRouter);
   router.use('/public/contracts', publicContractsRouter);
+  router.use('/public/payments', publicPaymentsRouter);
+  router.use('/public/sign', signaturesRouter);
 
   app.use('/', router);
 }

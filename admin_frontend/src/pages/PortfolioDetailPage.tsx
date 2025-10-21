@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useQueries } from '@tanstack/react-query';
 import { useAuth } from '../context/AuthContext';
 import { useI18n } from '../i18n/I18nContext';

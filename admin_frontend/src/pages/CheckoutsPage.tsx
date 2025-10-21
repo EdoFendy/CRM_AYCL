@@ -1,138 +1,135 @@
 import { useState } from 'react';
-import { useQuery, useQueries } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useI18n } from '../i18n/I18nContext';
 import { apiClient } from '../utils/apiClient';
 import { DataTable } from '../components/data/DataTable';
+import { FiltersToolbar } from '../components/forms/FiltersToolbar';
+import { usePersistentFilters } from '../hooks/usePersistentFilters';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
+import { ShoppingCart, Eye, Trash2, ExternalLink } from 'lucide-react';
 
 interface CheckoutRow {
   id: string;
   session: string;
   referral_id: string | null;
+  referral_code?: string;
   opportunity_id: string | null;
+  opportunity_title?: string;
   status: string;
   metadata: any;
   created_at: string;
 }
 
-interface Referral {
-  id: string;
-  code: string;
-  owner_user_id: string | null;
-}
-
-interface Opportunity {
-  id: string;
-  title: string;
-  company_id: string;
-  value: number;
-  currency: string;
-  stage: string;
-}
-
-interface Company {
-  id: string;
-  ragione_sociale: string;
-}
-
 export default function CheckoutsPage() {
   const { token } = useAuth();
   const { t } = useI18n();
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const { filters, setFilters, resetFilters } = usePersistentFilters({ status: '', search: '' });
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [viewingCheckout, setViewingCheckout] = useState<CheckoutRow | null>(null);
 
-  const [checkoutsQuery, referralsQuery, opportunitiesQuery, companiesQuery] = useQueries({
-    queries: [
-      {
-        queryKey: ['checkouts'],
-        queryFn: async () => {
-          setError(null);
-          try {
-            return await apiClient<{ data: CheckoutRow[] }>('checkouts', { token });
-          } catch (err: any) {
-            setError(err.message);
-            throw err;
-          }
-        },
-      },
-      {
-        queryKey: ['referrals'],
-        queryFn: () => apiClient<{ data: Referral[] }>('referrals', { token }),
-      },
-      {
-        queryKey: ['opportunities-list'],
-        queryFn: () => apiClient<{ data: Opportunity[] }>('opportunities', { token, searchParams: { limit: 1000 } }),
-      },
-      {
-        queryKey: ['companies-list'],
-        queryFn: () => apiClient<{ data: Company[] }>('companies', { token, searchParams: { limit: 1000 } }),
-      },
-    ],
+  const checkoutsQuery = useQuery({
+    queryKey: ['checkouts', filters],
+    queryFn: () =>
+      apiClient<{ data: CheckoutRow[] }>('checkouts', {
+        token,
+        searchParams: filters,
+      }),
   });
 
-  const rows = checkoutsQuery.data?.data ?? [];
-  const referrals = referralsQuery.data?.data ?? [];
-  const opportunities = opportunitiesQuery.data?.data ?? [];
-  const companies = companiesQuery.data?.data ?? [];
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) =>
+      apiClient(`checkouts/${id}`, { method: 'DELETE', token }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['checkouts'] });
+      setDeletingId(null);
+    },
+  });
 
-  // Helper functions to get related data
-  const getReferralCode = (referralId: string | null) => {
-    if (!referralId) return '—';
-    const referral = referrals.find(r => r.id === referralId);
-    return referral?.code || 'Unknown';
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '—';
+    return new Date(dateString).toLocaleDateString('it-IT', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
-  const getOpportunityInfo = (opportunityId: string | null) => {
-    if (!opportunityId) return null;
-    const opportunity = opportunities.find(o => o.id === opportunityId);
-    if (!opportunity) return null;
-    
-    const company = companies.find(c => c.id === opportunity.company_id);
-    return {
-      title: opportunity.title,
-      company: company?.ragione_sociale || 'Unknown',
-      companyId: opportunity.company_id,
-      value: opportunity.value,
-      currency: opportunity.currency,
+  const getStatusBadge = (status: string) => {
+    const statusConfig: Record<string, { label: string; className: string }> = {
+      completed: { label: 'Completato', className: 'bg-green-100 text-green-700' },
+      pending: { label: 'In Attesa', className: 'bg-yellow-100 text-yellow-700' },
+      abandoned: { label: 'Abbandonato', className: 'bg-red-100 text-red-700' },
+      expired: { label: 'Scaduto', className: 'bg-slate-100 text-slate-700' },
     };
+    const config = statusConfig[status] || { label: status, className: 'bg-gray-100 text-gray-700' };
+    return (
+      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.className}`}>
+        {config.label}
+      </span>
+    );
   };
 
-  // Calculate metrics
-  const completedCheckouts = rows.filter(checkout => checkout.status === 'completed').length;
-  const withReferrals = rows.filter(checkout => checkout.referral_id).length;
-  const withOpportunities = rows.filter(checkout => checkout.opportunity_id).length;
+  const rows = checkoutsQuery.data?.data ?? [];
+  const completedCount = rows.filter(c => c.status === 'completed').length;
+  const abandonedCount = rows.filter(c => c.status === 'abandoned').length;
 
   return (
     <section className="space-y-6">
-      <h2 className="text-2xl font-semibold text-slate-900">Checkout Sessions</h2>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-semibold text-slate-900">Checkouts</h2>
+          <p className="text-sm text-slate-500">Gestisci le sessioni di checkout</p>
+        </div>
+        <ShoppingCart className="h-8 w-8 text-slate-400" />
+      </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <p className="text-xs font-medium text-slate-500">Total Checkouts</p>
+          <p className="text-xs font-medium text-slate-500">Totale Checkouts</p>
           <p className="text-2xl font-bold text-slate-900">{rows.length}</p>
         </div>
         <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <p className="text-xs font-medium text-slate-500">Completed</p>
-          <p className="text-2xl font-bold text-green-600">{completedCheckouts}</p>
-          <p className="text-xs text-slate-400 mt-1">
-            {rows.length > 0 ? `${((completedCheckouts / rows.length) * 100).toFixed(1)}%` : '0%'} success rate
-          </p>
+          <p className="text-xs font-medium text-slate-500">Completati</p>
+          <p className="text-2xl font-bold text-green-600">{completedCount}</p>
         </div>
         <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <p className="text-xs font-medium text-slate-500">With Referrals</p>
-          <p className="text-2xl font-bold text-blue-600">{withReferrals}</p>
-          <p className="text-xs text-slate-400 mt-1">
-            {rows.length > 0 ? `${((withReferrals / rows.length) * 100).toFixed(1)}%` : '0%'} referral rate
-          </p>
-        </div>
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <p className="text-xs font-medium text-slate-500">Linked to Opportunities</p>
-          <p className="text-2xl font-bold text-purple-600">{withOpportunities}</p>
-          <p className="text-xs text-slate-400 mt-1">
-            {rows.length > 0 ? `${((withOpportunities / rows.length) * 100).toFixed(1)}%` : '0%'} linked
-          </p>
+          <p className="text-xs font-medium text-slate-500">Abbandonati</p>
+          <p className="text-2xl font-bold text-red-600">{abandonedCount}</p>
         </div>
       </div>
+
+      <FiltersToolbar>
+        <input
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          placeholder="Cerca per session o referral..."
+          value={filters.search ?? ''}
+          onChange={(event) => setFilters({ search: event.target.value })}
+        />
+        <select
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          value={filters.status ?? ''}
+          onChange={(event) => setFilters({ status: event.target.value })}
+        >
+          <option value="">Tutti gli stati</option>
+          <option value="completed">Completato</option>
+          <option value="pending">In Attesa</option>
+          <option value="abandoned">Abbandonato</option>
+          <option value="expired">Scaduto</option>
+        </select>
+        <button
+          type="button"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm hover:bg-slate-50"
+          onClick={resetFilters}
+        >
+          Reset
+        </button>
+      </FiltersToolbar>
 
       <DataTable
         data={rows}
@@ -140,79 +137,182 @@ export default function CheckoutsPage() {
           { 
             id: 'session', 
             header: 'Session ID', 
-            cell: (checkout) => (
-              <div>
-                <code className="text-xs bg-slate-100 px-2 py-1 rounded">
-                  {checkout.session.substring(0, 20)}...
-                </code>
+            cell: (checkout: CheckoutRow) => (
+              <div className="font-mono text-xs text-slate-600">
+                {checkout.session.substring(0, 16)}...
               </div>
             )
-          },
-          {
-            id: 'status',
-            header: 'Status',
-            cell: (checkout) => (
-              <span className={`rounded-full px-2 py-1 text-xs font-medium ${
-                checkout.status === 'completed' 
-                  ? 'bg-green-100 text-green-700' 
-                  : checkout.status === 'pending'
-                  ? 'bg-yellow-100 text-yellow-700'
-                  : 'bg-red-100 text-red-700'
-              }`}>
-                {checkout.status}
-              </span>
-            ),
           },
           { 
             id: 'referral', 
-            header: 'Referral Code', 
-            cell: (checkout) => (
-              <span className="text-sm font-medium text-slate-700">
-                {getReferralCode(checkout.referral_id)}
-              </span>
-            )
+            header: 'Referral', 
+            cell: (checkout: CheckoutRow) => 
+              checkout.referral_id ? (
+                <Link
+                  to={`/referrals?id=${checkout.referral_id}`}
+                  className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                >
+                  <ExternalLink className="h-3 w-3" />
+                  {checkout.referral_code || checkout.referral_id.substring(0, 8)}
+                </Link>
+              ) : (
+                <span className="text-slate-400">—</span>
+              )
           },
           { 
             id: 'opportunity', 
-            header: 'Opportunity', 
-            cell: (checkout) => {
-              const oppInfo = getOpportunityInfo(checkout.opportunity_id);
-              if (!oppInfo) return '—';
-              
-              return (
-                <div className="text-sm">
-                  <p className="font-medium text-slate-900">{oppInfo.title}</p>
-                  <Link 
-                    to={`/portfolio/${oppInfo.companyId}`} 
-                    className="text-xs text-primary hover:underline"
-                  >
-                    {oppInfo.company}
-                  </Link>
-                  <p className="text-xs text-green-600 font-semibold">
-                    €{oppInfo.value.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                  </p>
-                </div>
-              );
-            }
+            header: 'Opportunità', 
+            cell: (checkout: CheckoutRow) => 
+              checkout.opportunity_id ? (
+                <Link
+                  to={`/opportunities?id=${checkout.opportunity_id}`}
+                  className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                >
+                  <ExternalLink className="h-3 w-3" />
+                  {checkout.opportunity_title || checkout.opportunity_id.substring(0, 8)}
+                </Link>
+              ) : (
+                <span className="text-slate-400">—</span>
+              )
           },
           { 
             id: 'created', 
-            header: 'Created', 
-            cell: (checkout) => (
-              <div className="text-sm text-slate-600">
-                {new Date(checkout.created_at).toLocaleDateString()}
-                <div className="text-xs text-slate-400">
-                  {new Date(checkout.created_at).toLocaleTimeString()}
-                </div>
-              </div>
+            header: 'Data Creazione', 
+            cell: (checkout: CheckoutRow) => (
+              <div className="text-sm text-slate-600">{formatDate(checkout.created_at)}</div>
             )
           },
+          { 
+            id: 'status', 
+            header: 'Stato', 
+            cell: (checkout: CheckoutRow) => getStatusBadge(checkout.status)
+          },
+          {
+            id: 'actions',
+            header: 'Azioni',
+            cell: (checkout: CheckoutRow) => (
+              <div className="flex gap-2 flex-wrap justify-end">
+                <button
+                  onClick={() => setViewingCheckout(checkout)}
+                  className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                  title="Visualizza dettagli"
+                >
+                  <Eye className="h-4 w-4" />
+                  Dettagli
+                </button>
+                <button
+                  onClick={() => setDeletingId(checkout.id)}
+                  className="inline-flex items-center gap-1 text-sm text-red-600 hover:text-red-800"
+                  title="Elimina"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Elimina
+                </button>
+              </div>
+            ),
+          },
         ]}
-        emptyState={<span>{t('tables.empty')}</span>}
+        emptyState={
+          <div className="text-center py-12">
+            <ShoppingCart className="mx-auto h-12 w-12 text-slate-300 mb-4" />
+            <h3 className="text-sm font-medium text-slate-900 mb-1">Nessun checkout trovato</h3>
+            <p className="text-sm text-slate-500">Le sessioni di checkout appariranno qui.</p>
+          </div>
+        }
       />
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {/* Dialog Dettagli Checkout */}
+      {viewingCheckout && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="max-w-2xl w-full max-h-[90vh] overflow-auto rounded-lg bg-white p-6 shadow-xl">
+            <div className="mb-4 flex items-start justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900">
+                  Checkout {viewingCheckout.id.substring(0, 8)}
+                </h3>
+                <p className="text-sm text-slate-500">
+                  Creato il {new Date(viewingCheckout.created_at).toLocaleString('it-IT')}
+                </p>
+              </div>
+              <button
+                onClick={() => setViewingCheckout(null)}
+                className="text-slate-400 hover:text-slate-600"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="rounded-lg border border-slate-200 p-4">
+                <h4 className="mb-2 text-sm font-semibold text-slate-700">Session ID</h4>
+                <div className="text-sm font-mono text-slate-600 break-all">{viewingCheckout.session}</div>
+              </div>
+
+              <div className="rounded-lg border border-slate-200 p-4">
+                <h4 className="mb-2 text-sm font-semibold text-slate-700">Stato</h4>
+                {getStatusBadge(viewingCheckout.status)}
+              </div>
+
+              {viewingCheckout.referral_id && (
+                <div className="rounded-lg border border-slate-200 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-slate-700">Referral</h4>
+                  <Link
+                    to={`/referrals?id=${viewingCheckout.referral_id}`}
+                    className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    {viewingCheckout.referral_code || viewingCheckout.referral_id}
+                  </Link>
+                </div>
+              )}
+
+              {viewingCheckout.opportunity_id && (
+                <div className="rounded-lg border border-slate-200 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-slate-700">Opportunità</h4>
+                  <Link
+                    to={`/opportunities?id=${viewingCheckout.opportunity_id}`}
+                    className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    {viewingCheckout.opportunity_title || viewingCheckout.opportunity_id}
+                  </Link>
+                </div>
+              )}
+
+              {viewingCheckout.metadata && Object.keys(viewingCheckout.metadata).length > 0 && (
+                <div className="rounded-lg border border-slate-200 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-slate-700">Metadata</h4>
+                  <pre className="text-xs text-slate-600 bg-slate-50 p-2 rounded overflow-auto max-h-48">
+                    {JSON.stringify(viewingCheckout.metadata, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                onClick={() => setViewingCheckout(null)}
+                className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium hover:bg-slate-50"
+              >
+                Chiudi
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Dialog Conferma Eliminazione */}
+      <ConfirmDialog
+        isOpen={deletingId !== null}
+        onClose={() => setDeletingId(null)}
+        onConfirm={() => deletingId && deleteMutation.mutate(deletingId)}
+        title="Elimina Checkout"
+        message="Sei sicuro di voler eliminare questo checkout? Questa azione non può essere annullata."
+        confirmVariant="danger"
+        isLoading={deleteMutation.isPending}
+      />
     </section>
   );
 }
-

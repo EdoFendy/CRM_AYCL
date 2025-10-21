@@ -122,7 +122,7 @@ export default function OpportunitiesPage() {
         token,
         searchParams: { limit: 1000 },
       });
-      return response.data || [];
+      return response;
     },
   });
 
@@ -134,7 +134,7 @@ export default function OpportunitiesPage() {
         token,
         searchParams: { limit: 1000 },
       });
-      return response.data || [];
+      return response;
     },
   });
 
@@ -143,7 +143,7 @@ export default function OpportunitiesPage() {
     queryKey: ['referrals-list'],
     queryFn: async () => {
       const response = await apiClient<{ data: Referral[] }>('referrals', { token });
-      return response.data || [];
+      return response;
     },
   });
 
@@ -239,9 +239,9 @@ export default function OpportunitiesPage() {
 
   const rows = opportunitiesQuery.data?.data ?? [];
   const pageInfo = opportunitiesQuery.data?.pageInfo;
-  const companies = companiesQuery.data ?? [];
-  const users = usersQuery.data ?? [];
-  const referrals = referralsQuery.data ?? [];
+  const companies = companiesQuery.data?.data ?? [];
+  const users = usersQuery.data?.data ?? [];
+  const referrals = referralsQuery.data?.data ?? [];
 
   // Calculate metrics
   const metrics = useMemo(() => {

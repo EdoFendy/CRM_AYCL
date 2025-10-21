@@ -12,14 +12,21 @@ interface TokenPayload {
 }
 
 export function requireAuth(req: Request, _res: Response, next: NextFunction) {
+  // Try to get token from Authorization header first
+  let token: string | undefined;
+  
   const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    throw new HttpError(401, 'UNAUTHORIZED', 'Authentication required');
+  if (authHeader) {
+    [, token] = authHeader.split(' ');
   }
-
-  const [, token] = authHeader.split(' ');
+  
+  // If not in header, try query parameter (useful for file downloads)
+  if (!token && req.query.token) {
+    token = req.query.token as string;
+  }
+  
   if (!token) {
-    throw new HttpError(401, 'UNAUTHORIZED', 'Authentication token missing');
+    throw new HttpError(401, 'UNAUTHORIZED', 'Authentication required');
   }
 
   try {

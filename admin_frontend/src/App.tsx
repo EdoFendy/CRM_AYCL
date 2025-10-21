@@ -27,6 +27,8 @@ export default function App() {
         <Routes>
           <Route path="/login" element={routes.login} />
           <Route path="/support" element={routes.support} />
+          <Route path="/public/sign/:token" element={routes.publicSignature} />
+          <Route path="/public/pay/:token" element={routes.publicPayment} />
           <Route element={<ProtectedLayout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -41,6 +43,7 @@ export default function App() {
             <Route path="/sellers" element={routes.sellers} />
             <Route path="/resellers" element={routes.resellers} />
             <Route path="/teams" element={routes.teams} />
+            <Route path="/teams/:teamId" element={routes.teamDetail} />
             <Route path="/offers" element={routes.offers} />
             <Route path="/aycl-kit" element={routes.ayclKit} />
             <Route path="/start-kit" element={routes.startKit} />
@@ -50,6 +53,7 @@ export default function App() {
             <Route path="/tickets" element={routes.tickets} />
             <Route path="/payments" element={routes.payments} />
             <Route path="/contracts" element={routes.contracts} />
+            <Route path="/quotes" element={routes.quotes} />
             <Route path="/invoices" element={routes.invoices} />
             <Route path="/receipts" element={routes.receipts} />
             <Route path="/checkouts" element={routes.checkouts} />

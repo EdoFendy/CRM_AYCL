@@ -1,6 +1,7 @@
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import path from 'path';
 import 'express-async-errors';
 import { correlationIdMiddleware } from '../middlewares/correlationId.js';
 import { errorHandler } from '../middlewares/errorHandler.js';
@@ -13,6 +14,9 @@ export function createApp() {
   app.use(cors());
   app.use(express.json({ limit: '2mb' }));
   app.use(correlationIdMiddleware);
+
+  // Serve static files from uploads directory
+  app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
   registerRoutes(app);
 

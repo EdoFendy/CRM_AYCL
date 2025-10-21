@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useI18n } from '../i18n/I18nContext';
 import { apiClient } from '../utils/apiClient';
@@ -17,6 +18,18 @@ interface UserRow {
   email: string;
   role: string;
   code11: string;
+  full_name: string | null;
+  team_id: string | null;
+  reseller_team_id: string | null;
+  status: string;
+  created_at: string;
+}
+
+interface Team {
+  id: string;
+  name: string;
+  type: string;
+  parent_team_id: string | null;
 }
 
 const userSchema = z.object({
@@ -25,6 +38,8 @@ const userSchema = z.object({
   code11: z.string().length(11),
   password: z.string().min(8),
   fullName: z.string().optional(),
+  team_id: z.string().uuid().optional(),
+  reseller_team_id: z.string().uuid().optional(),
 });
 
 type UserFormValues = z.infer<typeof userSchema>;
@@ -39,13 +54,21 @@ export default function UsersPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const usersQuery = useQuery({
-    queryKey: ['users', filters],
-    queryFn: () =>
-      apiClient<{ data: UserRow[] }>('users', {
-        token,
-        searchParams: { query: filters.query },
-      }),
+  const [usersQuery, teamsQuery] = useQueries({
+    queries: [
+      {
+        queryKey: ['users', filters],
+        queryFn: () =>
+          apiClient<{ data: UserRow[] }>('users', {
+            token,
+            searchParams: { query: filters.query },
+          }),
+      },
+      {
+        queryKey: ['teams'],
+        queryFn: () => apiClient<{ data: Team[] }>('teams', { token }),
+      },
+    ],
   });
 
   const createMutation = useMutation({
@@ -105,13 +128,40 @@ export default function UsersPage() {
 
   const form = useForm<UserFormValues>({
     resolver: zodResolver(userSchema),
-    defaultValues: { email: '', role: 'seller', code11: '', password: '', fullName: '' },
+    defaultValues: { 
+      email: '', 
+      role: 'seller', 
+      code11: '', 
+      password: '', 
+      fullName: '',
+      team_id: '',
+      reseller_team_id: '',
+    },
   });
+
+  const teams = teamsQuery.data?.data ?? [];
+  const sellerTeams = teams.filter(team => team.type === 'seller');
+  const resellerTeams = teams.filter(team => team.type === 'reseller');
+
+  const getTeamName = (teamId: string | null, teamType: 'seller' | 'reseller') => {
+    if (!teamId) return '—';
+    const teamList = teamType === 'seller' ? sellerTeams : resellerTeams;
+    const team = teamList.find(t => t.id === teamId);
+    return team?.name || 'Unknown Team';
+  };
 
   const onSubmit = form.handleSubmit(async (values) => {
     setError(null);
     await createMutation.mutateAsync(values);
-    form.reset({ email: '', role: 'seller', code11: '', password: '', fullName: '' });
+    form.reset({ 
+      email: '', 
+      role: 'seller', 
+      code11: '', 
+      password: '', 
+      fullName: '',
+      team_id: '',
+      reseller_team_id: '',
+    });
   });
 
   const handleEdit = (user: UserRow) => {
@@ -121,7 +171,9 @@ export default function UsersPage() {
       role: user.role as any,
       code11: user.code11,
       password: '', // Non mostrare la password
-      fullName: '',
+      fullName: user.full_name || '',
+      team_id: user.team_id || '',
+      reseller_team_id: user.reseller_team_id || '',
     });
     setShowEditModal(true);
   };
@@ -146,7 +198,7 @@ export default function UsersPage() {
         </button>
       </div>
 
-      <form className="grid gap-4 rounded-lg border border-slate-200 bg-white p-4 md:grid-cols-2" onSubmit={onSubmit}>
+      <form className="grid gap-4 rounded-lg border border-slate-200 bg-white p-4 md:grid-cols-3" onSubmit={onSubmit}>
         <div className="space-y-1">
           <label className="text-xs font-medium text-slate-600" htmlFor="email">
             {t('labels.email')}
@@ -203,7 +255,50 @@ export default function UsersPage() {
             {...form.register('fullName')}
           />
         </div>
-        <div className="md:col-span-2 text-right">
+
+        {/* Team Selection for Sellers */}
+        {form.watch('role') === 'seller' && (
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-600" htmlFor="team_id">
+              Seller Team *
+            </label>
+            <select
+              id="team_id"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              {...form.register('team_id')}
+            >
+              <option value="">Select a team</option>
+              {sellerTeams.map((team) => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Team Selection for Resellers */}
+        {form.watch('role') === 'reseller' && (
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-600" htmlFor="reseller_team_id">
+              Reseller Team *
+            </label>
+            <select
+              id="reseller_team_id"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              {...form.register('reseller_team_id')}
+            >
+              <option value="">Select a team</option>
+              {resellerTeams.map((team) => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        <div className="md:col-span-3 text-right">
           <button
             type="submit"
             className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
@@ -233,8 +328,70 @@ export default function UsersPage() {
       <DataTable
         data={usersQuery.data?.data ?? []}
         columns={[
-          { id: 'email', header: t('labels.email'), cell: (user: UserRow) => user.email },
-          { id: 'role', header: t('labels.role'), cell: (user: UserRow) => user.role },
+          { 
+            id: 'name', 
+            header: 'Name', 
+            cell: (user: UserRow) => (
+              <div>
+                <p className="font-medium text-slate-900">{user.full_name || 'No Name'}</p>
+                <p className="text-xs text-slate-500">{user.email}</p>
+              </div>
+            )
+          },
+          { 
+            id: 'role', 
+            header: t('labels.role'), 
+            cell: (user: UserRow) => (
+              <span className={`rounded-full px-2 py-1 text-xs font-medium ${
+                user.role === 'admin' ? 'bg-purple-100 text-purple-700' :
+                user.role === 'seller' ? 'bg-blue-100 text-blue-700' :
+                user.role === 'reseller' ? 'bg-green-100 text-green-700' :
+                'bg-slate-100 text-slate-700'
+              }`}>
+                {user.role}
+              </span>
+            )
+          },
+          { 
+            id: 'team', 
+            header: 'Team', 
+            cell: (user: UserRow) => {
+              if (user.role === 'seller' && user.team_id) {
+                return (
+                  <Link 
+                    to={`/teams/${user.team_id}`}
+                    className="text-primary hover:underline"
+                  >
+                    {getTeamName(user.team_id, 'seller')}
+                  </Link>
+                );
+              }
+              if (user.role === 'reseller' && user.reseller_team_id) {
+                return (
+                  <Link 
+                    to={`/teams/${user.reseller_team_id}`}
+                    className="text-primary hover:underline"
+                  >
+                    {getTeamName(user.reseller_team_id, 'reseller')}
+                  </Link>
+                );
+              }
+              return '—';
+            }
+          },
+          { 
+            id: 'status', 
+            header: 'Status', 
+            cell: (user: UserRow) => (
+              <span className={`rounded-full px-2 py-1 text-xs font-medium ${
+                user.status === 'active' ? 'bg-green-100 text-green-700' :
+                user.status === 'invited' ? 'bg-yellow-100 text-yellow-700' :
+                'bg-red-100 text-red-700'
+              }`}>
+                {user.status}
+              </span>
+            )
+          },
           { id: 'code', header: t('labels.code11'), cell: (user: UserRow) => user.code11 },
           {
             id: 'actions',

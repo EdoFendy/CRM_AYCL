@@ -13,6 +13,7 @@ const TicketsPage = lazy(() => import('@pages/TicketsPage'));
 const PaymentsPage = lazy(() => import('@pages/PaymentsPage'));
 const ContractsPage = lazy(() => import('@pages/ContractsPage'));
 const InvoicesPage = lazy(() => import('@pages/InvoicesPage'));
+const QuotesPage = lazy(() => import('@pages/QuotesPage'));
 const AuditPage = lazy(() => import('@pages/AuditPage'));
 const LoginPage = lazy(() => import('@pages/LoginPage'));
 const SupportPage = lazy(() => import('@pages/SupportPage'));
@@ -21,6 +22,7 @@ const ContactsPage = lazy(() => import('@pages/ContactsPage'));
 const ContactDetailPage = lazy(() => import('@pages/ContactDetailPage'));
 const TasksPage = lazy(() => import('@pages/TasksPage'));
 const TeamsPage = lazy(() => import('@pages/TeamsPage'));
+const TeamDetailPage = lazy(() => import('@pages/TeamDetailPage'));
 const OffersPage = lazy(() => import('@pages/OffersPage'));
 const ActivitiesPage = lazy(() => import('@pages/ActivitiesPage'));
 const FilesPage = lazy(() => import('@pages/FilesPage'));
@@ -28,6 +30,8 @@ const ReferralsPage = lazy(() => import('@pages/ReferralsPage'));
 const CheckoutsPage = lazy(() => import('@pages/CheckoutsPage'));
 const ReceiptsPage = lazy(() => import('@pages/ReceiptsPage'));
 const SignaturesPage = lazy(() => import('@pages/SignaturesPage'));
+const PublicSignaturePage = lazy(() => import('@pages/PublicSignaturePage'));
+const PublicPaymentPage = lazy(() => import('@pages/PublicPaymentPage'));
 const NotificationsPage = lazy(() => import('@pages/NotificationsPage'));
 const WebhooksPage = lazy(() => import('@pages/WebhooksPage'));
 const RolesPage = lazy(() => import('@pages/RolesPage'));
@@ -44,6 +48,7 @@ export const routes = {
   sellers: <SellersPage />,
   resellers: <ResellersPage />,
   teams: <TeamsPage />,
+  teamDetail: <TeamDetailPage />,
   offers: <OffersPage />,
   ayclKit: <AYCLKItPage />,
   startKit: <StartKitPage />,
@@ -53,10 +58,13 @@ export const routes = {
   tickets: <TicketsPage />,
   payments: <PaymentsPage />,
   contracts: <ContractsPage />,
+  quotes: <QuotesPage />,
   invoices: <InvoicesPage />,
   receipts: <ReceiptsPage />,
   checkouts: <CheckoutsPage />,
   signatures: <SignaturesPage />,
+  publicSignature: <PublicSignaturePage />,
+  publicPayment: <PublicPaymentPage />,
   files: <FilesPage />,
   referrals: <ReferralsPage />,
   notifications: <NotificationsPage />,
