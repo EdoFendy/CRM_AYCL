@@ -20,6 +20,15 @@ interface ContractRow {
   pdf_url?: string;
   created_at: string;
   expires_at?: string;
+  pack?: string;
+  payment_amount?: number;
+  payment_currency?: string;
+  files?: Array<{
+    id: string;
+    name: string;
+    storage_url: string;
+    mime: string;
+  }>;
 }
 
 export default function ContractsPage() {
@@ -81,6 +90,119 @@ export default function ContractsPage() {
   const formatDate = (dateString?: string) => {
     if (!dateString) return '—';
     return new Date(dateString).toLocaleDateString('it-IT');
+  };
+
+  const handleDownloadPDF = (contract: ContractRow) => {
+    // Try to find a PDF file in the contract files
+    const pdfFile = contract.files?.find(file => 
+      file.mime === 'application/pdf' || 
+      file.name.toLowerCase().includes('.pdf') ||
+      file.name.toLowerCase().includes('contratto')
+    );
+
+    if (pdfFile) {
+      // If it's a data URL, open it directly
+      if (pdfFile.storage_url.startsWith('data:')) {
+        const link = document.createElement('a');
+        link.href = pdfFile.storage_url;
+        link.download = pdfFile.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        // If it's a regular URL, open in new tab
+        window.open(pdfFile.storage_url, '_blank');
+      }
+    } else if (contract.pdf_url) {
+      // Fallback to the old pdf_url field
+      window.open(contract.pdf_url, '_blank');
+    } else {
+      // If no PDF exists, try to generate one
+      generateContractPDF(contract);
+    }
+  };
+
+  const generateContractPDF = async (contract: ContractRow) => {
+    try {
+      // Determine contract type based on pack
+      const contractType = contract.pack?.toLowerCase().includes('performance') ? 'performance' : 'setupfee';
+      
+      // Try to fetch the contract template
+      const contractPath = contractType === 'performance' 
+        ? '/contracts_form/Performance_Contract_Formatted.html'
+        : '/contracts_form/SetUpFee_Contract_Formatted.html';
+      
+      const response = await fetch(contractPath);
+      if (!response.ok) {
+        throw new Error('Template not found');
+      }
+      
+      let contractHtml = await response.text();
+      
+      // Create a basic contract with available data
+      const contractData = {
+        company_name: contract.company_name || 'N/A',
+        company_address: 'Da definire',
+        company_tax_id: 'Da definire',
+        representative_name: 'Da definire',
+        representative_role: 'Da definire',
+        contract_date: new Date(contract.created_at).toLocaleDateString('it-IT'),
+        setup_fee: contract.payment_amount?.toString() || '3000',
+        unit_cost: '',
+        revenue_share_percentage: '',
+        revenue_share_months: '12',
+        icp_geographic_area: 'Da definire',
+        icp_sector: 'Da definire',
+        icp_min_revenue: 'Da definire',
+        icp_unit_cost: '',
+        icp_revenue_share: '',
+        icp_date: new Date().toLocaleDateString('it-IT'),
+      };
+
+      // Fill the contract with data
+      Object.entries(contractData).forEach(([key, value]) => {
+        if (value && value.trim() !== '') {
+          const spanRegex = new RegExp(`<span[^>]*data-field="${key}"[^>]*>\\[.*?\\]</span>`, 'g');
+          contractHtml = contractHtml.replace(spanRegex, `<span data-field="${key}">${value}</span>`);
+        }
+      });
+
+      // Remove contenteditable attributes
+      contractHtml = contractHtml.replace(/contenteditable="true"/g, 'contenteditable="false"');
+      
+      // Add CSS to make fields look like filled text
+      const styleTag = `
+        <style>
+          .editable-field {
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            font-weight: normal !important;
+            color: #000 !important;
+            display: inline !important;
+          }
+        </style>
+      `;
+      
+      contractHtml = contractHtml.replace('</head>', styleTag + '</head>');
+      
+      // Open in new window for printing
+      const newWindow = window.open('', '_blank');
+      if (newWindow) {
+        newWindow.document.write(contractHtml);
+        newWindow.document.close();
+        
+        // Wait for the document to load, then trigger print
+        newWindow.onload = () => {
+          setTimeout(() => {
+            newWindow.print();
+          }, 1000);
+        };
+      }
+    } catch (error) {
+      console.error('Error generating contract PDF:', error);
+      alert('Errore nella generazione del PDF. Il template potrebbe non essere disponibile.');
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -198,6 +320,24 @@ export default function ContractsPage() {
             cell: (contract: ContractRow) => formatDate(contract.expires_at)
           },
           { 
+            id: 'pack', 
+            header: 'Pack', 
+            cell: (contract: ContractRow) => (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                {contract.pack || 'N/A'}
+              </span>
+            )
+          },
+          { 
+            id: 'amount', 
+            header: 'Importo', 
+            cell: (contract: ContractRow) => (
+              <div className="text-sm">
+                {contract.payment_amount ? `€${contract.payment_amount}` : '—'}
+              </div>
+            )
+          },
+          { 
             id: 'status', 
             header: 'Stato', 
             cell: (contract: ContractRow) => getStatusBadge(contract.status)
@@ -215,18 +355,14 @@ export default function ContractsPage() {
                   <Eye className="h-4 w-4" />
                   Dettagli
                 </button>
-                {contract.pdf_url && (
-                  <a
-                    href={contract.pdf_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-sm text-green-600 hover:text-green-800"
-                    title="Download PDF"
-                  >
-                    <Download className="h-4 w-4" />
-                    PDF
-                  </a>
-                )}
+                <button
+                  onClick={() => handleDownloadPDF(contract)}
+                  className="inline-flex items-center gap-1 text-sm text-green-600 hover:text-green-800"
+                  title="Download PDF"
+                >
+                  <Download className="h-4 w-4" />
+                  PDF
+                </button>
                 {contract.status === 'draft' && (
                   <button
                     onClick={() => {

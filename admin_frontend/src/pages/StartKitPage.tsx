@@ -13,6 +13,7 @@ import { useCursorPagination } from '../hooks/useCursorPagination';
 import { PaginationControls } from '../components/navigation/PaginationControls';
 import { Modal } from '../components/ui/Modal';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
+import ContractGenerator from '../components/ContractGenerator';
 import { 
   FileText, 
   Send, 
@@ -133,7 +134,7 @@ export default function StartKitPage() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [signatureRequest, setSignatureRequest] = useState<SignatureRequest | null>(null);
   const [paymentIntent, setPaymentIntent] = useState<PaymentIntent | null>(null);
-  const [activeTab, setActiveTab] = useState<'contracts' | 'timeline'>('contracts');
+  const [activeTab, setActiveTab] = useState<'contracts' | 'timeline' | 'generator'>('contracts');
 
   const queryKey = useMemo(
     () => ['contracts', filters, pagination.cursor, pagination.limit],
@@ -335,6 +336,13 @@ export default function StartKitPage() {
     navigator.clipboard.writeText(text);
   };
 
+  const handleGenerateContract = (contractType: 'performance' | 'setupfee', data: any) => {
+    console.log(`Generating ${contractType} contract with data:`, data);
+    // Here you would implement the contract generation logic
+    // For now, we'll just show a success message
+    alert(`Contratto ${contractType} generato con successo!`);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'draft': return 'bg-yellow-100 text-yellow-800';
@@ -492,6 +500,16 @@ export default function StartKitPage() {
           >
             Contratti
           </button>
+          <button
+            onClick={() => setActiveTab('generator')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'generator'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            Generatore Contratti
+          </button>
           {selectedContract && (
             <button
               onClick={() => setActiveTab('timeline')}
@@ -570,6 +588,11 @@ export default function StartKitPage() {
             />
           )}
         </>
+      )}
+
+      {/* Contract Generator Tab */}
+      {activeTab === 'generator' && (
+        <ContractGenerator onGenerateContract={handleGenerateContract} />
       )}
 
       {/* Timeline Tab */}

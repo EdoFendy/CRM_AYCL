@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONTRATTO ALL YOU CAN LEADS | PACCHETTO SETUP FEE + REVENUE SHARE</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2.5cm 2cm 3cm 2cm;
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #000;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+        }
+        
+        .contract-title {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .contract-subtitle {
+            font-size: 12pt;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        
+        .parties-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+        
+        .party-info {
+            margin: 10px 0;
+            padding: 8px;
+            background-color: white;
+            border-left: 3px solid #007bff;
+        }
+        
+        .party-label {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        
+        .editable-field {
+            border-bottom: 1px solid #000;
+            min-width: 200px;
+            display: inline-block;
+            padding: 2px 5px;
+            background-color: #fffacd;
+        }
+        
+        .article {
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        .article-title {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #000;
+            padding-bottom: 3px;
+        }
+        
+        .article-content {
+            margin-left: 15px;
+            text-align: justify;
+        }
+        
+        .article-content p {
+            margin: 8px 0;
+            text-indent: 0;
+        }
+        
+        .article-content ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        .article-content li {
+            margin: 5px 0;
+        }
+        
+        .signature-section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 2px solid #000;
+            background-color: #f0f0f0;
+        }
+        
+        .signature-line {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .signature-field {
+            border-bottom: 1px solid #000;
+            min-width: 200px;
+            height: 30px;
+            display: inline-block;
+        }
+        
+        .logo-footer {
+            position: fixed;
+            bottom: 1cm;
+            right: 2cm;
+            width: 80px;
+            height: auto;
+            opacity: 0.7;
+        }
+        
+        .page-number {
+            position: fixed;
+            bottom: 1cm;
+            left: 2cm;
+            font-size: 10pt;
+            color: #666;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .important-clause {
+            background-color: #ffe6e6;
+            padding: 10px;
+            border-left: 4px solid #ff0000;
+            margin: 10px 0;
+        }
+        
+        .table-icp {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .table-icp th,
+        .table-icp td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .table-icp th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        
+        .editable-table-cell {
+            background-color: #fffacd;
+            border: 1px solid #000;
+            min-height: 30px;
+            padding: 5px;
+        }
+        
+        .revenue-share-section {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border: 2px solid #007bff;
+            margin: 15px 0;
+        }
+        
+        @media print {
+            .logo-footer {
+                position: fixed;
+                bottom: 1cm;
+                right: 2cm;
+            }
+            
+            .page-number {
+                position: fixed;
+                bottom: 1cm;
+                left: 2cm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="contract-title">CONTRATTO ALL YOU CAN LEADS</div>
+        <div class="contract-subtitle">PACCHETTO SETUP FEE + REVENUE SHARE</div>
+        <div style="font-size: 10pt; margin-top: 10px;">Di seguito anche semplicemente "Contratto"</div>
+    </div>
+
+    <div class="parties-section">
+        <div class="party-info">
+            <div class="party-label">CONSULENTE:</div>
+            <div>4YOU 4YOUR FUTURE SOCIEDAD LTDA</div>
+            <div>con sede legale in Avenida Touroperador Neckermann 3, Campo Internazionale, Maspalomas, 35100, Spagna</div>
+            <div>CIF: B44593010</div>
+            <div>rappresentata dall'Amministratore Unico Giacomo Romano</div>
+            <div>(di seguito, il "Consulente" o il "Fornitore")</div>
+        </div>
+        
+        <div style="text-align: center; margin: 15px 0; font-weight: bold;">e</div>
+        
+        <div class="party-info">
+            <div class="party-label">COMMITTENTE:</div>
+            <div>
+                <span class="editable-field" contenteditable="true" data-field="company_name">[Nome Azienda]</span>
+                , con sede legale in 
+                <span class="editable-field" contenteditable="true" data-field="company_address">[Indirizzo]</span>
+                , C.F./P.IVA 
+                <span class="editable-field" contenteditable="true" data-field="company_tax_id">[Codice Fiscale/P.IVA]</span>
+                , rappresentata da 
+                <span class="editable-field" contenteditable="true" data-field="representative_name">[Nome Rappresentante]</span>
+                in qualità di 
+                <span class="editable-field" contenteditable="true" data-field="representative_role">[Ruolo]</span>
+            </div>
+            <div>(di seguito "Committente" o "Cliente")</div>
+        </div>
+        
+        <div style="text-align: center; margin: 15px 0; font-weight: bold;">nel prosieguo congiuntamente indicati come "Parti".</div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Premesso che</div>
+        <div class="article-content">
+            <p>• Il Consulente è la società 4YOU 4YOUR FUTURE SOCIEDAD LTDA, operante nel settore dell'outreach multicanale (quali, a titolo esemplificativo, email, telefono, LinkedIn e altri canali digitali conformi alla normativa vigente), nonché nei servizi di lead generation e appointment setting, volta a supportare le imprese nell'acquisizione di contatti qualificati e nello sviluppo di nuove opportunità d'affari;</p>
+            
+            <p>• Il Committente, conscio delle capacità professionali del Consulente, intende avvalersi di tali competenze e stipulare il presente contratto ("Contratto");</p>
+            
+            <p>• Nello specifico, il Committente intende avvalersi dei servizi professionali del Consulente per la generazione e pianificazione di appuntamenti qualificati con potenziali clienti;</p>
+            
+            <p>• Le Parti convengono che il modello di remunerazione applicabile al presente Contratto sia composto da:</p>
+            <ul>
+                <li>A. una quota iniziale di avvio (Setup Fee); e</li>
+                <li>B. un corrispettivo variabile a percentuale (Revenue Share) calcolato sui ricavi netti effettivamente incassati dal Committente, riconducibili alle vendite derivanti dagli appuntamenti fissati dal Consulente, secondo i termini e le condizioni meglio precisati all'Articolo 5;</li>
+            </ul>
+            
+            <p>• La presente scrittura ha valore di contratto tra le Parti ("Contratto").</p>
+            
+            <p><strong>Tutto ciò premesso, che costituisce parte integrante ed essenziale del Contratto, le Parti, come in epigrafe identificate, convengono e stipulano quanto segue:</strong></p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 1. Oggetto</div>
+        <div class="article-content">
+            <p><strong>1.1</strong> Il presente Contratto ha ad oggetto l'erogazione, da parte del Consulente, di servizi di lead generation e appointment setting in favore del Committente, finalizzati a favorire nuove opportunità di contatto commerciale e a generare, attraverso tali attività, opportunità di vendita attribuibili ai fini della remunerazione a Revenue Share di cui all'Articolo 5.</p>
+            
+            <p><strong>1.2</strong> L'attività del Consulente si configura come obbligazione di mezzi e non di risultato, restando esclusa qualsiasi garanzia in merito al raggiungimento di specifici obiettivi economici o di fatturato. Resta tuttavia inteso che il Consulente si impegna a porre in essere tutte le attività idonee e ragionevolmente necessarie a favorire la realizzazione di opportunità di vendita attribuibili, funzionali al calcolo della remunerazione a Revenue Share.</p>
+            
+            <p><strong>1.3</strong> Il Committente definisce i parametri del proprio Ideal Customer Profile (ICP), indicando i criteri di individuazione dei prospect di interesse (area geografica, settore di appartenenza e minimo di fatturato annuo). Il Consulente, avvalendosi di strumenti digitali, tecnologie di intelligenza artificiale e procedure analitiche, si impegna a tradurre tali indicazioni in attività operative, a effettuare verifiche di coerenza e, ove necessario, a proporre al Committente suggerimenti di affinamento. In tale contesto, il Consulente procederà alla generazione e pianificazione di contatti e appuntamenti qualificati con soggetti coerenti con i parametri concordati, che costituiscono altresì la base di riferimento per l'attribuzione delle vendite rilevanti ai fini del calcolo del Revenue Share.</p>
+            
+            <p><strong>1.4</strong> Il Committente resta l'unico responsabile della propria proposta commerciale, del pricing e delle condizioni di vendita. Il Consulente, nell'ambito delle attività di lead generation e appointment setting, potrà supportare il Committente nell'adattamento operativo dei messaggi di outreach ai diversi segmenti di mercato identificati, formulando suggerimenti volti a favorire l'interesse dei prospect e la pianificazione di appuntamenti qualificati. Resta inteso che ogni decisione finale relativa ai contenuti commerciali, alle offerte e alle condizioni economiche proposte ai clienti spetta esclusivamente al Committente; tali decisioni costituiranno la base per l'attribuzione delle vendite rilevanti ai fini del calcolo della remunerazione a Revenue Share. Eventuali mancate vendite derivanti da inadeguatezza della proposta commerciale, del pricing o delle politiche di vendita del Committente non potranno in alcun modo essere imputate al Consulente né incidere sulla validità del presente Contratto.</p>
+            
+            <p><strong>1.5</strong> Il Consulente si impegna a progettare e implementare una sequenza strutturata di contatti e iniziative di outreach, calibrata in base all'evoluzione dei fabbisogni del Committente e ai parametri di Ideal Customer Profile concordati. A tal fine, il Consulente collaborerà con il Committente per definire messaggi, materiali di supporto e modalità operative idonee a facilitare la generazione di appuntamenti qualificati e lo sviluppo di nuove opportunità d'affari. Resta inteso che tali attività rientrano nella fase di lead generation e appointment setting e non comportano alcuna responsabilità del Consulente in merito alla gestione, conduzione o conclusione delle trattative commerciali.</p>
+            
+            <p><strong>1.6</strong> Il Consulente, ai fini dell'esecuzione del presente Contratto, potrà costituire, arricchire e utilizzare banche dati di contatti qualificati, con particolare riferimento a soggetti dotati di potere decisionale. Tali recapiti saranno selezionati mediante procedure di verifica multi-fase (inclusi controlli automatizzati e validazioni manuali) e saranno impiegati esclusivamente per finalità di lead generation e appointment setting in favore del Committente. La titolarità e i relativi diritti di sfruttamento delle banche dati restano in capo al Consulente, fatti salvi i diritti del Committente a ricevere unicamente i risultati dell'attività svolta (appuntamenti qualificati e rendicontazioni correlate), senza alcuna pretesa di trasferimento o accesso integrale alle banche dati utilizzate.</p>
+            
+            <p><strong>1.7</strong> Il Consulente si impegna ad adottare una metodologia strutturata di selezione e qualificazione dei contatti, che prevede:</p>
+            <ul>
+                <li>un sistema primario di screening volto a individuare soggetti dotati di effettivo potere decisionale; e</li>
+                <li>un meccanismo secondario di verifica, effettuato mediante personale specializzato e/o strumenti tecnologici, inclusi sistemi di intelligenza artificiale.</li>
+            </ul>
+            <p>Tali criteri di selezione saranno oggetto di progressivo perfezionamento sulla base dei risultati conseguiti e delle esigenze condivise con il Committente. Resta inteso che le metodologie e gli strumenti impiegati costituiscono know-how esclusivo del Consulente. L'attività di affinamento sarà svolta in coerenza con quanto previsto dall'Articolo 1.2, senza che ciò implichi alcuna garanzia circa il raggiungimento di specifici volumi di vendita o obiettivi economici.</p>
+            
+            <p><strong>1.8</strong> Il Consulente si impegna a sviluppare e applicare metodologie interne e procedure operative finalizzate all'ottimizzazione del processo di generazione dei contatti e degli appuntamenti qualificati. A tal fine, potrà condurre attività di test, analisi comparativa e miglioramento continuo delle proprie strategie e comunicazioni di outreach, nel rispetto delle normative vigenti e delle best practice di settore. Tali attività rientrano esclusivamente nella fase di lead generation e appointment setting e non si estendono in alcun modo alla gestione del processo di vendita, alle trattative commerciali o alle relative comunicazioni, che restano di esclusiva competenza e responsabilità del Committente.</p>
+            
+            <p><strong>1.9</strong> Nell'ambito dello svolgimento delle attività previste dal presente Contratto, il Consulente si riserva il diritto di avvalersi, a propria discrezione, di collaboratori, sub-fornitori e soggetti terzi qualificati, anche specializzati in specifiche fasi del processo, al fine di garantire la continuità, l'efficienza e il miglioramento delle prestazioni concordate. Resta inteso che l'eventuale delega o commissione a terzi non modifica la responsabilità generale del Consulente nei confronti del Committente in relazione alla corretta esecuzione delle attività, né conferisce al Committente alcun diritto di interferire nella scelta, gestione o sostituzione dei soggetti coinvolti.</p>
+            
+            <p><strong>1.10</strong> Il Consulente avrà l'onere di assicurare che tutti i collaboratori, sub-fornitori e soggetti terzi coinvolti nell'esecuzione delle attività agiscano in conformità ai principi e agli standard etici e professionali adottati dal Consulente, nonché nel rispetto delle normative applicabili. Il Consulente garantisce che tali soggetti opereranno con la diligenza richiesta dalla natura delle prestazioni, preservando in ogni momento la qualità, l'affidabilità e l'integrità dei servizi forniti al Committente.</p>
+            
+            <p><strong>1.11</strong> Il Consulente dichiara e garantisce di detenere e mantenere la titolarità esclusiva delle banche dati utilizzate ai fini del presente Contratto, siano esse costituite internamente o acquisite tramite fornitori o piattaforme terze specializzate (a titolo esemplificativo: strumenti di lead intelligence, scraping o data enrichment), assicurando che i contatti siano raccolti, gestiti e trattati nel rispetto della normativa applicabile in materia di protezione dei dati personali (ivi incluso il Regolamento UE 2016/679 – GDPR), delle normative nazionali di recepimento e delle disposizioni vigenti in materia di comunicazioni commerciali e marketing diretto. Il Consulente si impegna altresì a garantire l'adozione di meccanismi di opt-out e strumenti equivalenti nei canali di outreach utilizzati. Il Committente riceverà esclusivamente i risultati delle attività (Appuntamenti Qualificati e rendicontazioni correlate) e sarà l'unico responsabile della gestione commerciale e contrattuale conseguente agli stessi. Resta inteso che eventuali comunicazioni, trattamenti o utilizzi successivi ai dati e alle informazioni emerse in sede di trattativa saranno di esclusiva competenza e responsabilità del Committente. Ciascuna Parte, per quanto di propria competenza, si impegna a rispettare le normative applicabili e a manlevare e tenere indenne l'altra Parte da ogni responsabilità, sanzione o conseguenza pregiudizievole derivante da violazioni imputabili al proprio ambito di responsabilità.</p>
+            
+            <p><strong>1.11-bis</strong> Le Parti agiscono quali titolari autonomi del trattamento ai sensi dell'art. 4 GDPR, ciascuna per i trattamenti ricadenti nel proprio ambito di competenza. Ciascuna Parte manleva e tiene indenne l'altra da pretese, sanzioni o oneri derivanti da violazioni imputabili al proprio operato.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 2. Obblighi del consulente</div>
+        <div class="article-content">
+            <p><strong>2.1</strong> Il Consulente si impegna a prestare la propria opera professionale con la massima diligenza, secondo quanto richiesto dalla natura dell'attività esercitata e nel pieno rispetto delle leggi e delle normative vigenti applicabili al settore della consulenza commerciale e dei servizi di lead generation e appointment setting.</p>
+            
+            <p><strong>2.2</strong> Il Consulente assicura di svolgere la propria attività in modo professionale e continuativo, mettendo a disposizione del Committente competenze, know-how e metodologie consolidate in materia di outreach multicanale, lead generation e appointment setting, al fine di garantire un servizio di qualità, conforme agli standard professionali del settore e orientato alla generazione di opportunità di vendita rilevanti ai fini del presente Contratto.</p>
+            
+            <p><strong>2.3</strong> Il Consulente si obbliga a mantenere la massima riservatezza in relazione a tutte le informazioni, dati e documenti, compresi quelli relativi ai clienti finali e alle vendite del Committente, di cui verrà a conoscenza nell'esecuzione del presente Contratto. Tale obbligo permane anche successivamente alla cessazione del rapporto e si estende a collaboratori, sub-fornitori e soggetti terzi di cui il Consulente si avvale. Restano escluse dall'obbligo le informazioni già pubbliche, quelle legittimamente acquisite da terzi o quelle la cui comunicazione sia imposta da legge o da ordine di un'autorità competente, previa tempestiva informativa al Committente. Il Consulente si asterrà dall'utilizzare le informazioni riservate per finalità diverse dall'esecuzione del Contratto e dal divulgarle a terzi senza il consenso scritto del Committente.</p>
+            
+            <p><strong>2.4</strong> L'obbligo di riservatezza riguarda non soltanto le informazioni espressamente qualificate come riservate dalle Parti, ma anche tutte quelle che, per natura, contenuto o contesto, debbano ragionevolmente essere considerate tali, incluse – a titolo esemplificativo – informazioni commerciali, tecniche, finanziarie, di marketing, dati sui clienti finali e strategie operative.</p>
+            
+            <p><strong>2.5</strong> Nello specifico, il Consulente si impegna a:</p>
+            <ul>
+                <li>mettere a disposizione i propri sistemi, tecnologie, know-how e collaboratori qualificati con l'obiettivo di generare contatti qualificati e appuntamenti in favore del Committente;</li>
+                <li>utilizzare, a propria discrezione, gli strumenti digitali e tecnologici ritenuti opportuni, inclusi sistemi di intelligenza artificiale, al fine di ottimizzare l'esecuzione dei servizi;</li>
+                <li>condividere con il Committente aggiornamenti periodici sull'andamento delle attività, mediante report o sessioni di confronto concordate, senza obbligo di reperibilità continuativa;</li>
+                <li>collaborare con il Committente per assicurare la corretta attribuzione delle vendite derivanti dagli appuntamenti fissati, ai fini del calcolo della remunerazione variabile a Revenue Share prevista dall'Articolo 5.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 3. Obblighi del Committente</div>
+        <div class="article-content">
+            <p><strong>3.1</strong> Il Committente si impegna a rispettare i seguenti obblighi, essenziali per la corretta esecuzione del Contratto:</p>
+            <ul>
+                <li><strong>Collaborazione e materiali:</strong> fornire tempestivamente feedback, informazioni e asset (es. value proposition, listini, materiali di prodotto) necessari all'esecuzione delle attività; nominare un referente unico con adeguati poteri decisionali.</li>
+                <li><strong>Accessi operativi:</strong> garantire al Consulente gli accessi ai sistemi necessari (a titolo esemplificativo: CRM, calendario, strumenti di videoconference, caselle email dedicate) e mantenerli attivi per tutta la durata del Contratto.</li>
+                <li><strong>Pipeline & tagging:</strong> mantenere aggiornato il CRM e configurare le fasi di pipeline concordate, applicando correttamente i tag e le procedure di attribuzione definite con il Consulente.</li>
+                <li><strong>Gestione appuntamenti:</strong> assicurare la presenza agli appuntamenti qualificati fissati; eventuali spostamenti dovranno essere comunicati con preavviso minimo di 24 (ventiquattro) ore.</li>
+                <li><strong>Tempi di risposta e follow-up:</strong> contattare/rispondere ai prospect e dare seguito agli appuntamenti entro 2 (due) giorni lavorativi; aggiornare lo stato delle opportunità entro 5 (cinque) giorni lavorativi dall'evento rilevante (call, meeting, offerta inviata).</li>
+                <li><strong>Rendicontazione vendite:</strong> registrare in un documento di tracciamento condiviso fornito dal Consulente tutte le vendite attribuibili agli appuntamenti fissati, con cadenza settimanale, allegando idonee evidenze oggettive (contratto, fattura, checkout digitale o altra prova equivalente) e indicando la data di chiusura e di effettivo incasso.</li>
+                <li><strong>Verifiche e attribuzione:</strong> collaborare alla corretta attribuzione delle vendite ai fini del calcolo della Revenue Share, consentendo, ove ragionevolmente richiesto, verifiche documentali a campione sui soli elementi necessari all'attribuzione e alla quantificazione dei ricavi netti, con esclusione di ogni accesso generalizzato ai sistemi del Committente.</li>
+                <li><strong>Strumenti/metodologie:</strong> prendere atto che strumenti, procedure e metodologie del Consulente costituiscono attività interna del medesimo e non comportano obbligo di consegna al Committente.</li>
+            </ul>
+            
+            <p><em>Resta inteso che la mancata o tardiva registrazione delle vendite o la mancata collaborazione del Committente non potrà in alcun modo essere imputata al Consulente né pregiudicare il diritto di quest'ultimo ai corrispettivi maturati ai sensi del presente Contratto.</em></p>
+            
+            <p><strong>3.2</strong> Il Committente prende atto e accetta che la responsabilità relativa alla gestione commerciale, alle decisioni di acquisto e alla conclusione delle vendite resta a suo esclusivo carico, senza alcuna garanzia di risultato da parte del Consulente. La capacità di chiusura delle trattative dipende dalla proposta commerciale, dal pricing, dalle condizioni di vendita e dall'operatività del team del Committente. Eventuali criticità in tali ambiti non potranno essere imputate al Consulente né incidere sulla maturazione dei corrispettivi a titolo di Revenue Share.</p>
+            
+            <p><strong>3.3</strong> Il mancato rispetto, anche parziale, degli obblighi di cui al presente articolo comporterà automaticamente:</p>
+            <ul>
+                <li>l'esclusione di qualsiasi responsabilità del Consulente in merito all'efficacia dei servizi;</li>
+                <li>la decadenza di ogni diritto del Committente a sollevare contestazioni, richiedere rimborsi o avanzare pretese risarcitorie nei confronti del Consulente;</li>
+                <li>la facoltà del Consulente di sospendere l'erogazione dei servizi fino alla regolarizzazione;</li>
+                <li>in caso di mancata registrazione o comunicazione delle vendite attribuibili, il diritto del Consulente di basarsi sulle evidenze oggettive disponibili (log di calendario, CRM condiviso, documentazione acquisita), che faranno piena prova ai fini del calcolo della Revenue Share, salvo che il Committente dimostri con idonea documentazione un diverso esito entro 7 (sette) giorni lavorativi dalla ricezione del report.</li>
+            </ul>
+            
+            <p><strong>3.4</strong> Il Committente si impegna a mantenere un tasso di conversione minimo del 10% (dieci per cento) sugli Appuntamenti Qualificati effettivamente svolti, in coerenza con l'Ideal Customer Profile concordato.</p>
+            <p>Ai fini del calcolo:</p>
+            <ul>
+                <li>sono considerati esclusivamente gli Appuntamenti Qualificati che rispettano i criteri dell'ICP e che si siano regolarmente tenuti con la presenza del prospect;</li>
+                <li>sono esclusi dal computo eventuali appuntamenti non conformi all'ICP o annullati dal prospect.</li>
+            </ul>
+            <p>Il mancato raggiungimento del tasso di conversione minimo, per cause imputabili al Committente (es. inadeguatezza dell'offerta, politiche di pricing, mancata gestione commerciale o follow-up), comporterà la decadenza di ogni diritto del Committente a sollevare contestazioni in merito all'efficacia dei servizi e non potrà incidere sulla maturazione dei corrispettivi spettanti al Consulente a titolo di Revenue Share.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 4. Efficacia e avvio dei servizi</div>
+        <div class="article-content">
+            <p><strong>4.1</strong> Il presente Contratto acquista piena validità ed efficacia alla data di sottoscrizione da parte di entrambe le Parti.</p>
+            
+            <p><strong>4.2</strong> L'esecuzione operativa dei servizi avrà inizio con le attività preparatorie poste in essere dal Consulente (quali, a titolo esemplificativo: onboarding, definizione ICP, setup tecnologico e predisposizione delle campagne di outreach), che costituiscono di per sé dimostrazione sufficiente dell'avvio del servizio.</p>
+            
+            <p><strong>4.3</strong> La decorrenza e la durata del presente Contratto sono disciplinate dall'Articolo 7.</p>
+        </div>
+    </div>
+
+    <div class="revenue-share-section">
+        <div class="article-title">Articolo 5. Corrispettivo e modalità di pagamento</div>
+        <div class="article-content">
+            <p><strong>5.1</strong> Alla sottoscrizione del presente Contratto, il Committente corrisponderà al Consulente un importo pari a Euro <span class="editable-field" contenteditable="true" data-field="setup_fee">______,00</span> (______/00), a titolo di contributo iniziale per l'avvio delle attività e la copertura dei costi organizzativi e tecnologici. Tale importo rappresenta una quota di ingresso destinata a garantire la predisposizione e la messa in opera delle risorse necessarie all'erogazione dei servizi. La somma non è rimborsabile, salvo quanto previsto dall'Articolo 5.10.</p>
+            
+            <p><strong>5.2</strong> Successivamente alla Setup Fee, il corrispettivo per i servizi oggetto del presente Contratto sarà determinato in misura percentuale ("Revenue Share") sui ricavi netti effettivamente incassati dal Committente e riconducibili alle vendite derivanti da Appuntamenti Qualificati generati dal Consulente. Ai fini del presente Contratto, per <em>ricavi netti</em> si intendono esclusivamente i corrispettivi effettivamente incassati dal Committente al netto di IVA, resi, note di credito, sconti straordinari e insoluti, ma al lordo di eventuali provvigioni, commissioni, compensi o costi interni (ivi compresi stipendi, costi di produzione, spese di marketing o qualsiasi altra voce di costo sostenuta dal Committente). È espressamente escluso che il calcolo della Revenue Share possa riferirsi all'utile netto o al margine residuo del Committente: la base di calcolo resta unicamente quella dei ricavi netti come sopra definiti.</p>
+            
+            <p>Il calcolo della Revenue Share decorre dal primo giorno del mese successivo al raggiungimento del "Breakeven Point", ossia quando il Committente ha incassato ricavi netti almeno pari alla Setup Fee corrisposta. Il pagamento della Revenue Share relativa a ciascun mese dovrà essere effettuato entro la prima settimana del mese successivo, sulla base dei ricavi netti effettivamente incassati e documentati nel mese di riferimento. La misura della Revenue Share è fissata come segue:</p>
+            
+            <p>• <span class="editable-field" contenteditable="true" data-field="revenue_share_percentage">______%</span> (______ per cento) sui ricavi netti;</p>
+            
+            <p>Eventuali ulteriori ICP o condizioni diverse dovranno essere oggetto di specifica pattuizione scritta ai sensi dell'Art. 5.6.</p>
+            
+            <p><strong>5.2-bis</strong> Ai fini dell'applicazione della Revenue Share, ciascun cliente acquisito a valle di un Appuntamento Qualificato è attribuito al Consulente per <span class="editable-field" contenteditable="true" data-field="revenue_share_months">______</span> (______) mesi decorrenti dalla data del primo incasso relativo a tale cliente.</p>
+            
+            <p><strong>5.2-ter</strong> La Revenue Share si applica a tutti i ricavi netti incassati dal Committente dal medesimo cliente entro la finestra di cui al 5.2-bis, inclusi canoni, rinnovi, upsell e cross-sell, anche se riferiti a prodotti/servizi differenti.</p>
+            
+            <p><strong>5.2-quater</strong> Non sono attribuibili – ed esclusi dal calcolo della Revenue Share – i ricavi derivanti da clienti già presenti nel CRM del Committente con interazione commerciale documentata nei 180 (centoottanta) giorni antecedenti la data dell'Appuntamento Qualificato, purché tale pre-esistenza sia registrata dal Committente nel documento di tracciamento condiviso entro 5 (cinque) giorni lavorativi dall'appuntamento, allegando evidenze oggettive (a titolo esemplificativo: email/PEC, agenda/meeting calendar, proposta/offerta inviata, ordine/preventivo, opportunità già aperta in CRM con data anteriore). La mera presenza del nominativo in anagrafica CRM, priva di tracce di interazione, non è sufficiente. La registrazione effettuata oltre il termine di 5 (cinque) giorni non è opponibile. In difetto, l'attribuzione si presume in favore del Consulente.</p>
+            
+            <p><strong>5.2-quinquies</strong> Ai fini dell'attribuzione sono ricompresi i ricavi incassati da società controllanti, controllate o collegate del cliente ai sensi dell'art. 2359 c.c., nonché da veicoli o soggetti correlati riconducibili al medesimo gruppo/beneficiario economico, quando la vendita derivi dall'Appuntamento Qualificato.</p>
+            
+            <p><strong>5.3</strong> Entro il giorno 1 (uno) di ciascun mese, il Committente è tenuto a mettere a disposizione del Consulente, attraverso il documento di tracciamento condiviso, il riepilogo delle vendite effettivamente concluse e incassate nel mese precedente, attribuibili agli Appuntamenti Qualificati fissati dal Consulente, corredato da idonee evidenze oggettive (es. contratti firmati, fatture emesse e incassate, ricevute di pagamento, checkout digitali). Il Consulente, sulla base dei dati comunicati e delle eventuali verifiche documentali di cui all'Articolo 3, predisporrà un report riepilogativo delle vendite attribuibili e della relativa quota di Revenue Share maturata. Eventuali rilievi documentati su errori materiali del report dovranno essere comunicati per iscritto dal Committente al Consulente entro e non oltre 48 (quarantotto) ore dalla ricezione; decorso tale termine senza osservazioni, il report si intenderà approvato a tutti gli effetti. Sulla base del report approvato (o tacitamente approvato), il Consulente emetterà regolare fattura per la Revenue Share maturata nel mese di riferimento. Il Committente si impegna a corrispondere l'importo dovuto entro e non oltre 5 (cinque) giorni dalla data di emissione della fattura, esclusivamente tramite bonifico bancario o link di pagamento digitale fornito dal Consulente, secondo le istruzioni comunicate di volta in volta. Il mancato o ritardato invio dei dati da parte del Committente non sospende né differisce l'esigibilità della Revenue Share, che potrà in tal caso essere calcolata dal Consulente sulla base delle evidenze oggettive disponibili (log di calendario, CRM condiviso, contratti già acquisiti), con pieno valore probatorio salvo contestazione motivata entro 5 (cinque) giorni dal ricevimento del report.</p>
+            
+            <p><strong>5.4</strong> Ai fini del presente Contratto, per "Appuntamento Qualificato" si intende un incontro telefonico, virtuale o in presenza, fissato dal Consulente con un soggetto appartenente a un'organizzazione coerente con i parametri di Ideal Customer Profile (ICP) previamente concordati tra le Parti e dettagliati nell'Allegato A, parte integrante del presente Contratto.</p>
+            
+            <p>L'Appuntamento si considera regolarmente svolto qualora:</p>
+            <ul>
+                <li>il prospect effettivamente partecipi e si presenti all'incontro; oppure</li>
+                <li>pur essendo il prospect presente e disponibile, l'incontro non abbia luogo per cause imputabili al Committente (es. assenza, ritardo, indisponibilità o impossibilità del Committente a proseguire la call).</li>
+            </ul>
+            
+            <p>L'avvenuto svolgimento potrà essere provato mediante evidenze oggettive, a titolo esemplificativo e non esaustivo: conferme di calendario, log di accesso o di connessione alla call, corrispondenza email o messaggistica di conferma, note CRM, registrazioni di sistema o altra documentazione idonea a dimostrare la regolare organizzazione e partecipazione del prospect.</p>
+            
+            <p>Restano espressamente esclusi dal computo gli appuntamenti:</p>
+            <ul>
+                <li>non conformi all'ICP concordato;</li>
+                <li>annullati dal prospect senza effettiva partecipazione.</li>
+            </ul>
+            
+            <p>Gli Appuntamenti Qualificati così definiti costituiscono la base esclusiva per l'attribuzione delle vendite e per il calcolo della Revenue Share di cui al presente Articolo 5. In coerenza con quanto previsto dall'Articolo 3.4, il Committente si impegna a garantire un tasso minimo di conversione del 10% (dieci per cento) sugli Appuntamenti Qualificati effettivamente svolti e conformi all'ICP. Il mancato rispetto di tale soglia, per cause imputabili al Committente (es. offerta non competitiva, politiche di pricing, mancata gestione o follow-up), comporterà la decadenza di qualsiasi contestazione relativa all'efficacia del servizio o alla maturazione della Revenue Share spettante al Consulente.</p>
+            
+            <p><strong>5.5</strong> Il Consulente erogherà i servizi di lead generation e appointment setting in favore del Committente senza vincolo di soglia minima o massima di Appuntamenti Qualificati da generare, fermo restando che la remunerazione variabile a Revenue Share matura esclusivamente in relazione alle vendite attribuibili ad Appuntamenti Qualificati, come definiti nel presente Contratto. Tale impostazione costituisce un beneficio per il Committente, consentendo di adattare in modo scalabile e dinamico l'attività di outreach per tutta la durata del Contratto, in funzione dell'andamento delle esigenze commerciali e del mercato di riferimento. I cluster di mercato, i segmenti target e gli eventuali ICP di riferimento saranno definiti congiuntamente tra le Parti e potranno essere aggiornati periodicamente, senza necessità di stipulare un nuovo contratto. Eventuali indicazioni o stime sul numero di Appuntamenti Qualificati hanno valore puramente organizzativo e previsionale, senza costituire garanzia di risultato né obbligo contrattuale. Resta inteso che il Consulente si impegnerà a strutturare e implementare strategie di contatto e qualificazione coerenti con gli obiettivi prefissati con il Committente, in un'ottica di miglioramento continuo delle performance. Gli aggiornamenti dell'ICP e/o dei cluster concordati per iscritto (anche a mezzo PEC o email) diverranno efficaci a partire dal primo ciclo di outreach utile successivo alla relativa comunicazione, senza effetto retroattivo sulle attività già eseguite né sui corrispettivi già maturati.</p>
+            
+            <p><strong>5.6</strong> Qualora il Committente intenda aggiungere ulteriori ICP (Ideal Customer Profile), ciascuno sarà formalizzato in un separato Allegato numerato progressivamente (Allegato A1, A2, …) al presente Contratto. Per ciascun nuovo ICP le Parti definiranno espressamente in detto Allegato la percentuale di Revenue Share applicabile. In mancanza di espressa pattuizione scritta, nessuna attività potrà essere avviata sul nuovo ICP e nessuna percentuale di Revenue Share si intenderà automaticamente estesa o applicata. Restano ferme le condizioni generali del presente Contratto, che continueranno a disciplinare gli ICP già attivi senza necessità di stipulare un nuovo contratto.</p>
+            
+            <p><strong>5.7</strong> Qualora entro 90 (novanta) giorni dalla sottoscrizione del presente Contratto non sia stato ancora svolto alcun Appuntamento Qualificato, le Parti si impegnano a rivalutare congiuntamente i parametri dell'Ideal Customer Profile (ICP) e/o i canali di outreach utilizzati, al fine di ottimizzare le attività e consentire l'avvio effettivo della generazione di appuntamenti.</p>
+            
+            <p>Tale rivalutazione potrà comportare:</p>
+            <ul>
+                <li>la modifica dei parametri dell'ICP esistente; e/o</li>
+                <li>l'introduzione di nuovi ICP mediante separati Allegati ai sensi dell'art. 5.6.</li>
+            </ul>
+            
+            <p>In ogni caso:</p>
+            <ul>
+                <li>la validità ed efficacia del presente Contratto non ne sono pregiudicate;</li>
+                <li>la Setup Fee corrisposta resta definitivamente acquisita dal Consulente, salvo quanto previsto dalla clausola di garanzia economica ("Garanzia X2");</li>
+                <li>l'eventuale slittamento temporale dell'avvio delle attività non sospende né proroga la durata contrattuale pattuita;</li>
+                <li>ai fini della Garanzia X2, il periodo di valutazione decorrerà dalla data di effettivo avvio delle attività di generazione di appuntamenti, come risultante dal primo Appuntamento Qualificato svolto.</li>
+            </ul>
+            
+            <p><strong>5.8</strong> Ai fini del calcolo della Revenue Share si considereranno esclusivamente le vendite riconducibili ad Appuntamenti Qualificati, come definiti all'Articolo 5.4, regolarmente svolti e conformi all'ICP.</p>
+            
+            <p>L'Appuntamento si considera regolarmente svolto qualora il prospect:</p>
+            <ul>
+                <li>partecipi effettivamente all'incontro; ovvero</li>
+                <li>pur essendo presente e disponibile, l'incontro non abbia luogo per cause imputabili al Committente (es. assenza, ritardo, indisponibilità o impossibilità del Committente a proseguire la call).</li>
+            </ul>
+            
+            <p>Sono esclusi dal computo gli appuntamenti non conformi all'ICP o annullati dal prospect per cause a lui imputabili. L'avvenuto svolgimento potrà essere provato mediante evidenze oggettive, a titolo esemplificativo e non esaustivo: conferme di calendario, log di accesso o di connessione alla call, corrispondenza email o messaggistica di conferma, note CRM, registrazioni di sistema o altra documentazione idonea. Ai fini del calcolo della Revenue Share, saranno considerate unicamente le vendite riconducibili ad Appuntamenti Qualificati regolarmente svolti.</p>
+            
+            <p><strong>5.9</strong> Il Committente potrà contestare per iscritto un Appuntamento Qualificato entro 72 (settantadue) ore dal suo svolgimento, indicando in modo puntuale i motivi e fornendo idonee evidenze a supporto. Decorso inutilmente tale termine, l'Appuntamento si intenderà approvato e validamente computabile ai fini dell'attribuzione delle vendite e del calcolo della Revenue Share. Le contestazioni generiche o prive di riscontri non saranno considerate valide e non sospenderanno in alcun modo le attività di rendicontazione né l'esigibilità dei corrispettivi maturati. In caso di reiterata o immotivata contestazione, il Consulente si riserva la facoltà di sospendere l'erogazione dei servizi fino a quando il Committente non avrà fornito idonea documentazione a supporto delle contestazioni o, in mancanza, avrà formalmente riconosciuto la validità dei report e degli Appuntamenti Qualificati comunicati, riprendendo la collaborazione secondo le procedure contrattuali.</p>
+            
+            <p><strong>5.10</strong> Il Consulente riconosce al Committente la possibilità di avvalersi della garanzia contrattuale sulla Setup Fee ("Garanzia X2"), disciplinata all'Articolo 6 del presente Contratto.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 6. Garanzia sulla Setup Fee</div>
+        <div class="article-content">
+            <p><strong>6.1</strong> Il Consulente, al fine di condividere con il Committente non solo il rischio ma anche l'opportunità di crescita, riconosce al Committente una garanzia contrattuale di risultato sulla Setup Fee corrisposta (di seguito, la "Garanzia X2").</p>
+            
+            <p><strong>6.2</strong> La Garanzia X2 attribuisce al Committente il diritto al rimborso integrale della Setup Fee corrisposta qualora ricorrano congiuntamente le seguenti condizioni:</p>
+            <ul>
+                <li>il Committente abbia adempiuto diligentemente a tutti gli obblighi di collaborazione e di gestione commerciale previsti dal presente Contratto, ivi inclusa la gestione degli Appuntamenti Qualificati ai sensi dell'Articolo 3, conseguendo un tasso minimo di conversione del 10% (dieci per cento) sugli appuntamenti effettivamente svolti e conformi all'ICP; e</li>
+                <li>i ricavi netti, come definiti all'Articolo 5.2 (ossia i corrispettivi effettivamente incassati dal Committente, al netto di IVA, resi, note di credito, sconti straordinari e insoluti, ma al lordo di eventuali costi o provvigioni interne), derivanti dagli Appuntamenti Qualificati generati dal Consulente, non abbiano raggiunto, nell'arco della durata contrattuale, un ammontare almeno pari a due volte (2x) l'importo della Setup Fee corrisposta.</li>
+            </ul>
+            
+            <p><strong>6.3</strong> Il rimborso, ove spettante, potrà essere richiesto dal Committente mediante comunicazione scritta al Consulente entro e non oltre 30 (trenta) giorni successivi alla data di scadenza del Contratto, allegando idonea documentazione comprovante il rispetto delle condizioni di cui al paragrafo 6.2. Decorso tale termine senza richiesta, la Garanzia X2 si intenderà definitivamente decaduta.</p>
+            
+            <p><strong>6.4</strong> Le disposizioni del presente Articolo integrano quanto previsto all'Articolo 5.10, senza sostituirle, e costituiscono parte integrante e sostanziale del presente Contratto.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 7. Decorrenza e durata</div>
+        <div class="article-content">
+            <p><strong>7.1</strong> Ai soli fini del computo della durata contrattuale, il presente Contratto decorre dalla data del primo Appuntamento Qualificato effettivamente svolto dal Committente. Restano ferme l'efficacia del Contratto alla data di sottoscrizione e le obbligazioni economiche di cui all'art. 5.</p>
+            
+            <p><strong>7.2</strong> La durata del presente Contratto è fissata in 12 (dodici) mesi a decorrere dalla data di efficacia di cui al comma precedente.</p>
+            
+            <p><strong>7.3</strong> Almeno 60 (sessanta) giorni prima della naturale scadenza del Contratto, le Parti si impegnano a incontrarsi o a consultarsi al fine di valutare la prosecuzione, modifica o cessazione del rapporto contrattuale. In mancanza di diverso accordo scritto, il Contratto cesserà automaticamente alla data di scadenza originariamente prevista.</p>
+            
+            <p><strong>7.4</strong> Tutti gli strumenti, sistemi, banche dati, know-how, script e metodologie utilizzati dal Consulente per l'esecuzione del Contratto restano di esclusiva titolarità del Consulente e non saranno oggetto di restituzione o trasferimento al Committente. Quest'ultimo avrà diritto esclusivamente ai risultati dell'attività, ossia agli Appuntamenti Qualificati generati durante la durata del Contratto.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 8. Clausola risolutiva espressa</div>
+        <div class="article-content">
+            <p><strong>8.1</strong> Fermo restando il diritto al risarcimento di ogni danno eventualmente subito, il presente Contratto si intenderà risolto di diritto, ai sensi e per gli effetti dell'art. 1456 c.c., nei seguenti casi di grave inadempimento:</p>
+            <ul>
+                <li>mancato pagamento, totale o parziale, dei corrispettivi dovuti ai sensi dell'art. 5;</li>
+                <li>violazione degli obblighi di riservatezza di cui all'art. 2;</li>
+                <li>rifiuto ingiustificato del Committente di collaborare ai fini dell'esecuzione del Contratto, tale da impedire la corretta erogazione dei servizi;</li>
+                <li>utilizzo da parte del Committente dei risultati dell'attività del Consulente in violazione dei termini del presente Contratto;</li>
+                <li>mancata o ritardata comunicazione delle vendite attribuibili necessarie al calcolo della Revenue Share, oltre i termini previsti dagli artt. 3 e 5.</li>
+            </ul>
+            
+            <p><strong>8.2</strong> La Parte che intenda avvalersi della presente clausola dovrà darne tempestiva comunicazione scritta all'altra Parte:</p>
+            <ul>
+                <li>mediante PEC, qualora il Committente abbia sede in Italia;</li>
+                <li>ovvero mediante email certificata o altro sistema elettronico equivalente che consenta prova dell'avvenuta consegna, qualora il Committente abbia sede all'estero.</li>
+            </ul>
+            <p>In assenza di tali strumenti, la comunicazione potrà validamente essere trasmessa anche all'indirizzo email ordinario indicato nel presente Contratto. La risoluzione avrà effetto decorso il termine di cui all'Art. 8.3, ove previsto, e immediatamente in caso di mancato pagamento.</p>
+            
+            <p><strong>8.3</strong> La Parte inadempiente avrà diritto a ricevere una comunicazione scritta contenente la descrizione dettagliata della natura e delle circostanze dell'inadempimento. La Parte inadempiente disporrà di un termine non superiore a 7 (sette) giorni lavorativi dalla ricezione della comunicazione per porvi rimedio, fatta eccezione per l'ipotesi di mancato pagamento di cui alla lettera a), che comporta risoluzione immediata. Decorso inutilmente tale termine, il Contratto si intenderà risolto di diritto, ai sensi dell'art. 1456 c.c.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 9. Recesso</div>
+        <div class="article-content">
+            <p><strong>9.1</strong> Ciascuna Parte potrà recedere dal presente Contratto in qualsiasi momento, mediante comunicazione scritta inviata all'altra Parte a mezzo PEC (o, se non disponibile, email ordinaria) con un preavviso minimo di 60 (sessanta) giorni.</p>
+            
+            <p><strong>9.2</strong> In caso di recesso da parte del Committente:</p>
+            <ul>
+                <li>restano comunque dovute tutte le obbligazioni già maturate fino alla data di efficacia del recesso, incluse la Revenue Share relativa alle vendite derivanti da Appuntamenti Qualificati già svolti e i pagamenti pendenti;</li>
+                <li>tutti gli importi dovuti dovranno essere corrisposti entro e non oltre 7 (sette) giorni dalla data di cessazione del Contratto;</li>
+                <li>la Garanzia X2 di cui all'art. 6 decade automaticamente, restando escluso qualsiasi rimborso della Setup Fee.</li>
+            </ul>
+            <p>Il recesso esercitato dal Committente non comporta alcun obbligo, presente o futuro, di restituzione, rimborso o risarcimento a carico del Consulente oltre a quanto espressamente previsto dal presente Contratto.</p>
+            
+            <p><strong>9.3</strong> In caso di recesso da parte del Consulente, quest'ultimo avrà diritto esclusivamente al pagamento della Revenue Share già maturata fino a tale data, senza ulteriori oneri per il Committente.</p>
+            
+            <p><strong>9.4</strong> Il recesso non pregiudica i diritti o le obbligazioni già maturati prima della cessazione.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 10. Controversie</div>
+        <div class="article-content">
+            <p><strong>10.1</strong> Il presente Contratto è regolato dalla legge italiana. Tutte le questioni relative alla validità, interpretazione, esecuzione e risoluzione del presente Contratto saranno interpretate e regolate in conformità con le leggi vigenti nella Repubblica Italiana.</p>
+            
+            <p><strong>10.2</strong> Per ogni controversia relativa a validità, interpretazione, esecuzione o risoluzione del presente Contratto, le Parti convengono la competenza esclusiva del Foro di Milano, con espressa rinuncia a qualsiasi altro foro eventualmente competente.</p>
+            
+            <p><strong>10.3</strong> Prima di adire le vie giudiziarie, le Parti si impegnano a tentare in buona fede una composizione bonaria della controversia, anche mediante procedura di mediazione o negoziazione assistita, da concludersi entro 30 (trenta) giorni dalla comunicazione scritta di insorgenza della controversia. Resta inteso che tale procedura non sospende né pregiudica la possibilità per ciascuna Parte di adire direttamente l'autorità giudiziaria competente, qualora la mediazione o la negoziazione non abbiano esito positivo nel termine previsto.</p>
+            
+            <p><strong>10.4</strong> Le spese legali e giudiziali saranno poste a carico della Parte soccombente, secondo quanto stabilito dal giudice competente.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 11. Clausola Solve et repete</div>
+        <div class="article-content">
+            <p><strong>11.1</strong> Il Committente riconosce che eventuali contestazioni relative alle prestazioni del Consulente non legittimano, di regola, la sospensione o il ritardo dei pagamenti dovuti.</p>
+            
+            <p><strong>11.2</strong> Il Committente si impegna a corrispondere integralmente al Consulente i corrispettivi dovuti nei termini stabiliti, con espressa rinuncia a sospendere, ritardare o rifiutare i pagamenti per motivi diversi da un grave e comprovato inadempimento del Consulente, tale da rendere integralmente inutilizzabile la prestazione resa. In ogni caso, il Committente non potrà sollevare eccezioni o contestazioni prima di aver adempiuto all'obbligazione di pagamento relativa alle prestazioni già erogate e oggettivamente utilizzabili.</p>
+            
+            <p><strong>11.3</strong> Eventuali controversie saranno trattate solo successivamente all'integrale adempimento dell'obbligazione di pagamento da parte del Committente, ferma restando la possibilità per quest'ultimo di agire giudizialmente per il rimborso o la restituzione, qualora ne ricorrano i presupposti.</p>
+            
+            <p><strong>11.4</strong> Il mancato pagamento nei termini pattuiti costituisce grave inadempimento ai sensi dell'art. 1456 c.c., legittimando il Consulente a risolvere di diritto il Contratto, fermo restando il diritto al risarcimento di ogni maggior danno.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 12. Clausola di riconoscimento del debito</div>
+        <div class="article-content">
+            <p><strong>12.1</strong> Il Committente riconosce che i corrispettivi dovuti al Consulente e regolarmente fatturati costituiscono obbligazioni certe, liquide ed esigibili ai sensi e per gli effetti dell'art. 633 c.p.c., idonee a fondare la richiesta di decreto ingiuntivo in caso di mancato pagamento. La fattura emessa dal Consulente e non contestata per iscritto entro 5 (cinque) giorni dal ricevimento farà piena prova del credito vantato.</p>
+            
+            <p><strong>12.2</strong> In caso di mancato pagamento, il Consulente avrà facoltà di agire giudizialmente per il recupero del credito, anche mediante procedimento monitorio, con addebito al Committente di ogni spesa legale, procedurale e accessoria sostenuta (incluse spese di sollecito e oneri bancari), oltre agli interessi moratori previsti dal D.Lgs. 231/2002.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 13. Clausola di esigibilità immediata</div>
+        <div class="article-content">
+            <p><strong>13.1</strong> Il compenso pattuito è esigibile alla data di scadenza concordata, senza necessità di preventiva costituzione in mora.</p>
+            
+            <p><strong>13.2</strong> Un ritardo superiore a 5 (cinque) giorni dalla scadenza, anche parziale, sarà considerato inadempimento grave e rilevante ai sensi dell'art. 1456 c.c., legittimando il Consulente a risolvere il presente Contratto mediante comunicazione scritta, fatto salvo ogni diritto al recupero coattivo del credito e al risarcimento dei danni.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 14. Domiciliazione Bancaria e prova dell'avvenuto pagamento</div>
+        <div class="article-content">
+            <p><strong>14.1</strong> Il pagamento dovrà avvenire esclusivamente mediante bonifico bancario sul conto corrente indicato dal Consulente, ovvero tramite altri sistemi di incasso elettronico (a titolo esemplificativo: piattaforme digitali di pagamento) previamente autorizzati e comunicati dal Consulente.</p>
+            
+            <p><strong>14.2</strong> In caso di contestazione, l'onere della prova dell'avvenuto pagamento e della sua corretta ricezione incombe esclusivamente sul Committente. A tal fine, fanno piena prova esclusivamente le evidenze bancarie o elettroniche rilasciate dall'istituto di credito o dal gestore del sistema di pagamento utilizzato.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 15. Disposizioni finali</div>
+        <div class="article-content">
+            <p><strong>15.1</strong> Ogni modifica, variazione o integrazione al presente Contratto dovrà risultare da atto scritto sottoscritto da entrambe le Parti. Ai fini del presente articolo, si considerano equiparati alla forma scritta anche gli scambi effettuati tramite PEC o altro sistema elettronico certificato che consenta prova dell'avvenuta ricezione.</p>
+            
+            <p><strong>15.2</strong> Le modifiche così sottoscritte diverranno parte integrante e sostanziale del presente Contratto, con piena efficacia giuridica, fatti salvi i diritti e gli obblighi già maturati dalle Parti fino a quel momento.</p>
+            
+            <p><strong>15.3</strong> Qualora una o più clausole del presente Contratto siano dichiarate nulle, invalide o inapplicabili, in tutto o in parte, da un'autorità competente, tale nullità, invalidità o inapplicabilità non pregiudicherà la validità e l'efficacia delle restanti disposizioni.</p>
+            
+            <p><strong>15.4</strong> Il recesso o la cessazione, per qualunque causa intervenuti, non pregiudicano i diritti o le obbligazioni già maturati prima della cessazione stessa. Le disposizioni del presente Contratto che, per loro natura, sono destinate a produrre effetti anche dopo la sua cessazione o scadenza – comprese, a titolo esemplificativo e non esaustivo, quelle relative a riservatezza, protezione dei dati, proprietà intellettuale, corrispettivi già maturati e rendicontazione delle vendite, foro competente e risoluzione delle controversie – continueranno a produrre i loro effetti anche dopo la cessazione o il recesso.</p>
+            
+            <p><strong>15.5</strong> Il presente Contratto costituisce l'integrale intesa tra le Parti in relazione al proprio oggetto e sostituisce e prevale su ogni precedente accordo, trattativa, promessa o intesa, scritta o verbale, intervenuta tra le Parti in relazione al medesimo oggetto.</p>
+            
+            <p><strong>15.6</strong> Nessuna delle Parti sarà responsabile per danni indiretti o consequenziali (ivi inclusi, a titolo esemplificativo, lucro cessante, perdita di avviamento o di opportunità commerciali). La responsabilità complessiva del Consulente, per qualsivoglia titolo, non potrà in alcun caso eccedere l'importo dei corrispettivi effettivamente pagati dal Committente nei 3 (tre) mesi antecedenti l'evento dannoso. Tale limitazione di responsabilità si applica anche in caso di risoluzione anticipata o cessazione del presente Contratto, restando ferma la responsabilità del Consulente in caso di dolo o colpa grave.</p>
+            
+            <p><strong>15.7</strong> Nessuna Parte risponde per ritardi o inadempimenti dovuti a cause di forza maggiore (a titolo esemplificativo: interruzioni di servizi di comunicazione, blackout, eventi naturali, guerre, atti dell'autorità, scioperi di terzi). Le obbligazioni sospese riprenderanno non appena cessata la causa.</p>
+            
+            <p><strong>15.8</strong> Per 24 (ventiquattro) mesi dalla cessazione, il Committente si impegna a non assumere né sollecitare, direttamente o indirettamente, collaboratori del Consulente coinvolti nell'esecuzione del Contratto, salvo consenso scritto del Consulente.</p>
+            
+            <p><strong>15.9</strong> Le Parti agiscono come soggetti indipendenti; il presente Contratto non costituisce rapporto di agenzia, mandato, lavoro subordinato o joint venture.</p>
+            
+            <p><strong>15.10</strong> Salvo diversa indicazione scritta, tutte le comunicazioni rilevanti ai fini del Contratto saranno valide se inviate a mezzo PEC o email certificata agli indirizzi indicati in epigrafe o successivamente comunicati per iscritto.</p>
+            
+            <p><strong>15.11</strong> Il presente Contratto ha natura non esclusiva: ciascuna Parte resta libera di intrattenere rapporti con terzi, nel rispetto degli obblighi di riservatezza.</p>
+            
+            <p><strong>15.12</strong> Nessuna Parte potrà cedere, in tutto o in parte, il presente Contratto o i diritti e obblighi da esso derivanti senza il preventivo consenso scritto dell'altra Parte. Fermo restando quanto sopra, il Consulente avrà facoltà di trasferire il presente Contratto, previa semplice comunicazione scritta al Committente, a:</p>
+            <ul>
+                <li>società controllanti, controllate o collegate ai sensi dell'art. 2359 c.c.;</li>
+                <li>società appartenenti al medesimo gruppo societario o partner strategici stabilmente coinvolti nell'erogazione dei servizi;</li>
+                <li>soggetti subentranti in caso di cessione o affitto di ramo d'azienda o operazioni straordinarie (fusione, scissione, conferimento).</li>
+            </ul>
+            <p>In tali ipotesi, il trasferimento sarà pienamente valido ed efficace nei confronti del Committente dalla data di ricezione della comunicazione scritta.</p>
+            
+            <p><strong>15.13</strong> Tutti i corrispettivi previsti nel presente Contratto si intendono al netto di imposte, tasse e contributi. L'IVA sarà applicata secondo la normativa vigente; per operazioni intra-UE B2B troveranno applicazione le regole di territorialità e, ove previsto, il meccanismo del reverse charge.</p>
+            
+            <p><strong>15.14</strong> Le Parti riconoscono la validità della firma elettronica (anche semplice) apposta su copia PDF, nonché dello scambio di scansioni via email/PEC. A richiesta, ciascuna Parte fornirà l'originale controfirmato senza ritardo irragionevole.</p>
+            
+            <p><strong>15.15</strong> Ai fini del Contratto, per "giorni lavorativi" si intendono i giorni dal lunedì al venerdì, esclusi i festivi nel Paese di sede del Committente.</p>
+            
+            <p><strong>15.16</strong> Salvo diverso diniego scritto del Committente, il Consulente può indicare denominazione e logo del Committente tra le proprie referenze, senza divulgare informazioni riservate.</p>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">Articolo 16. Qualifica professionale delle Parti</div>
+        <div class="article-content">
+            <p><strong>16.1</strong> Il Committente dichiara di agire nell'esercizio della propria attività d'impresa o professionale e non in qualità di "consumatore" ai sensi del D.Lgs. 206/2005; pertanto il Codice del Consumo non si applica al presente Contratto, ivi compresi gli artt. 45 e ss. in tema di diritto di recesso.</p>
+            
+            <p><strong>16.2</strong> Il Committente dichiara e garantisce l'esattezza dei propri dati identificativi (denominazione, sede, C.F./P.IVA) e la sussistenza dei poteri di rappresentanza per la sottoscrizione.</p>
+            
+            <p><strong>16.3</strong> In caso di dichiarazioni non veritiere o carenza di poteri, il Committente manleva e tiene indenne il Consulente da ogni conseguenza, costo o pretesa di terzi (incluse spese legali), fatti salvi i rimedi di legge (artt. 1398 e 1456 c.c.).</p>
+            
+            <p><strong>16.4</strong> Le presenti dichiarazioni costituiscono presupposto essenziale del consenso del Consulente e sopravvivono alla cessazione del Contratto.</p>
+        </div>
+    </div>
+
+    <div class="signature-section">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <p><strong>Luogo, Data</strong> <span class="editable-field" contenteditable="true" data-field="contract_date">____________________</span></p>
+        </div>
+        
+        <div class="signature-line">
+            <div>
+                <p><strong>Firma Consulente</strong></p>
+                <div class="signature-field"></div>
+            </div>
+            <div>
+                <p><strong>Firma Committente</strong></p>
+                <div class="signature-field"></div>
+            </div>
+        </div>
+        
+        <div class="important-clause">
+            <p><strong>Ai sensi e per gli effetti dell'art. 1341, comma 2, c.c., il Committente dichiara di approvare specificamente le seguenti clausole:</strong></p>
+            <p>Art. 3 (Obblighi del Committente); Art. 5 (Corrispettivi – Revenue Share; rendicontazione; contestazioni), inclusi gli artt. 5.3, 5.9 e 5.10; Art. 6 (Garanzia X2); Art. 7 (Decorrenza e durata), in particolare 7.4 (titolarità strumenti e banche dati); Art. 8 (Clausola risolutiva espressa); Art. 9 (Recesso); Art. 10 (Controversie – foro esclusivo di Milano); Art. 11 (Solve et repete); Art. 12 (Riconoscimento del debito); Art. 13 (Esigibilità immediata); Art. 14 (Domiciliazione bancaria e prova del pagamento); Art. 15.6 (Limitazione di responsabilità); Art. 15.8 (Non-sollecitazione); Art. 15.12 (Cessione del contratto); Art. 16 (Qualifica professionale; esclusione Codice del Consumo; manleva).</p>
+        </div>
+        
+        <div class="signature-line" style="margin-top: 30px;">
+            <div>
+                <p><strong>Firma Consulente</strong></p>
+                <div class="signature-field"></div>
+            </div>
+            <div>
+                <p><strong>Firma Committente</strong></p>
+                <div class="signature-field"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article">
+        <div class="article-title">ALLEGATO A | ICP (Ideal Customer Profile)</div>
+        <div class="article-content">
+            <p><strong>Parte integrante e sostanziale del Contratto All You Can Leads – Pacchetto Setup Fee + Revenue Share</strong></p>
+            
+            <table class="table-icp">
+                <thead>
+                    <tr>
+                        <th>Parametro</th>
+                        <th>Definizione concordata</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Area geografica</strong></td>
+                        <td><div class="editable-table-cell" contenteditable="true" data-field="icp_geographic_area">[Area geografica]</div></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Settore</strong></td>
+                        <td><div class="editable-table-cell" contenteditable="true" data-field="icp_sector">[Settore]</div></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fatturato minimo annuo</strong></td>
+                        <td><div class="editable-table-cell" contenteditable="true" data-field="icp_min_revenue">[Fatturato minimo annuo]</div></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p><strong>Corrispettivo – Revenue Share</strong></p>
+            <p>Per ciascun Appuntamento Qualificato relativo al presente ICP, le vendite derivanti saranno soggette all'applicazione della percentuale di Revenue Share concordata.</p>
+            <p>La percentuale di Revenue Share applicabile al presente ICP è fissata nella misura del <span class="editable-field" contenteditable="true" data-field="icp_revenue_share">______%</span> (________ per cento) dei ricavi netti effettivamente incassati dal Committente, salvo diversa pattuizione scritta.</p>
+            
+            <p><em>Eventuali aggiornamenti o modifiche al presente ICP saranno formalizzati esclusivamente mediante nuovo Allegato numerato progressivamente (A1, A2, …), ciascuno con la propria percentuale di Revenue Share specificata.</em></p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <p><strong>Luogo, Data</strong> <span class="editable-field" contenteditable="true" data-field="icp_date">____________________</span></p>
+            </div>
+            
+            <div class="signature-line">
+                <div>
+                    <p><strong>Firma Consulente</strong></p>
+                    <div class="signature-field"></div>
+                </div>
+                <div>
+                    <p><strong>Firma Committente</strong></p>
+                    <div class="signature-field"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logo Footer -->
+    <img src="/logo.png" alt="Logo" class="logo-footer">
+    
+    <!-- Page Numbers -->
+    <div class="page-number">Pagina 1</div>
+
+    <script>
+        // Add functionality for editable fields
+        document.addEventListener('DOMContentLoaded', function() {
+            const editableFields = document.querySelectorAll('[contenteditable="true"]');
+            
+            editableFields.forEach(field => {
+                field.addEventListener('input', function() {
+                    // Save data to localStorage or send to server
+                    const fieldName = this.getAttribute('data-field');
+                    const value = this.textContent;
+                    localStorage.setItem(fieldName, value);
+                });
+                
+                // Load saved data
+                const fieldName = field.getAttribute('data-field');
+                const savedValue = localStorage.getItem(fieldName);
+                if (savedValue) {
+                    field.textContent = savedValue;
+                }
+            });
+            
+            // Print functionality
+            window.printContract = function() {
+                window.print();
+            };
+            
+            // Save contract data
+            window.saveContractData = function() {
+                const contractData = {};
+                editableFields.forEach(field => {
+                    const fieldName = field.getAttribute('data-field');
+                    contractData[fieldName] = field.textContent;
+                });
+                
+                // Send to server or save locally
+                console.log('Contract Data:', contractData);
+                return contractData;
+            };
+        });
+    </script>
+</body>
+</html>
