@@ -105,7 +105,7 @@ export async function logout(refreshTokenValue: string, userId: string) {
 
 export async function me(userId: string) {
   const { rows } = await pool.query(
-    `SELECT id, code11, email, role, status, team_id, reseller_team_id, last_login_at
+    `SELECT id, code11, email, role, status, team_id, reseller_team_id, last_login_at, referral_id, referral_code, referral_link
      FROM users WHERE id = $1`,
     [userId]
   );
@@ -124,6 +124,9 @@ export async function me(userId: string) {
     teamId: user.team_id,
     resellerTeamId: user.reseller_team_id,
     lastLoginAt: user.last_login_at,
+    referralId: user.referral_id,
+    referralCode: user.referral_code,
+    referralLink: user.referral_link,
     permissions: [], // TODO load permissions by role/team
     scopes: {} // TODO implement scoped access resolution
   };

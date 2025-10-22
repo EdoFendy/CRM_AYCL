@@ -137,6 +137,17 @@ export class PaymentService {
     }
   ): Promise<{ success: boolean; transactionId?: string; error?: string }> {
     try {
+      const { rows: paymentRows } = await pool.query(
+        'SELECT * FROM payment_intents WHERE id = $1',
+        [paymentIntentId]
+      );
+
+      if (paymentRows.length === 0) {
+        throw new Error('Payment intent not found');
+      }
+
+      const payment = paymentRows[0];
+
       // Simula processing
       await this.updatePaymentIntentStatus(paymentIntentId, 'processing');
       
@@ -156,7 +167,9 @@ export class PaymentService {
         });
 
         // Aggiungi evento timeline
-        await timelineService.onPaymentSucceeded(payment.payment_intent_id, payment.amount, payment.currency, transactionId);
+        if (payment.contract_id) {
+          await timelineService.onPaymentSucceeded(payment.contract_id, payment.amount, payment.currency, transactionId);
+        }
 
         // Trigger generazione automatica fattura/ricevuta
         await this.triggerPostPaymentActions(paymentIntentId);
@@ -169,7 +182,9 @@ export class PaymentService {
         });
 
         // Aggiungi evento timeline
-        await timelineService.onPaymentFailed(payment.payment_intent_id, payment.amount, payment.currency, 'Payment declined by bank');
+        if (payment.contract_id) {
+          await timelineService.onPaymentFailed(payment.contract_id, payment.amount, payment.currency, 'Payment declined by bank');
+        }
 
         return { success: false, error: 'Payment declined' };
       }

@@ -1,10 +1,12 @@
-import { pool } from '../../db/pool.js';
+import { pool, withClient } from '../../db/pool.js';
 import { HttpError } from '../../middlewares/errorHandler.js';
 import { recordAuditLog } from '../../services/auditService.js';
 import { parseCursorPagination } from '../../utils/pagination.js';
 import bcrypt from 'bcryptjs';
+import { ensureReferralForUser } from '../../services/referralService.js';
 
-const DEFAULT_SELECT = 'id, code11, email, role, status, full_name, team_id, reseller_team_id, created_at, updated_at, last_login_at';
+const DEFAULT_SELECT =
+  'id, code11, email, role, status, full_name, team_id, reseller_team_id, created_at, updated_at, last_login_at, referral_id, referral_code, referral_link';
 
 export async function listUsers(query: Record<string, unknown>) {
   const { limit, cursor } = parseCursorPagination(query);
@@ -50,32 +52,62 @@ interface CreateUserInput {
   password: string;
   role: 'admin' | 'seller' | 'reseller' | 'customer';
   status?: 'active' | 'invited' | 'suspended' | 'deleted';
-  fullName?: string;
+  fullName?: string | null;
   teamId?: string | null;
   resellerTeamId?: string | null;
 }
 
 export async function createUser(input: CreateUserInput, actorId: string) {
   const hash = await bcrypt.hash(input.password, 10);
-  const { rows } = await pool.query(
-    `INSERT INTO users (code11, email, password_hash, role, status, full_name, team_id, reseller_team_id)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-     RETURNING ${DEFAULT_SELECT}`,
-    [
-      input.code11,
-      input.email,
-      hash,
-      input.role,
-      input.status ?? 'active',
-      input.fullName ?? null,
-      input.teamId ?? null,
-      input.resellerTeamId ?? null
-    ]
-  );
+  let createdUser: any;
 
-  const user = rows[0];
-  await recordAuditLog({ actorId, action: 'user.create', entity: 'user', entityId: user.id, afterState: user });
-  return user;
+  await withClient(async (client) => {
+    await client.query('BEGIN');
+    try {
+      const { rows } = await client.query(
+        `INSERT INTO users (code11, email, password_hash, role, status, full_name, team_id, reseller_team_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+         RETURNING ${DEFAULT_SELECT}`,
+        [
+          input.code11,
+          input.email,
+          hash,
+          input.role,
+          input.status ?? 'active',
+          input.fullName ?? null,
+          input.teamId ?? null,
+          input.resellerTeamId ?? null
+        ]
+      );
+
+      createdUser = rows[0];
+
+      if (input.role === 'seller') {
+        const referral = await ensureReferralForUser(createdUser.id, client);
+        createdUser = {
+          ...createdUser,
+          referral_id: referral.id,
+          referral_code: referral.code,
+          referral_link: referral.link
+        };
+      }
+
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    }
+  });
+
+  await recordAuditLog({
+    actorId,
+    action: 'user.create',
+    entity: 'user',
+    entityId: createdUser.id,
+    afterState: createdUser
+  });
+
+  return createdUser;
 }
 
 export async function getUser(id: string) {

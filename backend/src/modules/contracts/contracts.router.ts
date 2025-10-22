@@ -307,7 +307,7 @@ contractsRouter.get('/:id/pdf', async (req, res) => {
   const contract = rows[0];
   
   // Genera PDF del contratto
-  generatePDF(res, 'contract', {
+  generatePDF(res, 'quote', {
     number: contract.number,
     date: contract.created_at,
     customer: {

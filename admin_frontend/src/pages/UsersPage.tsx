@@ -12,6 +12,7 @@ import { FiltersToolbar } from '../components/forms/FiltersToolbar';
 import { usePersistentFilters } from '../hooks/usePersistentFilters';
 import { Modal } from '../components/ui/Modal';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
+import { toast } from 'sonner';
 
 interface UserRow {
   id: string;
@@ -23,6 +24,9 @@ interface UserRow {
   reseller_team_id: string | null;
   status: string;
   created_at: string;
+  referral_id?: string | null;
+  referral_code?: string | null;
+  referral_link?: string | null;
 }
 
 interface Team {
@@ -32,14 +36,21 @@ interface Team {
   parent_team_id: string | null;
 }
 
+const optionalUuid = z
+  .string()
+  .uuid()
+  .or(z.literal(''))
+  .transform((value) => (value === '' ? undefined : value))
+  .optional();
+
 const userSchema = z.object({
   email: z.string().email(),
   role: z.enum(['admin', 'seller', 'reseller', 'customer']),
   code11: z.string().length(11),
   password: z.string().min(8),
   fullName: z.string().optional(),
-  team_id: z.string().uuid().optional(),
-  reseller_team_id: z.string().uuid().optional(),
+  team_id: optionalUuid,
+  reseller_team_id: optionalUuid,
 });
 
 type UserFormValues = z.infer<typeof userSchema>;
@@ -134,8 +145,8 @@ export default function UsersPage() {
       code11: '', 
       password: '', 
       fullName: '',
-      team_id: '',
-      reseller_team_id: '',
+      team_id: undefined,
+      reseller_team_id: undefined,
     },
   });
 
@@ -152,15 +163,19 @@ export default function UsersPage() {
 
   const onSubmit = form.handleSubmit(async (values) => {
     setError(null);
-    await createMutation.mutateAsync(values);
+    await createMutation.mutateAsync({
+      ...values,
+      team_id: values.team_id ?? undefined,
+      reseller_team_id: values.reseller_team_id ?? undefined,
+    });
     form.reset({ 
       email: '', 
       role: 'seller', 
       code11: '', 
       password: '', 
       fullName: '',
-      team_id: '',
-      reseller_team_id: '',
+      team_id: undefined,
+      reseller_team_id: undefined,
     });
   });
 
@@ -172,8 +187,8 @@ export default function UsersPage() {
       code11: user.code11,
       password: '', // Non mostrare la password
       fullName: user.full_name || '',
-      team_id: user.team_id || '',
-      reseller_team_id: user.reseller_team_id || '',
+      team_id: user.team_id ?? undefined,
+      reseller_team_id: user.reseller_team_id ?? undefined,
     });
     setShowEditModal(true);
   };
@@ -182,8 +197,25 @@ export default function UsersPage() {
     if (!editingUser) return;
     setError(null);
     const { password, ...data } = values;
-    await updateMutation.mutateAsync({ id: editingUser.id, data });
+    await updateMutation.mutateAsync({
+      id: editingUser.id,
+      data: {
+        ...data,
+        team_id: data.team_id ?? undefined,
+        reseller_team_id: data.reseller_team_id ?? undefined,
+      },
+    });
   });
+
+  const handleCopyReferral = async (link: string) => {
+    try {
+      await navigator.clipboard.writeText(link);
+      toast.success('Referral link copiato negli appunti');
+    } catch (error) {
+      console.error(error);
+      toast.error('Impossibile copiare il link');
+    }
+  };
 
   return (
     <section className="space-y-6">
@@ -298,6 +330,12 @@ export default function UsersPage() {
           </div>
         )}
 
+        {form.watch('role') === 'seller' ? (
+          <div className="md:col-span-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+            Il referral code e il relativo link vengono creati automaticamente per ogni nuovo seller.
+          </div>
+        ) : null}
+
         <div className="md:col-span-3 text-right">
           <button
             type="submit"
@@ -377,6 +415,44 @@ export default function UsersPage() {
                 );
               }
               return '—';
+            }
+          },
+          {
+            id: 'referral',
+            header: 'Referral',
+            cell: (user: UserRow) => {
+              if (user.role !== 'seller') {
+                return '—';
+              }
+              if (!user.referral_code) {
+                return <span className="text-xs text-slate-500">Non assegnato</span>;
+              }
+              return (
+                <div className="flex flex-col gap-1">
+                  <code className="rounded bg-slate-100 px-2 py-1 text-xs font-mono text-slate-700">
+                    {user.referral_code}
+                  </code>
+                  {user.referral_link ? (
+                    <div className="flex items-center gap-2">
+                      <a
+                        href={user.referral_link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs font-semibold text-primary hover:underline"
+                      >
+                        Apri
+                      </a>
+                      <button
+                        type="button"
+                        className="text-xs font-semibold text-slate-600 hover:text-primary"
+                        onClick={() => handleCopyReferral(user.referral_link!)}
+                      >
+                        Copia
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
+              );
             }
           },
           { 
@@ -461,6 +537,35 @@ export default function UsersPage() {
               <option value="customer">Customer</option>
             </select>
           </div>
+          {editingUser?.role === 'seller' ? (
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+              <p className="font-semibold text-slate-700">Referral attuale</p>
+              <div className="mt-1 flex items-center gap-2">
+                <code className="rounded bg-white px-2 py-1 text-xs font-mono text-slate-700">
+                  {editingUser.referral_code ?? '—'}
+                </code>
+                {editingUser.referral_link ? (
+                  <button
+                    type="button"
+                    className="text-xs font-semibold text-primary hover:underline"
+                    onClick={() => handleCopyReferral(editingUser.referral_link!)}
+                  >
+                    Copia link
+                  </button>
+                ) : null}
+              </div>
+              {editingUser.referral_link ? (
+                <a
+                  href={editingUser.referral_link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1 inline-block text-xs text-slate-500 hover:text-primary"
+                >
+                  {editingUser.referral_link}
+                </a>
+              ) : null}
+            </div>
+          ) : null}
           <div className="flex justify-end gap-3 mt-4">
             <button
               type="button"

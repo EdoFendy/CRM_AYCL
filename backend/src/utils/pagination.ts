@@ -1,5 +1,5 @@
 export interface CursorPaginationInput {
-  limit?: number;
+  limit: number;
   cursor?: string;
 }
 
@@ -9,7 +9,7 @@ export interface CursorPaginationResult<T> {
 }
 
 export function parseCursorPagination(query: Record<string, unknown>): CursorPaginationInput {
-  const limit = Math.min(Number(query.limit ?? 20), 100);
+  const limit = Math.min(Number(query.limit ?? 20) || 20, 100);
   const cursor = typeof query.cursor === 'string' ? query.cursor : undefined;
   return { limit, cursor };
 }

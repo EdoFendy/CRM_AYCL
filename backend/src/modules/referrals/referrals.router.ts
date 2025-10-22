@@ -3,10 +3,16 @@ import { z } from 'zod';
 import { requireAuth } from '../../middlewares/auth.js';
 import { pool } from '../../db/pool.js';
 import { recordAuditLog } from '../../services/auditService.js';
+import { ensureReferralForUser } from '../../services/referralService.js';
 
 export const referralsRouter = Router();
 
 referralsRouter.use(requireAuth);
+
+referralsRouter.get('/me', async (req, res) => {
+  const referral = await ensureReferralForUser(req.user!.id);
+  res.json(referral);
+});
 
 referralsRouter.get('/', async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM referrals ORDER BY created_at DESC');

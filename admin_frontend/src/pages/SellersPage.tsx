@@ -5,12 +5,15 @@ import { apiClient } from '../utils/apiClient';
 import { DataTable } from '../components/data/DataTable';
 import { FiltersToolbar } from '../components/forms/FiltersToolbar';
 import { usePersistentFilters } from '../hooks/usePersistentFilters';
+import { toast } from 'sonner';
 
 interface SellerRow {
   id: string;
   email: string;
   name: string;
   team?: string;
+  referral_code?: string | null;
+  referral_link?: string | null;
 }
 
 interface SellerMetrics {
@@ -62,6 +65,16 @@ export default function SellersPage() {
   const sellers = sellersQuery.data?.data ?? [];
   const metrics = metricsQuery.data ?? {};
 
+  const handleCopy = async (link: string) => {
+    try {
+      await navigator.clipboard.writeText(link);
+      toast.success('Referral link copiato negli appunti');
+    } catch (error) {
+      console.error(error);
+      toast.error('Impossibile copiare il link');
+    }
+  };
+
   return (
     <section className="space-y-6">
       <h2 className="text-2xl font-semibold text-slate-900">{t('sellers.title')}</h2>
@@ -105,6 +118,41 @@ export default function SellersPage() {
             id: 'activeContacts',
             header: t('sellers.metrics.activeContacts'),
             cell: (seller: SellerRow) => metrics[seller.id]?.activeContacts ?? 0,
+          },
+          {
+            id: 'referral',
+            header: 'Referral',
+            cell: (seller: SellerRow) => {
+              if (!seller.referral_code) {
+                return <span className="text-xs text-slate-500">—</span>;
+              }
+              return (
+                <div className="flex flex-col gap-1">
+                  <code className="rounded bg-slate-100 px-2 py-1 text-xs font-mono text-slate-700">
+                    {seller.referral_code}
+                  </code>
+                  {seller.referral_link ? (
+                    <div className="flex items-center gap-2">
+                      <a
+                        href={seller.referral_link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs font-semibold text-primary hover:underline"
+                      >
+                        Apri
+                      </a>
+                      <button
+                        type="button"
+                        className="text-xs font-semibold text-slate-600 hover:text-primary"
+                        onClick={() => handleCopy(seller.referral_link!)}
+                      >
+                        Copia
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
+              );
+            },
           },
         ]}
         emptyState={<span>{t('tables.empty')}</span>}

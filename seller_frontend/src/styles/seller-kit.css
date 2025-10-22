@@ -1,0 +1,133 @@
+.main-grid {
+  gap: 1.6rem;
+}
+
+.referral-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.referral-code,
+.referral-link {
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px dashed rgba(37, 99, 235, 0.35);
+  background: rgba(37, 99, 235, 0.05);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  color: #1d4ed8;
+  word-break: break-word;
+  min-width: 220px;
+}
+
+.form-grid {
+  gap: 1rem;
+}
+
+.cart-items {
+  display: grid;
+  gap: 1rem;
+}
+
+.cart-item-row {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: rgba(148, 163, 184, 0.08);
+  display: grid;
+  gap: 0.8rem;
+}
+
+.item-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.doc-files {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.doc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(248, 250, 252, 0.8);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.doc-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 480px;
+}
+
+th,
+td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+th {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
+}
+
+td {
+  font-size: 0.92rem;
+  color: #0f172a;
+}
+
+.status-badge {
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  background: rgba(94, 234, 212, 0.16);
+  color: #0f766e;
+  text-transform: capitalize;
+}
+
+.status-drive_test {
+  background: rgba(96, 165, 250, 0.18);
+  color: #1d4ed8;
+}
+
+.status-pending {
+  background: rgba(251, 191, 36, 0.2);
+  color: #b45309;
+}
+
+.status-completed {
+  background: rgba(34, 197, 94, 0.18);
+  color: #15803d;
+}
+
+@media (max-width: 768px) {
+  .referral-display {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .referral-code,
+  .referral-link {
+    width: 100%;
+  }
+}

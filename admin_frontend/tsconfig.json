@@ -11,7 +11,9 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "strict": true,
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "lib": ["DOM", "DOM.Iterable", "ES2021"],
+    "types": ["vite/client"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

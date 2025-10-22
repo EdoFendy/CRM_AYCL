@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import type { SignOptions } from 'jsonwebtoken';
 
 const requiredEnv = ['DATABASE_URL', 'JWT_SECRET', 'JWT_REFRESH_SECRET'] as const;
 
@@ -17,6 +18,9 @@ requiredEnv.forEach((key) => {
   }
 });
 
+const tokenExpiresIn = (process.env.TOKEN_EXPIRES_IN ?? '15m') as SignOptions['expiresIn'];
+const refreshTokenExpiresIn = (process.env.REFRESH_TOKEN_EXPIRES_IN ?? '7d') as SignOptions['expiresIn'];
+
 export const config = {
   port: Number(process.env.PORT ?? 4000),
   appName: process.env.APP_NAME ?? 'CRM AYCL API',
@@ -24,8 +28,8 @@ export const config = {
   databaseUrl: process.env.DATABASE_URL!,
   jwtSecret: process.env.JWT_SECRET!,
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET!,
-  tokenExpiresIn: process.env.TOKEN_EXPIRES_IN ?? '15m',
-  refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN ?? '7d',
+  tokenExpiresIn,
+  refreshTokenExpiresIn,
   passwordResetTokenTtl: process.env.PASSWORD_RESET_TOKEN_TTL ?? '15m',
   webhookSecret: process.env.WEBHOOK_SECRET ?? 'change_me_webhook',
   auditLogRetentionDays: Number(process.env.AUDIT_LOG_RETENTION_DAYS ?? 365)

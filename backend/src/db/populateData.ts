@@ -146,11 +146,11 @@ async function main() {
     // 3. TASKS
     console.log('\n📝 Inserimento tasks...');
     const tasksToInsert = [
-      { title: 'Follow-up proposta FinTech Innovations', description: 'Chiamata per discutere proposta, rispondere a domande tecniche', due_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), status: 'open', priority: 'medium', company_id: companies[5]?.id, opportunity_id: opportunities[5]?.id },
-      { title: 'Negoziare sconto Prime Properties', description: 'Rivedere offerta, proporre sconto 10% + supporto post-vendita', due_date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), status: 'in_progress', priority: 'urgent', company_id: companies[2]?.id, opportunity_id: opportunities[3]?.id },
-      { title: 'Demo piattaforma leads ShopItaly', description: 'Mostrare dashboard e sistema di integrazione API', due_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), status: 'in_progress', priority: 'high', company_id: companies[3]?.id, opportunity_id: opportunities[4]?.id },
-      { title: 'Discovery call HealthCare Solutions', description: 'Prima chiamata per capire esigenze e budget', due_date: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000), status: 'open', priority: 'medium', company_id: companies[6]?.id, opportunity_id: opportunities[6]?.id },
-      { title: 'Inviare sample data a FinTech', description: 'Preparare sample del database leads fintech (50 record)', due_date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), status: 'open', priority: 'high', company_id: companies[5]?.id, opportunity_id: opportunities[5]?.id },
+      { title: 'Follow-up proposta FinTech Innovations', description: 'Chiamata per discutere proposta, rispondere a domande tecniche', due_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), status: 'open', priority: 'medium', company_id: companies[5] ?? null, opportunity_id: opportunities[5]?.id },
+      { title: 'Negoziare sconto Prime Properties', description: 'Rivedere offerta, proporre sconto 10% + supporto post-vendita', due_date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), status: 'in_progress', priority: 'urgent', company_id: companies[2] ?? null, opportunity_id: opportunities[3]?.id },
+      { title: 'Demo piattaforma leads ShopItaly', description: 'Mostrare dashboard e sistema di integrazione API', due_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), status: 'in_progress', priority: 'high', company_id: companies[3] ?? null, opportunity_id: opportunities[4]?.id },
+      { title: 'Discovery call HealthCare Solutions', description: 'Prima chiamata per capire esigenze e budget', due_date: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000), status: 'open', priority: 'medium', company_id: companies[6] ?? null, opportunity_id: opportunities[6]?.id },
+      { title: 'Inviare sample data a FinTech', description: 'Preparare sample del database leads fintech (50 record)', due_date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), status: 'open', priority: 'high', company_id: companies[5] ?? null, opportunity_id: opportunities[5]?.id },
       { title: 'Aggiornare database leads settore Tech', description: 'Refresh contatti aziende tech, verificare email e LinkedIn', due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), status: 'open', priority: 'medium', company_id: null, opportunity_id: null },
     ];
 
@@ -174,9 +174,9 @@ async function main() {
           ('note', $1, $8, $9, $10, 'Cliente molto soddisfatto. Database ha generato 23 nuovi contatti qualificati in 2 settimane', NOW() - INTERVAL '170 days', NOW() - INTERVAL '170 days')
       `, [
         sellerId,
-        companies[0]?.id, contacts[0]?.id, opportunities[0]?.id,
-        companies[3]?.id, contacts[9]?.id, opportunities[4]?.id,
-        companies[4]?.id, contacts[10]?.id, opportunities[2]?.id
+        companies[0] ?? null, contacts[0]?.id, opportunities[0]?.id,
+        companies[3] ?? null, contacts[9]?.id, opportunities[4]?.id,
+        companies[4] ?? null, contacts[10]?.id, opportunities[2]?.id
       ]);
       console.log('✅ Activities inserite');
     }
@@ -218,4 +218,3 @@ async function main() {
 }
 
 main();
-

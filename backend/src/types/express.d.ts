@@ -9,6 +9,9 @@ declare module 'express-serve-static-core' {
       role: 'admin' | 'seller' | 'reseller' | 'customer';
       permissions?: string[];
       scopes?: Record<string, unknown>;
+      referralId?: string | null;
+      referralCode?: string | null;
+      referralLink?: string | null;
     };
   }
 }
