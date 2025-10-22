@@ -182,7 +182,7 @@ export default function PublicSignaturePage() {
             <div className="flex items-center gap-2 mt-2">
               <Clock className="h-4 w-4 text-slate-500" />
               <span className="text-xs text-slate-500">
-                Scadenza: {new Date(request.expires_at).toLocaleString('it-IT'))}
+                Scadenza: {new Date(request.expires_at).toLocaleString('it-IT')}
               </span>
             </div>
           </div>

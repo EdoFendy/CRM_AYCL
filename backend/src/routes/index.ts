@@ -28,6 +28,7 @@ import { docPackFilesRouter } from '../modules/docPackFiles/docPackFiles.router.
 import { woocommerceRouter } from '../modules/woocommerce/woocommerce.router.js';
 import { quotesRouter } from '../modules/quotes/quotes.router.js';
 import { vatValidationRouter } from '../modules/vatValidation/vatValidation.router.js';
+import pdfTemplatesRouter from '../modules/pdfTemplates/pdfTemplates.router.js';
 
 export function registerRoutes(app: Application) {
   const router = Router();
@@ -63,6 +64,7 @@ export function registerRoutes(app: Application) {
   router.use('/webhooks', webhooksRouter);
   router.use('/woocommerce', woocommerceRouter);
   router.use('/vat-validation', vatValidationRouter);
+  router.use('/pdf-templates', pdfTemplatesRouter);
   router.use('/public/contracts', publicContractsRouter);
   router.use('/public/payments', publicPaymentsRouter);
   router.use('/public/sign', signaturesRouter);

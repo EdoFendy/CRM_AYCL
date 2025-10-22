@@ -9,6 +9,7 @@ import { FiltersToolbar } from '../components/forms/FiltersToolbar';
 import { usePersistentFilters } from '../hooks/usePersistentFilters';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { FileText, Eye, Trash2, Send, Check, Download, ExternalLink } from 'lucide-react';
+import { downloadContractPDF, type ContractData } from '../utils/contractPDF';
 
 interface ContractRow {
   id: string;
@@ -23,6 +24,7 @@ interface ContractRow {
   pack?: string;
   payment_amount?: number;
   payment_currency?: string;
+  notes?: string;
   files?: Array<{
     id: string;
     name: string;
@@ -124,28 +126,33 @@ export default function ContractsPage() {
 
   const generateContractPDF = async (contract: ContractRow) => {
     try {
-      // Determine contract type based on pack
-      const contractType = contract.pack?.toLowerCase().includes('performance') ? 'performance' : 'setupfee';
+      console.log('[CONTRACTS] Inizio generazione PDF per contratto:', contract.id);
+      console.log('[CONTRACTS] Notes salvati:', contract.notes);
       
-      // Try to fetch the contract template
-      const contractPath = contractType === 'performance' 
-        ? '/contracts_form/Performance_Contract_Formatted.html'
-        : '/contracts_form/SetUpFee_Contract_Formatted.html';
+      // Determina tipo contratto
+      const contractType: 'performance' | 'setupfee' = contract.pack?.toLowerCase().includes('performance') ? 'performance' : 'setupfee';
       
-      const response = await fetch(contractPath);
-      if (!response.ok) {
-        throw new Error('Template not found');
+      // Recupera dati dal campo notes (salvati durante la generazione)
+      let formData: ContractData | null = null;
+      try {
+        if (contract.notes) {
+          const parsed = JSON.parse(contract.notes);
+          // I dati sono salvati in parsed.formData
+          formData = parsed.formData;
+          console.log('[CONTRACTS] Dati recuperati da notes:', formData);
+        }
+      } catch (e) {
+        console.warn('[CONTRACTS] Notes non valido, uso dati di default:', e);
       }
       
-      let contractHtml = await response.text();
-      
-      // Create a basic contract with available data
-      const contractData = {
+      // Se non ci sono dati salvati, usa i valori di default dal contratto
+      const data: ContractData = formData || {
         company_name: contract.company_name || 'N/A',
         company_address: 'Da definire',
         company_tax_id: 'Da definire',
         representative_name: 'Da definire',
         representative_role: 'Da definire',
+        contract_place: '',
         contract_date: new Date(contract.created_at).toLocaleDateString('it-IT'),
         setup_fee: contract.payment_amount?.toString() || '3000',
         unit_cost: '',
@@ -158,50 +165,15 @@ export default function ContractsPage() {
         icp_revenue_share: '',
         icp_date: new Date().toLocaleDateString('it-IT'),
       };
-
-      // Fill the contract with data
-      Object.entries(contractData).forEach(([key, value]) => {
-        if (value && value.trim() !== '') {
-          const spanRegex = new RegExp(`<span[^>]*data-field="${key}"[^>]*>\\[.*?\\]</span>`, 'g');
-          contractHtml = contractHtml.replace(spanRegex, `<span data-field="${key}">${value}</span>`);
-        }
-      });
-
-      // Remove contenteditable attributes
-      contractHtml = contractHtml.replace(/contenteditable="true"/g, 'contenteditable="false"');
       
-      // Add CSS to make fields look like filled text
-      const styleTag = `
-        <style>
-          .editable-field {
-            background-color: transparent !important;
-            border: none !important;
-            padding: 0 !important;
-            font-weight: normal !important;
-            color: #000 !important;
-            display: inline !important;
-          }
-        </style>
-      `;
+      console.log('[CONTRACTS] Dati finali per PDF:', data);
       
-      contractHtml = contractHtml.replace('</head>', styleTag + '</head>');
+      // Genera PDF
+      await downloadContractPDF(contractType, data);
       
-      // Open in new window for printing
-      const newWindow = window.open('', '_blank');
-      if (newWindow) {
-        newWindow.document.write(contractHtml);
-        newWindow.document.close();
-        
-        // Wait for the document to load, then trigger print
-        newWindow.onload = () => {
-          setTimeout(() => {
-            newWindow.print();
-          }, 1000);
-        };
-      }
     } catch (error) {
-      console.error('Error generating contract PDF:', error);
-      alert('Errore nella generazione del PDF. Il template potrebbe non essere disponibile.');
+      console.error('[CONTRACTS] Errore generazione PDF:', error);
+      alert('Errore generazione PDF. Controlla la console per dettagli.');
     }
   };
 

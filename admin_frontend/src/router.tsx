@@ -35,6 +35,7 @@ const PublicPaymentPage = lazy(() => import('@pages/PublicPaymentPage'));
 const NotificationsPage = lazy(() => import('@pages/NotificationsPage'));
 const WebhooksPage = lazy(() => import('@pages/WebhooksPage'));
 const RolesPage = lazy(() => import('@pages/RolesPage'));
+const PDFTemplatesPage = lazy(() => import('@pages/PDFTemplatesPage'));
 
 export const routes = {
   dashboard: <DashboardPage />,
@@ -69,6 +70,7 @@ export const routes = {
   referrals: <ReferralsPage />,
   notifications: <NotificationsPage />,
   webhooks: <WebhooksPage />,
+  pdfTemplates: <PDFTemplatesPage />,
   audit: <AuditPage />,
   login: <LoginPage />,
   support: <SupportPage />,

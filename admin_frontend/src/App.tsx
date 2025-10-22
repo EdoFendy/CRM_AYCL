@@ -62,6 +62,7 @@ export default function App() {
             <Route path="/referrals" element={routes.referrals} />
             <Route path="/notifications" element={routes.notifications} />
             <Route path="/webhooks" element={routes.webhooks} />
+            <Route path="/pdf-templates" element={routes.pdfTemplates} />
             <Route path="/audit" element={routes.audit} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Route>

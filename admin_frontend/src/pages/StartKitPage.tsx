@@ -13,7 +13,8 @@ import { useCursorPagination } from '../hooks/useCursorPagination';
 import { PaginationControls } from '../components/navigation/PaginationControls';
 import { Modal } from '../components/ui/Modal';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
-import ContractGenerator from '../components/ContractGenerator';
+import SimpleContractGenerator from '../components/SimpleContractGenerator';
+import { ContractFromTemplate } from '../components/pdf/ContractFromTemplate';
 import { 
   FileText, 
   Send, 
@@ -365,18 +366,18 @@ export default function StartKitPage() {
     }
   };
 
-  const columns = [
+  const contractColumns = [
     {
-      key: 'number',
-      label: 'Numero',
-      render: (contract: Contract) => (
+      id: 'number',
+      header: 'Numero',
+      cell: (contract: Contract) => (
         <div className="font-medium text-slate-900">{contract.number}</div>
       ),
     },
     {
-      key: 'company_name',
-      label: 'Cliente',
-      render: (contract: Contract) => (
+      id: 'company_name',
+      header: 'Cliente',
+      cell: (contract: Contract) => (
         <div className="flex items-center gap-2">
           <Building className="h-4 w-4 text-slate-400" />
           <span>{contract.company_name || 'N/A'}</span>
@@ -384,18 +385,18 @@ export default function StartKitPage() {
       ),
     },
     {
-      key: 'pack',
-      label: 'Pack',
-      render: (contract: Contract) => (
+      id: 'pack',
+      header: 'Pack',
+      cell: (contract: Contract) => (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
           {contract.pack}
         </span>
       ),
     },
     {
-      key: 'status',
-      label: 'Stato',
-      render: (contract: Contract) => (
+      id: 'status',
+      header: 'Stato',
+      cell: (contract: Contract) => (
         <div className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(contract.status)}`}>
           {getStatusIcon(contract.status)}
           {contract.status.toUpperCase()}
@@ -403,9 +404,9 @@ export default function StartKitPage() {
       ),
     },
     {
-      key: 'payment_amount',
-      label: 'Importo',
-      render: (contract: Contract) => (
+      id: 'payment_amount',
+      header: 'Importo',
+      cell: (contract: Contract) => (
         <div className="flex items-center gap-1">
           <Euro className="h-4 w-4 text-slate-400" />
           <span>{contract.payment_amount || 0} {contract.payment_currency}</span>
@@ -413,18 +414,18 @@ export default function StartKitPage() {
       ),
     },
     {
-      key: 'created_at',
-      label: 'Creato',
-      render: (contract: Contract) => (
+      id: 'created_at',
+      header: 'Creato',
+      cell: (contract: Contract) => (
         <span className="text-slate-600">
           {new Date(contract.created_at).toLocaleDateString('it-IT')}
         </span>
       ),
     },
     {
-      key: 'actions',
-      label: 'Azioni',
-      render: (contract: Contract) => (
+      id: 'actions',
+      header: 'Azioni',
+      cell: (contract: Contract) => (
         <div className="flex items-center gap-2">
           <button
             onClick={() => setSelectedContract(contract)}
@@ -569,13 +570,27 @@ export default function StartKitPage() {
           />
 
           {/* Data Table */}
-          <DataTable
-            data={contractsQuery.data?.data || []}
-            columns={columns}
-            loading={contractsQuery.isLoading}
-            error={error}
-            emptyMessage="Nessun contratto trovato"
-          />
+          {contractsQuery.isLoading ? (
+            <div className="rounded-md border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+              Caricamento contratti in corso...
+            </div>
+          ) : error ? (
+            <div className="rounded-md border border-red-200 bg-red-50 p-6 text-sm text-red-600">
+              {error || 'Impossibile caricare i contratti al momento.'}
+            </div>
+          ) : (
+            <DataTable
+              data={contractsQuery.data?.data || []}
+              columns={contractColumns}
+              emptyState={
+                <div className="text-center py-12">
+                  <FileText className="mx-auto h-12 w-12 text-slate-300 mb-4" />
+                  <h3 className="text-sm font-medium text-slate-900 mb-1">Nessun contratto trovato</h3>
+                  <p className="text-sm text-slate-500">Crea un nuovo contratto per vederlo qui.</p>
+                </div>
+              }
+            />
+          )}
 
           {/* Pagination */}
           {contractsQuery.data && (
@@ -592,7 +607,35 @@ export default function StartKitPage() {
 
       {/* Contract Generator Tab */}
       {activeTab === 'generator' && (
-        <ContractGenerator onGenerateContract={handleGenerateContract} />
+        <div className="space-y-6">
+          {/* Nuovo Sistema Template */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
+            <div className="flex items-start gap-3 mb-4">
+              <div className="p-2 bg-blue-600 rounded-lg">
+                <FileText className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900">
+                  Genera da Template PDF
+                </h3>
+                <p className="text-sm text-slate-600 mt-1">
+                  Sistema nuovo con mappatura campi dinamica - PDF professionali garantiti
+                </p>
+              </div>
+            </div>
+            <ContractFromTemplate />
+          </div>
+
+          {/* Sistema Vecchio (Backward Compatibility) */}
+          <details className="bg-slate-50 border border-slate-200 rounded-lg">
+            <summary className="cursor-pointer p-4 font-medium text-slate-700 hover:text-slate-900">
+              Sistema Vecchio (HTML-based) - Solo per backward compatibility
+            </summary>
+            <div className="p-4 pt-0">
+              <SimpleContractGenerator />
+            </div>
+          </details>
+        </div>
       )}
 
       {/* Timeline Tab */}

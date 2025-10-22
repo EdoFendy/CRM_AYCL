@@ -7,16 +7,16 @@
     <style>
         @page {
             size: A4;
-            margin: 2.5cm 2cm 3cm 2cm;
+            margin: 2.5cm 2cm 3.5cm 2cm;
         }
-        
+
         body {
             font-family: 'Times New Roman', serif;
             font-size: 11pt;
             line-height: 1.4;
             color: #000;
             margin: 0;
-            padding: 0;
+            padding: 0 0 180px 0;
         }
         
         .header {
@@ -70,6 +70,7 @@
         .article {
             margin: 20px 0;
             page-break-inside: avoid;
+            break-inside: avoid;
         }
         
         .article-title {
@@ -106,6 +107,8 @@
             padding: 20px;
             border: 2px solid #000;
             background-color: #f0f0f0;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
         
         .signature-line {
@@ -113,6 +116,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 40px;
         }
         
         .signature-field {
@@ -122,40 +126,21 @@
             display: inline-block;
         }
         
-        .logo-footer {
-            position: fixed;
-            bottom: 1cm;
-            right: 2cm;
-            width: 80px;
-            height: auto;
-            opacity: 0.7;
-        }
-        
-        .page-number {
-            position: fixed;
-            bottom: 1cm;
-            left: 2cm;
-            font-size: 10pt;
-            color: #666;
-        }
-        
-        .highlight {
-            background-color: #fffacd;
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-        
         .important-clause {
             background-color: #ffe6e6;
             padding: 10px;
             border-left: 4px solid #ff0000;
             margin: 10px 0;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
-        
+
         .table-icp {
             width: 100%;
             border-collapse: collapse;
             margin: 15px 0;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
         
         .table-icp th,
@@ -163,11 +148,15 @@
             border: 1px solid #000;
             padding: 8px;
             text-align: left;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
         
         .table-icp th {
             background-color: #f0f0f0;
             font-weight: bold;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
         
         .editable-table-cell {
@@ -184,17 +173,49 @@
             margin: 15px 0;
         }
         
+        .pdf-footer {
+            position: fixed;
+            bottom: 0.3cm;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 0.1cm;
+            pointer-events: none;
+        }
+
+        .pdf-footer::before {
+            content: '';
+            position: absolute;
+            top: -0.2cm;
+            left: 15%;
+            right: 15%;
+            height: 1px;
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .logo-footer {
+            width: 60px;
+            height: auto;
+            opacity: 0.8;
+            float: right;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            min-height: 80px;
+            page-break-inside: avoid;
+        }
+
         @media print {
-            .logo-footer {
-                position: fixed;
-                bottom: 1cm;
-                right: 2cm;
-            }
-            
-            .page-number {
-                position: fixed;
-                bottom: 1cm;
-                left: 2cm;
+            .pdf-footer {
+                bottom: 0.3cm;
             }
         }
     </style>
@@ -621,7 +642,12 @@
 
     <div class="signature-section">
         <div style="text-align: center; margin-bottom: 30px;">
-            <p><strong>Luogo, Data</strong> <span class="editable-field" contenteditable="true" data-field="contract_date">____________________</span></p>
+            <p>
+                <strong>Luogo:</strong>
+                <span class="editable-field" contenteditable="true" data-field="contract_place">[Luogo]</span>,
+                <strong>Data:</strong>
+                <span class="editable-field" contenteditable="true" data-field="contract_date">____________________</span>
+            </p>
         </div>
         
         <div class="signature-line">
@@ -687,7 +713,12 @@
             <p><em>Eventuali aggiornamenti o modifiche al presente ICP saranno formalizzati esclusivamente mediante nuovo Allegato numerato progressivamente (A1, A2, …), ciascuno con la propria percentuale di Revenue Share specificata.</em></p>
             
             <div style="text-align: center; margin: 30px 0;">
-                <p><strong>Luogo, Data</strong> <span class="editable-field" contenteditable="true" data-field="icp_date">____________________</span></p>
+                <p>
+                    <strong>Luogo:</strong>
+                    <span class="editable-field" contenteditable="true" data-field="contract_place">[Luogo]</span>,
+                    <strong>Data:</strong>
+                    <span class="editable-field" contenteditable="true" data-field="icp_date">____________________</span>
+                </p>
             </div>
             
             <div class="signature-line">
@@ -703,11 +734,10 @@
         </div>
     </div>
 
-    <!-- Logo Footer -->
-    <img src="/logo.png" alt="Logo" class="logo-footer">
-    
-    <!-- Page Numbers -->
-    <div class="page-number">Pagina 1</div>
+    <!-- Footer -->
+    <div class="footer-section">
+        <img src="/logo.png" alt="Logo" class="logo-footer">
+    </div>
 
     <script>
         // Add functionality for editable fields
@@ -727,6 +757,17 @@
                 const savedValue = localStorage.getItem(fieldName);
                 if (savedValue) {
                     field.textContent = savedValue;
+                }
+            });
+
+            const today = new Date().toLocaleDateString('it-IT');
+            ['contract_date', 'icp_date'].forEach((fieldName) => {
+                const field = document.querySelector(`[data-field="${fieldName}"]`);
+                if (field) {
+                    const content = field.textContent?.trim() ?? '';
+                    if (!content || content.includes('_') || content === '[Data]') {
+                        field.textContent = today;
+                    }
                 }
             });
             
