@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@context/AuthContext';
 import { Navigate, useLocation } from 'react-router-dom';
 
 const loginSchema = z.object({

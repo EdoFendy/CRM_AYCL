@@ -1,4 +1,4 @@
-import { ReferralCard, CheckoutsSection } from '@/features/kit/sections';
+import { ReferralCard, CheckoutsSection } from '../features/kit/sections';
 
 export default function ReferralPage() {
   return (

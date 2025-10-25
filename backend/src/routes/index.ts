@@ -29,6 +29,11 @@ import { woocommerceRouter } from '../modules/woocommerce/woocommerce.router.js'
 import { quotesRouter } from '../modules/quotes/quotes.router.js';
 import { vatValidationRouter } from '../modules/vatValidation/vatValidation.router.js';
 import pdfTemplatesRouter from '../modules/pdfTemplates/pdfTemplates.router.js';
+import { discountCodesRouter } from '../modules/discount-codes/discount-codes.router.js';
+import { bundlesRouter } from '../modules/bundles/bundles.router.js';
+import { referralRouter } from '../modules/referral/referral.router.js';
+import { checkoutRequestsRouter } from '../modules/checkout-requests/checkout-requests.router.js';
+import { checkoutSessionsRouter } from '../modules/checkout-sessions/checkout-sessions.router.js';
 
 export function registerRoutes(app: Application) {
   const router = Router();
@@ -65,6 +70,11 @@ export function registerRoutes(app: Application) {
   router.use('/woocommerce', woocommerceRouter);
   router.use('/vat-validation', vatValidationRouter);
   router.use('/pdf-templates', pdfTemplatesRouter);
+  router.use('/discount-codes', discountCodesRouter);
+  router.use('/bundles', bundlesRouter);
+  router.use('/referral', referralRouter);
+  router.use('/checkout-requests', checkoutRequestsRouter);
+  router.use('/checkout-sessions', checkoutSessionsRouter);
   router.use('/public/contracts', publicContractsRouter);
   router.use('/public/payments', publicPaymentsRouter);
   router.use('/public/sign', signaturesRouter);

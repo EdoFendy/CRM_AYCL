@@ -27,7 +27,7 @@ export async function apiClient<T>(endpoint: string, options: ApiClientOptions =
 
   const requestOptions: Options = {
     method,
-    searchParams,
+    ...(searchParams && { searchParams: searchParams as Record<string, string | number | boolean> }),
     headers: {
       ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       ...(headers ?? {})

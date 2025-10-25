@@ -1,10 +1,16 @@
 import { Outlet } from 'react-router-dom';
-import { AuthProvider } from '@/context/AuthContext';
+import { AuthProvider } from '@context/AuthContext';
+import { SelectedClientProvider } from '@context/SelectedClientContext';
+import { ErrorBoundary } from './ErrorBoundary';
 
 export default function AppWrapper() {
   return (
-    <AuthProvider>
-      <Outlet />
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <SelectedClientProvider>
+          <Outlet />
+        </SelectedClientProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }

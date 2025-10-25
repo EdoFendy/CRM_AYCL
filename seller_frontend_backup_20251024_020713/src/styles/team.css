@@ -1,0 +1,26 @@
+.team-summary {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.team-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0.2rem 0 0;
+  color: #0f172a;
+}
+
+.team-subtitle {
+  margin: 0.2rem 0 0;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.team-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: #475569;
+  margin: 0.2rem 0 0;
+  word-break: break-word;
+}

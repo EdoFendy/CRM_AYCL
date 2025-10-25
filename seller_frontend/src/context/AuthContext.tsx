@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
-import { apiClient } from '@/lib/apiClient';
+import { apiClient } from '@lib/apiClient';
 
 type Role = 'admin' | 'seller' | 'reseller' | 'customer';
 
@@ -18,6 +18,9 @@ export interface AuthUser {
   email: string;
   role: Role;
   code11: string;
+  teamId?: string | null;
+  resellerTeamId?: string | null;
+  fullName?: string | null;
   referralId?: string | null;
   referralCode?: string | null;
   referralLink?: string | null;

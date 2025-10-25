@@ -1,10 +1,13 @@
+import { Suspense } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import '@/styles/layout.css';
+import { useAuth } from '@context/AuthContext';
+import { SidebarNavigation } from './SidebarNavigation';
+import { TopBar } from './TopBar';
+import '@styles/layout.css';
 
 export default function ProtectedLayout() {
   const location = useLocation();
-  const { isAuthenticated, loading, user, logout } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
     return (
@@ -20,29 +23,25 @@ export default function ProtectedLayout() {
   }
 
   return (
-    <div className="app-shell">
-      <header className="app-header">
-        <div>
-          <h1 className="app-title">AYCL Seller Kit</h1>
-          <p className="app-subtitle">Gestisci carrelli, prodotti e drive test in autonomia</p>
-        </div>
-
-        <div className="header-actions">
-          <div className="user-info">
-            <span className="user-email">{user?.email}</span>
-            {user?.referralCode ? (
-              <span className="user-referral">Referral: {user.referralCode}</span>
-            ) : null}
+    <div className="flex min-h-screen bg-muted">
+      <SidebarNavigation />
+      <div className="flex flex-1 flex-col">
+        <TopBar />
+        <main className="flex-1 overflow-y-auto p-6">
+          <div className="mx-auto max-w-7xl space-y-6">
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center py-12">
+                  <div className="spinner" />
+                  <p className="ml-3 text-slate-600">Caricamento...</p>
+                </div>
+              }
+            >
+              <Outlet />
+            </Suspense>
           </div>
-          <button className="button ghost" onClick={logout}>
-            Esci
-          </button>
-        </div>
-      </header>
-
-      <main className="app-main">
-        <Outlet />
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
