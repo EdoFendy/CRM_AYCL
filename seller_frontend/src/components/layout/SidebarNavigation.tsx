@@ -22,34 +22,37 @@ export function SidebarNavigation() {
       {
         title: 'Dashboard',
         items: [
-          { to: '/dashboard', label: 'Dashboard' },
+          { to: '/dashboard', label: 'Overview' },
         ],
       },
       {
-        title: 'Sales & CRM',
+        title: 'CRM',
         items: [
-          { to: '/opportunities', label: 'Opportunità' },
           { to: '/contacts', label: 'Contatti' },
-          { to: '/tasks', label: 'Task' },
-          { to: '/activities', label: 'Attività' },
+          { to: '/companies', label: 'Aziende' },
+          { to: '/opportunities', label: 'Trattative' },
+          { to: '/smart-views', label: 'Smart Views' },
         ],
       },
       {
-        title: 'Prodotti',
+        title: 'Portfolio Clienti',
         items: [
-          { to: '/starter-kit', label: 'Starter Kit' },
-          { to: '/aycl-kit', label: 'AYCL Kit' },
-          { to: '/referrals', label: 'Referral Program' },
+          { to: '/portfolio', label: 'Clienti Assegnati' },
         ],
       },
       {
-        title: 'Team & Finance',
+        title: 'Seller Kit',
         items: [
-          { to: '/team', label: 'Team' },
+          { to: '/seller-kit', label: '🎯 Seller Kit Unificato' },
+        ],
+      },
+      {
+        title: 'Start Kit',
+        items: [
+          { to: '/kit/cart-builder', label: 'Crea Carrello' },
+          { to: '/kit/discount-codes', label: 'Codici Sconto' },
+          { to: '/referrals', label: 'Referral Analytics' },
           { to: '/checkouts', label: 'Checkouts' },
-          { to: '/checkout-requests', label: 'Richieste Checkout' },
-          { to: '/invoices', label: 'Fatture' },
-          { to: '/payments', label: 'Pagamenti' },
         ],
       },
       {

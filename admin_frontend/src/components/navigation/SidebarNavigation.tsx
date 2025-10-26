@@ -42,6 +42,7 @@ export function SidebarNavigation() {
         title: 'Teams & Users',
         items: [
           { to: '/sellers', label: t('nav.sellers') },
+          { to: '/seller-assignments', label: 'Assegnazione Seller' },
           { to: '/resellers', label: t('nav.resellers') },
           { to: '/teams', label: 'Teams' },
           { to: '/users', label: t('nav.users') },

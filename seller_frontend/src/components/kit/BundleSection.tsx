@@ -8,27 +8,36 @@ import { apiClient } from '@lib/apiClient';
 import { useAuth } from '@context/AuthContext';
 import { useSelectedClient } from '@context/SelectedClientContext';
 
+interface WooProduct {
+  id: number;
+  name: string;
+  sku?: string;
+  price?: string;
+  regular_price?: string;
+  description?: string;
+  short_description?: string;
+}
+
 const bundleProductSchema = z.object({
-  product_id: z.string().optional(),
-  name: z.string().min(1),
+  woo_product_id: z.number().optional(),
+  product_name: z.string().min(1),
+  product_sku: z.string().optional(),
+  product_description: z.string().optional(),
   quantity: z.number().int().positive(),
-  unit_price: z.number().positive(),
-  total: z.number().positive()
+  unit_price: z.number().positive()
 });
 
 const bundleSchema = z.object({
   name: z.string().min(3),
   description: z.string().optional(),
   products: z.array(bundleProductSchema).min(1),
-  discount_type: z.enum(['percentage', 'fixed']),
-  discount_value: z.number().positive(),
+  discount_type: z.enum(['percentage', 'fixed', 'none']),
+  discount_value: z.number().min(0).default(0),
   valid_until: z.string().optional(),
   includes_upsell: z.boolean(),
-  upsell_details: z.object({
-    name: z.string(),
-    description: z.string(),
-    price: z.number().positive()
-  }).optional()
+  upsell_name: z.string().optional(),
+  upsell_description: z.string().optional(),
+  upsell_price: z.number().positive().optional()
 });
 
 type BundleFormValues = z.infer<typeof bundleSchema>;
@@ -37,13 +46,26 @@ export function BundleSection() {
   const { token } = useAuth();
   const { selectedClient, hasClient } = useSelectedClient();
   const queryClient = useQueryClient();
+  const [selectedProductIndex, setSelectedProductIndex] = useState<number | null>(null);
+
+  // Fetch WooCommerce products
+  const productsQuery = useQuery({
+    queryKey: ['woocommerce', 'products'],
+    queryFn: () =>
+      apiClient<{ data: WooProduct[] }>('woocommerce/products', {
+        token,
+        searchParams: { per_page: 100 }
+      }),
+    select: (res) => res.data ?? [],
+    enabled: Boolean(token)
+  });
 
   const form = useForm<BundleFormValues>({
     resolver: zodResolver(bundleSchema),
     defaultValues: {
       name: '',
-      products: [{ name: '', quantity: 1, unit_price: 0, total: 0 }],
-      discount_type: 'percentage',
+      products: [{ product_name: '', quantity: 1, unit_price: 0 }],
+      discount_type: 'none',
       discount_value: 0,
       includes_upsell: false
     }
@@ -61,7 +83,8 @@ export function BundleSection() {
         method: 'POST',
         body: {
           ...values,
-          company_id: selectedClient?.type === 'company' ? selectedClient.data.id : undefined
+          company_id: selectedClient?.type === 'company' ? selectedClient.data.id : undefined,
+          contact_id: selectedClient?.type === 'contact' ? selectedClient.data.id : undefined
         }
       }),
     onSuccess: () => {
@@ -73,6 +96,39 @@ export function BundleSection() {
       toast.error(error?.message || 'Errore creazione bundle');
     }
   });
+
+  const generateCheckoutMutation = useMutation({
+    mutationFn: async (bundleId: string) => {
+      const response = await apiClient<{ checkout_url: string }>(`bundles/${bundleId}/checkout-url`, {
+        token,
+        method: 'POST',
+        body: { base_url: 'https://allyoucanleads.com' }
+      });
+      return response.checkout_url;
+    },
+    onSuccess: (checkoutUrl) => {
+      navigator.clipboard.writeText(checkoutUrl);
+      toast.success('Link checkout copiato negli appunti!');
+      window.open(checkoutUrl, '_blank');
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || 'Errore generazione checkout');
+    }
+  });
+
+  const products = productsQuery.data ?? [];
+
+  const handleSelectProduct = (index: number, productId: string) => {
+    const product = products.find(p => p.id.toString() === productId);
+    if (product) {
+      const price = parseFloat(product.regular_price || product.price || '0');
+      form.setValue(`products.${index}.woo_product_id`, product.id);
+      form.setValue(`products.${index}.product_name`, product.name);
+      form.setValue(`products.${index}.product_sku`, product.sku || '');
+      form.setValue(`products.${index}.product_description`, product.short_description || '');
+      form.setValue(`products.${index}.unit_price`, price);
+    }
+  };
 
   if (!hasClient) {
     return (
@@ -89,14 +145,16 @@ export function BundleSection() {
 
   const subtotal = fields.reduce((sum, _, idx) => {
     const product = form.watch(`products.${idx}`);
-    return sum + (product.unit_price * product.quantity);
+    return sum + ((product.unit_price || 0) * (product.quantity || 0));
   }, 0);
 
   const discountType = form.watch('discount_type');
-  const discountValue = form.watch('discount_value');
+  const discountValue = form.watch('discount_value') || 0;
   const discountAmount = discountType === 'percentage' 
     ? (subtotal * discountValue) / 100 
-    : discountValue;
+    : discountType === 'fixed'
+    ? discountValue
+    : 0;
   const total = Math.max(0, subtotal - discountAmount);
 
   return (
@@ -150,8 +208,26 @@ export function BundleSection() {
             <div key={field.id} className="cart-item">
               <div className="cart-item-fields">
                 <div className="form-group flex-1">
+                  <label className="form-label text-xs">Seleziona Prodotto WooCommerce</label>
+                  <select
+                    className="form-input-sm"
+                    onChange={(e) => handleSelectProduct(index, e.target.value)}
+                    defaultValue=""
+                  >
+                    <option value="">-- Seleziona prodotto --</option>
+                    {products.map(product => (
+                      <option key={product.id} value={product.id}>
+                        {product.name} - €{product.regular_price || product.price || '0'}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              
+              <div className="cart-item-fields mt-2">
+                <div className="form-group flex-1">
                   <input
-                    {...form.register(`products.${index}.name`)}
+                    {...form.register(`products.${index}.product_name`)}
                     className="form-input-sm"
                     placeholder="Nome prodotto"
                   />
@@ -162,11 +238,7 @@ export function BundleSection() {
                     type="number"
                     className="form-input-sm"
                     placeholder="Qtà"
-                    onChange={(e) => {
-                      const qty = parseInt(e.target.value) || 0;
-                      const price = form.getValues(`products.${index}.unit_price`);
-                      form.setValue(`products.${index}.total`, qty * price);
-                    }}
+                    min="1"
                   />
                 </div>
                 <div className="form-group" style={{ width: '120px' }}>
@@ -175,12 +247,8 @@ export function BundleSection() {
                     type="number"
                     step="0.01"
                     className="form-input-sm"
-                    placeholder="Prezzo"
-                    onChange={(e) => {
-                      const price = parseFloat(e.target.value) || 0;
-                      const qty = form.getValues(`products.${index}.quantity`);
-                      form.setValue(`products.${index}.total`, qty * price);
-                    }}
+                    placeholder="Prezzo €"
+                    min="0"
                   />
                 </div>
                 <button
@@ -203,6 +271,7 @@ export function BundleSection() {
             <div className="form-group flex-1">
               <label className="form-label">Tipo Sconto</label>
               <select {...form.register('discount_type')} className="form-input">
+                <option value="none">Nessuno Sconto</option>
                 <option value="percentage">Percentuale (%)</option>
                 <option value="fixed">Fisso (€)</option>
               </select>
@@ -213,7 +282,9 @@ export function BundleSection() {
                 {...form.register('discount_value', { valueAsNumber: true })}
                 type="number"
                 step="0.01"
+                min="0"
                 className="form-input"
+                disabled={form.watch('discount_type') === 'none'}
               />
             </div>
           </div>
@@ -236,14 +307,14 @@ export function BundleSection() {
             <div className="space-y-3">
               <div className="form-group">
                 <input
-                  {...form.register('upsell_details.name')}
+                  {...form.register('upsell_name')}
                   className="form-input"
                   placeholder="Nome UpSell"
                 />
               </div>
               <div className="form-group">
                 <textarea
-                  {...form.register('upsell_details.description')}
+                  {...form.register('upsell_description')}
                   className="form-textarea"
                   rows={2}
                   placeholder="Descrizione UpSell"
@@ -251,11 +322,12 @@ export function BundleSection() {
               </div>
               <div className="form-group">
                 <input
-                  {...form.register('upsell_details.price', { valueAsNumber: true })}
+                  {...form.register('upsell_price', { valueAsNumber: true })}
                   type="number"
                   step="0.01"
+                  min="0"
                   className="form-input"
-                  placeholder="Prezzo UpSell"
+                  placeholder="Prezzo UpSell €"
                 />
               </div>
             </div>

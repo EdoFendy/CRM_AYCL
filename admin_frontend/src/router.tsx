@@ -4,6 +4,7 @@ const DashboardPage = lazy(() => import('@pages/DashboardPage'));
 const PortfolioListPage = lazy(() => import('@pages/PortfolioListPage'));
 const PortfolioDetailPage = lazy(() => import('@pages/PortfolioDetailPage'));
 const SellersPage = lazy(() => import('@pages/SellersPage'));
+const SellerAssignmentsPage = lazy(() => import('@pages/SellerAssignmentsPage'));
 const ResellersPage = lazy(() => import('@pages/ResellersPage'));
 const AYCLKItPage = lazy(() => import('@pages/AYCLKitPage'));
 const StartKitPage = lazy(() => import('@pages/StartKitPage'));
@@ -44,6 +45,7 @@ export const routes = {
   opportunities: <OpportunitiesPage />,
   contacts: <ContactsPage />,
   contactDetail: <ContactDetailPage />,
+  sellerAssignments: <SellerAssignmentsPage />,
   tasks: <TasksPage />,
   activities: <ActivitiesPage />,
   sellers: <SellersPage />,

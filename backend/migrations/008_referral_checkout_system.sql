@@ -91,8 +91,8 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION create_user_referral_link(user_id_param UUID)
 RETURNS TEXT AS $$
 DECLARE
-  referral_code TEXT;
-  checkout_url TEXT;
+  new_referral_code TEXT;
+  new_checkout_url TEXT;
   base_url TEXT;
 BEGIN
   -- Get user's checkout base URL or use default
@@ -105,22 +105,22 @@ BEGIN
   END IF;
   
   -- Generate unique referral code
-  referral_code := generate_referral_code();
+  new_referral_code := generate_referral_code();
   
   -- Create checkout URL
-  checkout_url := base_url || '/checkout?ref=' || referral_code;
+  new_checkout_url := base_url || '/checkout?ref=' || new_referral_code;
   
   -- Insert referral link
   INSERT INTO referral_links (user_id, referral_code, checkout_url)
-  VALUES (user_id_param, referral_code, checkout_url);
+  VALUES (user_id_param, new_referral_code, new_checkout_url);
   
   -- Update user with referral code and link
   UPDATE users 
-  SET referral_code = referral_code, 
-      referral_link = checkout_url
+  SET referral_code = new_referral_code, 
+      referral_link = new_checkout_url
   WHERE id = user_id_param;
   
-  RETURN checkout_url;
+  RETURN new_checkout_url;
 END;
 $$ LANGUAGE plpgsql;
 

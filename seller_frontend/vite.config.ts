@@ -14,6 +14,7 @@ export default defineConfig({
       '@lib': path.resolve(__dirname, './src/lib'),
       '@styles': path.resolve(__dirname, './src/styles'),
       '@models': path.resolve(__dirname, './src/models'),
+      '@types': path.resolve(__dirname, './src/types'),
     },
   },
   server: {

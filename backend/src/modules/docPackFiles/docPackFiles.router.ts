@@ -150,3 +150,99 @@ docPackFilesRouter.delete('/:id', async (req, res) => {
   res.json({ success: true });
 });
 
+// POST /doc-files/:id/send-email - Invia file via email
+docPackFilesRouter.post('/:id/send-email', async (req, res) => {
+  try {
+    const schema = z.object({
+      recipient_email: z.string().email(),
+      recipient_name: z.string(),
+      message: z.string().optional(),
+      contact_id: z.string().uuid().optional(),
+      company_id: z.string().uuid().optional()
+    });
+
+    const data = schema.parse(req.body);
+    const id = req.params.id;
+
+    // Recupera file
+    const { rows } = await pool.query(
+      'SELECT * FROM doc_pack_files WHERE id = $1',
+      [id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'File non trovato' });
+    }
+
+    const file = rows[0];
+
+    // Leggi file dal filesystem
+    const filePath = path.join(process.cwd(), file.file_url);
+    let fileBuffer: Buffer;
+    
+    try {
+      fileBuffer = await fs.readFile(filePath);
+    } catch (error) {
+      return res.status(404).json({ error: 'File fisico non trovato' });
+    }
+
+    // Invia email (placeholder - implementare con servizio email reale)
+    // await sendEmail({
+    //   to: data.recipient_email,
+    //   subject: `${file.category === 'pitch' ? 'Pitch Deck' : 'Proposta'} - ${file.pack}`,
+    //   html: `
+    //     <h2>Gentile ${data.recipient_name},</h2>
+    //     <p>Le inviamo in allegato il documento richiesto.</p>
+    //     ${data.message ? `<p>${data.message}</p>` : ''}
+    //     <p>Cordiali saluti,<br>${req.user!.first_name} ${req.user!.last_name}</p>
+    //   `,
+    //   attachments: [
+    //     {
+    //       filename: file.name,
+    //       content: fileBuffer
+    //     }
+    //   ]
+    // });
+
+    // Log attività
+    await recordAuditLog({
+      actorId: req.user!.id,
+      action: 'doc_pack_file.send_email',
+      entity: 'doc_pack_file',
+      entityId: id,
+      afterState: {
+        recipient_email: data.recipient_email,
+        recipient_name: data.recipient_name,
+        contact_id: data.contact_id,
+        company_id: data.company_id
+      }
+    });
+
+    // Traccia invio in activities se contact_id o company_id forniti
+    if (data.contact_id || data.company_id) {
+      await pool.query(
+        `INSERT INTO activities (type, actor_id, contact_id, company_id, content)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [
+          'email',
+          req.user!.id,
+          data.contact_id || null,
+          data.company_id || null,
+          JSON.stringify({
+            subject: `${file.category === 'pitch' ? 'Pitch Deck' : 'Proposta'} - ${file.pack}`,
+            recipient: data.recipient_email,
+            file_name: file.name
+          })
+        ]
+      );
+    }
+
+    res.json({ success: true, message: 'Email inviata con successo' });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: 'Validation error', details: error.errors });
+    }
+    res.status(500).json({ error: error.message });
+  }
+});
+

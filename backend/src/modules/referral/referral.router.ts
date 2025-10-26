@@ -1,18 +1,31 @@
 import { Router } from 'express';
 import { z } from 'zod';
+import { requireAuth } from '../../middlewares/auth.js';
 import * as referralService from './referral.service.js';
 
 export const referralRouter = Router();
 
-// GET /referral/me - Get current user's referral link
+// Applica autenticazione a tutte le route tranne validate
+referralRouter.use((req, res, next) => {
+  if (req.path.startsWith('/validate/')) {
+    return next();
+  }
+  return requireAuth(req, res, next);
+});
+
+// GET /referral/me - Get or create current user's referral link
 referralRouter.get('/me', async (req, res) => {
   try {
-    const referralLink = await referralService.getUserReferralLink(req.user!.id);
+    let referralLink = await referralService.getUserReferralLink(req.user!.id);
+    
+    // Se non esiste, crealo automaticamente
     if (!referralLink) {
-      return res.status(404).json({ error: 'Referral link not found' });
+      referralLink = await referralService.createReferralLink(req.user!.id);
     }
+    
     res.json(referralLink);
   } catch (error: any) {
+    console.error('Error in /referral/me:', error);
     res.status(500).json({ error: error.message });
   }
 });

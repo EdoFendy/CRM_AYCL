@@ -1,7 +1,7 @@
 -- Migration 007: Discount Codes and Bundles System
 
 -- Discount Codes Table
-CREATE TABLE discount_codes (
+CREATE TABLE IF NOT EXISTS discount_codes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   code TEXT NOT NULL UNIQUE,
   discount_type TEXT NOT NULL CHECK (discount_type IN ('percentage', 'fixed')),
@@ -19,12 +19,12 @@ CREATE TABLE discount_codes (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_discount_codes_code ON discount_codes(code);
-CREATE INDEX idx_discount_codes_expires_at ON discount_codes(expires_at);
-CREATE INDEX idx_discount_codes_created_by ON discount_codes(created_by);
+CREATE INDEX IF NOT EXISTS idx_discount_codes_code ON discount_codes(code);
+CREATE INDEX IF NOT EXISTS idx_discount_codes_expires_at ON discount_codes(expires_at);
+CREATE INDEX IF NOT EXISTS idx_discount_codes_created_by ON discount_codes(created_by);
 
--- Bundles Table
-CREATE TABLE bundles (
+-- Bundles Table  
+CREATE TABLE IF NOT EXISTS bundles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   description TEXT,
@@ -45,10 +45,10 @@ CREATE TABLE bundles (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_bundles_company_id ON bundles(company_id);
-CREATE INDEX idx_bundles_created_by ON bundles(created_by);
-CREATE INDEX idx_bundles_valid_until ON bundles(valid_until);
-CREATE INDEX idx_bundles_status ON bundles(status);
+CREATE INDEX IF NOT EXISTS idx_bundles_company_id ON bundles(company_id);
+CREATE INDEX IF NOT EXISTS idx_bundles_created_by ON bundles(created_by);
+CREATE INDEX IF NOT EXISTS idx_bundles_valid_until ON bundles(valid_until);
+CREATE INDEX IF NOT EXISTS idx_bundles_status ON bundles(status);
 
 -- Enhance Contracts Table
 ALTER TABLE contracts ADD COLUMN IF NOT EXISTS quote_id UUID REFERENCES quotes(id);

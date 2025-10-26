@@ -41,6 +41,7 @@ export default function App() {
             <Route path="/tasks" element={routes.tasks} />
             <Route path="/activities" element={routes.activities} />
             <Route path="/sellers" element={routes.sellers} />
+            <Route path="/seller-assignments" element={routes.sellerAssignments} />
             <Route path="/resellers" element={routes.resellers} />
             <Route path="/teams" element={routes.teams} />
             <Route path="/teams/:teamId" element={routes.teamDetail} />

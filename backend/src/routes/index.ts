@@ -34,6 +34,7 @@ import { bundlesRouter } from '../modules/bundles/bundles.router.js';
 import { referralRouter } from '../modules/referral/referral.router.js';
 import { checkoutRequestsRouter } from '../modules/checkout-requests/checkout-requests.router.js';
 import { checkoutSessionsRouter } from '../modules/checkout-sessions/checkout-sessions.router.js';
+import { proposalsRouter } from '../modules/proposals/proposals.router.js';
 
 export function registerRoutes(app: Application) {
   const router = Router();
@@ -75,6 +76,7 @@ export function registerRoutes(app: Application) {
   router.use('/referral', referralRouter);
   router.use('/checkout-requests', checkoutRequestsRouter);
   router.use('/checkout-sessions', checkoutSessionsRouter);
+  router.use('/proposals', proposalsRouter);
   router.use('/public/contracts', publicContractsRouter);
   router.use('/public/payments', publicPaymentsRouter);
   router.use('/public/sign', signaturesRouter);
