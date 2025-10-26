@@ -12,18 +12,32 @@ export function createApp() {
 
   app.use(helmet());
   
-  // Configure CORS to allow requests from homepage
+  // Configure CORS to allow requests from all frontends
   app.use(cors({
     origin: [
+      // Local development
       'http://localhost:3000',
       'http://localhost:5173',
+      'http://localhost:5174',
+      'http://localhost:5175',
+      // Production - Homepage
       'https://allyoucanleads.com',
       'https://www.allyoucanleads.com',
-      'https://checkout.allyoucanleads.com'
+      'https://checkout.allyoucanleads.com',
+      // Production - CRM frontends (add your production URLs here)
+      // 'https://admin.allyoucanleads.com',
+      // 'https://seller.allyoucanleads.com',
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Correlation-ID']
+    allowedHeaders: [
+      'Content-Type', 
+      'Authorization', 
+      'X-Correlation-ID',
+      'X-Requested-With',
+      'Accept',
+      'Origin'
+    ]
   }));
   
   app.use(express.json({ limit: '2mb' }));
