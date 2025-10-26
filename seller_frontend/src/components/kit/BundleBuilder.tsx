@@ -138,47 +138,52 @@ export function BundleBuilder() {
         throw new Error('Aggiungi almeno un prodotto al bundle');
       }
 
-      if (!referralQuery.data?.referral_code) {
-        throw new Error('Codice referral non disponibile');
-      }
-
       if (!selectedClient) {
         throw new Error('Seleziona un cliente');
       }
 
-      // Create checkout order
-      const checkoutOrder = {
-        type: 'bundle' as const,
-        items: bundleItems.map(item => ({
-          product_id: item.product.id,
-          name: item.product.name,
+      // Step 1: Create bundle in backend
+      const bundleData = {
+        name: `Bundle ${selectedClient.type === 'company' ? selectedClient.data.name : selectedClient.data.full_name} - ${new Date().toLocaleDateString()}`,
+        description: `Bundle con ${bundleItems.length} prodotti`,
+        company_id: selectedClient.type === 'company' ? selectedClient.data.id : undefined,
+        contact_id: selectedClient.type === 'contact' ? selectedClient.data.id : undefined,
+        products: bundleItems.map(item => ({
+          woo_product_id: item.product.id,
+          product_name: item.product.name,
+          product_sku: item.product.sku || '',
+          product_description: item.product.description || '',
           quantity: item.quantity,
-          price: parseFloat(item.product.price),
-          discount: item.discount
+          unit_price: parseFloat(item.product.price),
+          product_discount_type: item.discount.value > 0 ? item.discount.type : undefined,
+          product_discount_value: item.discount.value > 0 ? item.discount.value : undefined
         })),
-        global_discount: globalDiscount,
-        total: totals.total,
-        client: selectedClient,
-        metadata: {
-          bundle_name: `Bundle personalizzato - ${new Date().toLocaleDateString()}`,
-          created_by: 'seller'
-        }
+        discount_type: globalDiscount.value > 0 ? globalDiscount.type : 'none',
+        discount_value: globalDiscount.value || 0,
+        currency: 'EUR'
       };
 
-      // Encrypt the order via API (server-side encryption)
-      const encryptedToken = await encryptCheckoutOrder(checkoutOrder as any, token || undefined);
-      
-      // Build checkout URL
-      const baseUrl = resolveCheckoutBaseUrl();
-      const checkoutUrl = `${baseUrl}/checkout?order=${encryptedToken}&ref=${referralQuery.data.referral_code}&type=bundle`;
-      
-      return checkoutUrl;
+      const bundle = await apiClient('bundles', {
+        token,
+        method: 'POST',
+        body: bundleData
+      });
+
+      // Step 2: Generate checkout URL with referral tracking
+      const checkoutResponse = await apiClient<{ checkout_url: string }>(`bundles/${bundle.id}/checkout-url`, {
+        token,
+        method: 'POST',
+        body: { base_url: 'https://allyoucanleads.com' }
+      });
+
+      return checkoutResponse.checkout_url;
     },
     onSuccess: (checkoutUrl) => {
       setGeneratedCheckoutUrl(checkoutUrl);
-      toast.success('Link checkout generato!');
+      toast.success('Link checkout generato con successo!');
     },
     onError: (error: any) => {
+      console.error('Error generating checkout:', error);
       toast.error(error.message || 'Errore durante la generazione del link');
     }
   });

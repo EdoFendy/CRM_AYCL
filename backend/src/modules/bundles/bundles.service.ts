@@ -65,14 +65,14 @@ export async function createBundle(input: BundleInput, actorId: string) {
   try {
     await client.query('BEGIN');
     
-    // Crea bundle
+    // Crea bundle con valori di default espliciti
     const { rows: bundleRows } = await client.query(
       `INSERT INTO bundles (
         name, description, company_id, contact_id, seller_user_id,
         discount_type, discount_value, currency,
         includes_upsell, upsell_name, upsell_description, upsell_price,
-        valid_until, status
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        valid_until, status, subtotal, total, discount_amount
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
       RETURNING ${SELECT_BUNDLE}`,
       [
         input.name,
@@ -80,7 +80,7 @@ export async function createBundle(input: BundleInput, actorId: string) {
         input.company_id || null,
         input.contact_id || null,
         input.seller_user_id || null,
-        input.discount_type,
+        input.discount_type || 'none',
         input.discount_value || 0,
         input.currency || 'EUR',
         input.includes_upsell || false,
@@ -88,7 +88,10 @@ export async function createBundle(input: BundleInput, actorId: string) {
         input.upsell_description || null,
         input.upsell_price || null,
         input.valid_until || null,
-        'draft'
+        'draft',
+        0, // subtotal - will be calculated by trigger
+        0, // total - will be calculated by trigger
+        0  // discount_amount - will be calculated by trigger
       ]
     );
     
@@ -378,41 +381,19 @@ export async function generateBundleCheckoutUrl(
   bundleId: string,
   baseUrl: string = 'https://allyoucanleads.com'
 ) {
-  // Prima ottieni il bundle per verificare il seller
+  // Verifica che il bundle esista
   const bundle = await getBundle(bundleId);
   if (!bundle) {
     throw new Error('Bundle not found');
   }
   
-  // Usa la funzione SQL per generare l'URL base
+  // Usa la funzione SQL che gestisce tutto (token, URL, referral code)
   const { rows } = await pool.query(
     'SELECT create_bundle_checkout_url($1, $2) as checkout_url',
     [bundleId, baseUrl]
   );
   
-  let checkoutUrl = rows[0].checkout_url;
-  
-  // Se non ha già il referral code nell'URL e c'è un seller, aggiungilo
-  if (bundle.seller_user_id && !checkoutUrl.includes('&ref=')) {
-    const { rows: referralRows } = await pool.query(
-      `SELECT referral_code FROM referral_links 
-       WHERE user_id = $1 AND is_active = true 
-       LIMIT 1`,
-      [bundle.seller_user_id]
-    );
-    
-    if (referralRows.length > 0 && referralRows[0].referral_code) {
-      checkoutUrl += `&ref=${referralRows[0].referral_code}`;
-      
-      // Aggiorna il bundle con il nuovo URL
-      await pool.query(
-        'UPDATE bundles SET checkout_url = $1 WHERE id = $2',
-        [checkoutUrl, bundleId]
-      );
-    }
-  }
-  
-  return checkoutUrl;
+  return rows[0].checkout_url;
 }
 
 export async function createBundleWooProduct(bundleId: string) {

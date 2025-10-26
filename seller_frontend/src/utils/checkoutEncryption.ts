@@ -47,7 +47,7 @@ const orderSchema = {
 export async function encryptCheckoutOrder(order: DriveTestOrder, token?: string): Promise<string> {
   try {
     // Call backend API to encrypt the order
-    const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/checkout/encrypt`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/checkout/encrypt`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -64,28 +64,7 @@ export async function encryptCheckoutOrder(order: DriveTestOrder, token?: string
     return data.token;
   } catch (error) {
     console.error('Error encrypting checkout order:', error);
-    // Fallback: try to use the checkout API endpoint directly
-    // This should call the allyoucanleads.com API if available
-    try {
-      const checkoutBaseUrl = resolveCheckoutBaseUrl();
-      const response = await fetch(`${checkoutBaseUrl}/api/checkout/order`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ order })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to encrypt checkout order via checkout API');
-      }
-
-      const data = await response.json();
-      return data.token;
-    } catch (fallbackError) {
-      console.error('Fallback encryption also failed:', fallbackError);
-      throw new Error('Unable to encrypt checkout order. Please check your configuration.');
-    }
+    throw new Error('Unable to encrypt checkout order. Please check your backend configuration.');
   }
 }
 

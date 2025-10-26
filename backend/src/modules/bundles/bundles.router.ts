@@ -5,6 +5,24 @@ import * as service from './bundles.service.js';
 
 export const bundlesRouter = Router();
 
+// Endpoint pubblico per checkout (PRIMA dell'autenticazione)
+// GET /bundles/token/:token - Ottieni bundle da checkout token (pubblico)
+bundlesRouter.get('/token/:token', async (req, res) => {
+  try {
+    const bundle = await service.getBundleByToken(req.params.token);
+    
+    if (!bundle) {
+      return res.status(404).json({ error: 'Bundle non trovato' });
+    }
+    
+    res.json(bundle);
+  } catch (error: any) {
+    console.error('Errore bundle by token:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Tutti gli altri endpoint richiedono autenticazione
 bundlesRouter.use(requireAuth);
 
 const bundleProductSchema = z.object({
@@ -91,22 +109,6 @@ bundlesRouter.get('/:id', async (req, res) => {
     res.json(bundle);
   } catch (error: any) {
     console.error('Errore dettaglio bundle:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// GET /bundles/token/:token - Ottieni bundle da checkout token
-bundlesRouter.get('/token/:token', async (req, res) => {
-  try {
-    const bundle = await service.getBundleByToken(req.params.token);
-    
-    if (!bundle) {
-      return res.status(404).json({ error: 'Bundle non trovato' });
-    }
-    
-    res.json(bundle);
-  } catch (error: any) {
-    console.error('Errore bundle by token:', error);
     res.status(500).json({ error: error.message });
   }
 });

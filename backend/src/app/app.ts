@@ -11,7 +11,21 @@ export function createApp() {
   const app = express();
 
   app.use(helmet());
-  app.use(cors());
+  
+  // Configure CORS to allow requests from homepage
+  app.use(cors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'https://allyoucanleads.com',
+      'https://www.allyoucanleads.com',
+      'https://checkout.allyoucanleads.com'
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Correlation-ID']
+  }));
+  
   app.use(express.json({ limit: '2mb' }));
   app.use(correlationIdMiddleware);
 
